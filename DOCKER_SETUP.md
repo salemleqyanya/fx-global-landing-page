@@ -2,6 +2,118 @@
 
 This project is now configured to run entirely through Django backend with Docker support.
 
+## Installing Docker on Your Server
+
+### For Ubuntu/Debian
+
+1. **Update your system:**
+   ```bash
+   sudo apt update
+   sudo apt upgrade -y
+   ```
+
+2. **Install required packages:**
+   ```bash
+   sudo apt install -y apt-transport-https ca-certificates curl gnupg lsb-release
+   ```
+
+3. **Add Docker's official GPG key:**
+   ```bash
+   curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+   ```
+
+4. **Add Docker repository:**
+   ```bash
+   echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+   ```
+
+5. **Install Docker Engine:**
+   ```bash
+   sudo apt update
+   sudo apt install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+   ```
+
+6. **Start and enable Docker:**
+   ```bash
+   sudo systemctl start docker
+   sudo systemctl enable docker
+   ```
+
+7. **Add your user to docker group (to run Docker without sudo):**
+   ```bash
+   sudo usermod -aG docker $USER
+   ```
+   **Note:** You'll need to log out and log back in for this to take effect.
+
+8. **Verify installation:**
+   ```bash
+   docker --version
+   docker compose version
+   ```
+
+### For CentOS/RHEL/Fedora
+
+1. **Remove old versions (if any):**
+   ```bash
+   sudo yum remove -y docker docker-client docker-client-latest docker-common docker-latest docker-latest-logrotate docker-logrotate docker-engine
+   ```
+
+2. **Install required packages:**
+   ```bash
+   sudo yum install -y yum-utils
+   ```
+
+3. **Add Docker repository:**
+   ```bash
+   sudo yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
+   ```
+
+4. **Install Docker:**
+   ```bash
+   sudo yum install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+   ```
+
+5. **Start and enable Docker:**
+   ```bash
+   sudo systemctl start docker
+   sudo systemctl enable docker
+   ```
+
+6. **Add your user to docker group:**
+   ```bash
+   sudo usermod -aG docker $USER
+   ```
+
+7. **Verify installation:**
+   ```bash
+   docker --version
+   docker compose version
+   ```
+
+### Alternative: Quick Install Script (Ubuntu/Debian)
+
+If you prefer a quick one-liner:
+
+```bash
+curl -fsSL https://get.docker.com -o get-docker.sh
+sudo sh get-docker.sh
+sudo usermod -aG docker $USER
+```
+
+**Remember to log out and log back in after adding your user to the docker group.**
+
+### Verify Docker Installation
+
+Test that Docker is working correctly:
+
+```bash
+docker run hello-world
+```
+
+You should see a message indicating Docker is working properly.
+
+---
+
 ## Quick Start
 
 ### 1. Build and Run with Docker Compose
@@ -14,13 +126,13 @@ docker-compose up --build
 docker-compose up -d --build
 ```
 
-The application will be available at: **http://localhost:8000**
+The application will be available at: **http://localhost:81**
 
 ### 2. Access Points
 
-- **Landing Page**: http://localhost:8000
-- **Admin Panel**: http://localhost:8000/admin/
-- **API Endpoints**: http://localhost:8000/api/
+- **Landing Page**: http://localhost:81
+- **Admin Panel**: http://localhost:81/admin/
+- **API Endpoints**: http://localhost:81/api/
 
 ### 3. Create Superuser
 
@@ -94,10 +206,10 @@ The Dockerfile:
 
 ### docker-compose.yml
 
-- Maps port 8000 from container to host
+- Maps port 81 from container to host
 - Persists database and media files in volumes
 - Automatically runs migrations on startup
-- Uses Gunicorn with 3 workers
+- Uses Gunicorn with 3 workers on port 81
 
 ## Production Deployment
 
@@ -146,17 +258,17 @@ python manage.py collectstatic --noinput
 python manage.py runserver
 ```
 
-The app will be available at http://localhost:8000
+The app will be available at http://localhost:81
 
 ## Troubleshooting
 
 ### Port Already in Use
 
-If port 8000 is already in use, change it in `docker-compose.yml`:
+If port 81 is already in use, change it in `docker-compose.yml`:
 
 ```yaml
 ports:
-  - "8001:8000"  # Use 8001 on host, 8000 in container
+  - "82:81"  # Use 82 on host, 81 in container
 ```
 
 ### Static Files Not Loading

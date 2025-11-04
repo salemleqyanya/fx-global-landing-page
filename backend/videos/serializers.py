@@ -6,7 +6,7 @@ class VideoSerializer(serializers.ModelSerializer):
     class Meta:
         model = Video
         fields = [
-            'id', 'title', 'description', 'vimeo_id', 'video_url', 
+            'id', 'title', 'description', 'badge_label', 'vimeo_id', 'video_url', 
             'video_file', 'position', 'is_active', 'order', 
             'created_at', 'updated_at'
         ]
@@ -19,7 +19,7 @@ class VideoPublicSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Video
-        fields = ['id', 'title', 'description', 'vimeo_id', 'video_url', 'video_file_url', 'position']
+        fields = ['id', 'title', 'description', 'vimeo_id', 'video_url', 'video_file_url', 'position', 'badge_label', 'order']
     
     def get_video_file_url(self, obj):
         """Get full URL for video file if it exists"""

@@ -15,7 +15,18 @@ def landing_page(request):
     except Exception:
         pass
     
+    # Get testimonials videos
+    testimonials_videos = []
+    try:
+        videos = Video.objects.filter(is_active=True, position='testimonials').order_by('order', '-created_at')[:3]
+        for video in videos:
+            serializer = VideoPublicSerializer(video, context={'request': request})
+            testimonials_videos.append(serializer.data)
+    except Exception:
+        pass
+    
     context = {
         'hero_video': hero_video,
+        'testimonials_videos': testimonials_videos,
     }
     return render(request, 'landing_page.html', context)

@@ -19,8 +19,8 @@ class VideoAdmin(admin.ModelAdmin):
             'description': 'Upload a video file OR provide Vimeo ID OR video URL. Only one is required.'
         }),
         ('Display Settings', {
-            'fields': ('position', 'order', 'is_active'),
-            'description': 'Select where this video should appear on the website.'
+            'fields': ('position', 'order', 'badge_label', 'is_active'),
+            'description': 'Select where this video should appear on the website. Badge label is used for testimonials (e.g., وحش الشهر، طبيب ناجح، طالب طموح).'
         }),
         ('Timestamps', {
             'fields': ('created_at', 'updated_at'),

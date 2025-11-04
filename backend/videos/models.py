@@ -7,6 +7,13 @@ class Video(models.Model):
     
     title = models.CharField(max_length=200, verbose_name="العنوان")
     description = models.TextField(blank=True, null=True, verbose_name="الوصف")
+    badge_label = models.CharField(
+        max_length=100, 
+        blank=True, 
+        null=True,
+        verbose_name="تسمية الشارة",
+        help_text="مثال: وحش الشهر، طبيب ناجح، طالب طموح"
+    )
     
     # Vimeo video ID
     vimeo_id = models.CharField(

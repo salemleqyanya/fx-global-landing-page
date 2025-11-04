@@ -60,7 +60,10 @@ ROOT_URLCONF = 'config.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR.parent / 'build'],  # React build directory
+        'DIRS': [
+            BASE_DIR / 'templates',
+            BASE_DIR / 'config' / 'templates',  # Config app templates
+        ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -123,11 +126,6 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
-
-# Static files from React build
-STATICFILES_DIRS = [
-    BASE_DIR.parent / 'build',  # React build directory (includes assets/)
-]
 
 # WhiteNoise configuration for serving static files
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'

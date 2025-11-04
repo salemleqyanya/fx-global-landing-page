@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FX GLOBAL - أكاديمية التداول الفلسطينية</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'brand-pink': '#E91E8C',
+                        'brand-purple': '#6B46C1',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { font-family: 'Poppins', sans-serif; }
+        @keyframes pulse { 50% { opacity: .5; } }
+        .animate-pulse { animation: pulse 2s cubic-bezier(.4,0,.6,1) infinite; }
+    </style>
+</head>
+<body class="bg-black min-h-screen">
+    <!-- Navigation -->
+    <nav class="fixed top-0 left-0 right-0 z-50 bg-black/95 backdrop-blur-lg border-b border-[#E91E8C]/20">
+        <div class="container mx-auto px-4">
+            <div class="flex items-center justify-between h-20">
+                <div class="text-white">
+                    <span class="bg-gradient-to-r from-[#E91E8C] to-[#6B46C1] bg-clip-text text-transparent text-[32px] font-bold">FX GLOBAL</span>
+                </div>
+                <div class="hidden md:flex items-center gap-8">
+                    <a href="#hero" class="text-white/80 hover:text-[#E91E8C] transition-colors">الرئيسية</a>
+                    <a href="#services" class="text-white/80 hover:text-[#E91E8C] transition-colors">الخدمات</a>
+                    <a href="#testimonials" class="text-white/80 hover:text-[#E91E8C] transition-colors">قصص النجاح</a>
+                    <a href="#register" class="text-white/80 hover:text-[#E91E8C] transition-colors">التسجيل</a>
+                </div>
+                <button onclick="scrollToSection('register')" class="hidden md:block bg-gradient-to-r from-[#E91E8C] to-[#6B46C1] hover:from-[#6B46C1] hover:to-[#E91E8C] text-white px-6 py-2 rounded-lg text-[20px]">سجل الآن مجاناً 🔥</button>
+                <button id="mobile-menu-btn" class="md:hidden text-white">☰</button>
+            </div>
+            <div id="mobile-menu" class="hidden md:hidden py-4 border-t border-[#E91E8C]/20">
+                <div class="flex flex-col gap-4">
+                    <a href="#hero" class="text-white/80 hover:text-[#E91E8C] text-right py-2">الرئيسية</a>
+                    <a href="#services" class="text-white/80 hover:text-[#E91E8C] text-right py-2">الخدمات</a>
+                    <a href="#testimonials" class="text-white/80 hover:text-[#E91E8C] text-right py-2">قصص النجاح</a>
+                    <a href="#register" class="text-white/80 hover:text-[#E91E8C] text-right py-2">التسجيل</a>
+                    <button onclick="scrollToSection('register')" class="bg-gradient-to-r from-[#E91E8C] to-[#6B46C1] text-white w-full py-2 rounded-lg">سجل الآن مجاناً 🔥</button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="hero" class="relative min-h-screen flex items-center justify-center overflow-hidden bg-black pt-20">
+        <div class="absolute inset-0">
+            <div class="absolute top-1/4 right-1/4 w-96 h-96 bg-[#E91E8C]/20 rounded-full blur-3xl animate-pulse"></div>
+            <div class="absolute bottom-1/4 left-1/4 w-96 h-96 bg-[#6B46C1]/20 rounded-full blur-3xl animate-pulse" style="animation-delay: 1s;"></div>
+        </div>
+        <div class="container mx-auto px-4 py-20 relative z-10">
+            <div class="max-w-5xl mx-auto text-center">
+                <div class="mb-8">
+                    <h1 class="text-white mb-6 leading-tight text-[34px] font-bold underline">أكيد سمعت عن التداول... بس ولا مرة حدا علمك كيف تبدأ صح 💰</h1>
+                    <div class="w-20 h-1 bg-gradient-to-r from-transparent via-[#E91E8C] to-transparent mx-auto mb-6"></div>
+                    <p class="text-white/90 text-xl md:text-2xl leading-relaxed font-bold">إحنا بـ FX Global رح نعلّمك من الصفر كيف تدخل السوق،<br>كيف تحلل بثقة، وكيف تحوّل مهارتك لمصدر دخل حقيقي!</p>
+                </div>
+                <div class="mb-8 max-w-3xl mx-auto">
+                    <div class="relative aspect-video bg-black/30 backdrop-blur-sm rounded-2xl overflow-hidden border-2 border-[#E91E8C]/50 shadow-2xl">
+                        {% if hero_video %}
+                            {% if hero_video.vimeo_id %}
+                                <iframe src="https://player.vimeo.com/video/{{ hero_video.vimeo_id }}?badge=0&autopause=0" class="absolute inset-0 w-full h-full" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" title="Vimeo Video"></iframe>
+                            {% elif hero_video.video_url or hero_video.video_file_url %}
+                                <video class="absolute inset-0 w-full h-full object-cover" autoplay loop muted playsinline controlsList="nodownload" disablePictureInPicture style="pointer-events: none;">
+                                    <source src="{{ hero_video.video_url|default:hero_video.video_file_url }}" type="video/mp4">
+                                    <source src="{{ hero_video.video_url|default:hero_video.video_file_url }}" type="video/quicktime">
+                                    <source src="{{ hero_video.video_url|default:hero_video.video_file_url }}" type="video/webm">
+                                    Your browser does not support the video tag.
+                                </video>
+                            {% endif %}
+                        {% else %}
+                            <iframe src="https://player.vimeo.com/video/1133539416?badge=0&autopause=0" class="absolute inset-0 w-full h-full" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" title="Vimeo Video"></iframe>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="mb-8">
+                    <button onclick="showRegistrationDialog()" class="bg-gradient-to-r from-[#E91E8C] to-[#6B46C1] hover:from-[#6B46C1] hover:to-[#E91E8C] text-white px-16 py-10 text-3xl font-bold shadow-2xl rounded-xl">احجز مقعدك في اول محاضرة تفاعلية لتعليم التداول</button>
+                </div>
+                <div class="flex flex-col md:flex-row justify-center items-center gap-8 text-white/90">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-full bg-white/10 backdrop-blur-sm flex items-center justify-center">👥</div>
+                        <span class="text-[20px]">✅ أكثر من 3000 متداول فلسطيني</span>
+                    </div>
+                    <div class="hidden md:block w-[2px] h-8 bg-gradient-to-b from-transparent via-[#E91E8C] to-transparent"></div>
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-full bg-white/10 backdrop-blur-sm flex items-center justify-center">🔥</div>
+                        <span class="text-[20px]">✅ بث مباشر يومي الساعة 3:00</span>
+                    </div>
+                    <div class="hidden md:block w-[2px] h-8 bg-gradient-to-b from-transparent via-[#E91E8C] to-transparent"></div>
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-full bg-white/10 backdrop-blur-sm flex items-center justify-center">💬</div>
+                        <span class="text-[20px]">✅ دعم فني 24/7</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Who We Are Section -->
+    <section class="relative py-24 bg-black overflow-hidden">
+        <div class="absolute inset-0 opacity-20">
+            <div class="absolute top-20 left-1/4 w-72 h-72 bg-[#6B46C1]/30 rounded-full blur-3xl"></div>
+            <div class="absolute bottom-20 right-1/4 w-72 h-72 bg-[#E91E8C]/30 rounded-full blur-3xl"></div>
+        </div>
+        <div class="container mx-auto px-4 relative z-10">
+            <div class="max-w-4xl mx-auto">
+                <div class="text-center mb-16">
+                    <div class="inline-flex items-center gap-2 bg-white/5 backdrop-blur-sm border border-[#E91E8C]/30 rounded-full px-6 py-3 mb-6">
+                        <span class="text-[#E91E8C] text-[20px]">🎯</span>
+                        <span class="text-white/90 text-[32px]">مين إحنا</span>
+                    </div>
+                    <h2 class="text-white mb-6 leading-tight text-[20px]">
+                        إحنا مش أكاديمية تقليدية،<br>
+                        <span class="text-transparent bg-clip-text bg-gradient-to-r from-[#E91E8C] to-[#6B46C1] text-[24px] font-bold">
+                            إحنا منظومة تداول فلسطينية تجمع الخبرة والتعليم والتطبيق في مكان واحد.
+                        </span>
+                    </h2>
+                </div>
+                <div class="relative">
+                    <div class="absolute -inset-1 bg-gradient-to-r from-[#E91E8C] to-[#6B46C1] rounded-3xl blur opacity-20"></div>
+                    <div class="relative bg-gradient-to-br from-white/5 to-white/[0.02] backdrop-blur-xl border border-white/10 rounded-3xl p-12">
+                        <div class="text-center">
+                            <p class="text-white/90 text-xl leading-relaxed mb-8">
+                                مجتمع من متداولين ومدربين هدفهم يوصلوك من مرحلة "مش فاهم السوق"<br>
+                                لمرحلة "أنا بثق بتحليلي وبدير فلوسي بوعي."
+                            </p>
+                            <p class="relative text-white/80 text-lg px-8 py-4 rounded-2xl bg-gradient-to-r from-[#E91E8C]/10 to-[#6B46C1]/10 border border-[#E91E8C]/20">
+                                💡 هدفنا إنك تكون الشخص اللي بيفهم السوق مش اللي بتفرّج عليه.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section id="services" class="relative py-24 bg-black overflow-hidden">
+        <div class="absolute inset-0 opacity-30">
+            <div class="absolute top-0 left-0 w-96 h-96 bg-[#E91E8C]/20 rounded-full blur-3xl"></div>
+            <div class="absolute bottom-0 right-0 w-96 h-96 bg-[#6B46C1]/20 rounded-full blur-3xl"></div>
+        </div>
+        <div class="container mx-auto px-4 relative z-10">
+            <div class="text-center mb-16">
+                <div class="inline-flex items-center gap-2 bg-white/5 backdrop-blur-sm border border-[#E91E8C]/30 rounded-full px-6 py-3 mb-6">
+                    <span class="text-[#E91E8C] text-[20px]">✨</span>
+                    <span class="text-white/90 text-[32px]">الخدمات</span>
+                </div>
+                <h2 class="text-white mb-6 leading-tight text-[30px] font-bold">شو بنقدملك؟</h2>
+                <p class="text-white/80 text-xl max-w-3xl mx-auto">كل اللي بتحتاجه لتبدأ وتربح من الأسواق… بمكان واحد 👇</p>
+            </div>
+            <div class="max-w-7xl mx-auto space-y-8">
+                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <div class="bg-gradient-to-br from-white/10 to-white/[0.02] backdrop-blur-sm border border-white/10 rounded-3xl p-8">
+                        <div class="mb-6 flex justify-end">
+                            <div class="inline-flex w-16 h-16 rounded-xl bg-gradient-to-br from-[#E91E8C] to-[#6B46C1] items-center justify-center">📚</div>
+                        </div>
+                        <h3 class="text-white text-xl mb-4 text-right">دورات تدريبية متقدمة</h3>
+                        <p class="text-white/70 leading-relaxed text-right">تعلّم خطوة بخطوة التحليل الفني، إدارة رأس المال، واستراتيجيات التداول الحديثة</p>
+                    </div>
+                    <div class="bg-gradient-to-br from-white/10 to-white/[0.02] backdrop-blur-sm border border-white/10 rounded-3xl p-8">
+                        <div class="mb-6 flex justify-end">
+                            <div class="inline-flex w-16 h-16 rounded-xl bg-gradient-to-br from-[#6B46C1] to-[#E91E8C] items-center justify-center">👥</div>
+                        </div>
+                        <h3 class="text-white text-xl mb-4 text-right">استشارات مالية شخصية</h3>
+                        <p class="text-white/70 leading-relaxed text-right">بنحلل وضعك المالي وبنساعدك تختار الخطة الأنسب لهدفك</p>
+                    </div>
+                    <div class="bg-gradient-to-br from-white/10 to-white/[0.02] backdrop-blur-sm border border-white/10 rounded-3xl p-8">
+                        <div class="mb-6 flex justify-end">
+                            <div class="inline-flex w-16 h-16 rounded-xl bg-gradient-to-br from-[#E91E8C] to-[#6B46C1] items-center justify-center">📈</div>
+                        </div>
+                        <h3 class="text-white text-xl mb-4 text-right">تحليل يومي + توصيات حية</h3>
+                        <p class="text-white/70 leading-relaxed text-right">فريق التحليل عندنا بيبث مباشر كل يوم، وبيعطيك الفرص الحقيقية</p>
+                    </div>
+                    <div class="bg-gradient-to-br from-white/10 to-white/[0.02] backdrop-blur-sm border border-white/10 rounded-3xl p-8">
+                        <div class="mb-6 flex justify-end">
+                            <div class="inline-flex w-16 h-16 rounded-xl bg-gradient-to-br from-[#6B46C1] to-[#E91E8C] items-center justify-center">🎥</div>
+                        </div>
+                        <h3 class="text-white text-xl mb-4 text-right">بث مباشر يومي</h3>
+                        <p class="text-white/70 leading-relaxed text-right">كل يوم الساعة 3:00 بنكون Live — بتحضر، بتحلل معنا، وبتتعلم من السوق نفسه</p>
+                    </div>
+                    <div class="bg-gradient-to-br from-white/10 to-white/[0.02] backdrop-blur-sm border border-white/10 rounded-3xl p-8">
+                        <div class="mb-6 flex justify-end">
+                            <div class="inline-flex w-16 h-16 rounded-xl bg-gradient-to-br from-[#E91E8C] to-[#6B46C1] items-center justify-center">🎧</div>
+                        </div>
+                        <h3 class="text-white text-xl mb-4 text-right">دعم فني 24/7</h3>
+                        <p class="text-white/70 leading-relaxed text-right">أي مشكلة، أي وقت، فريقنا معك خطوة بخطوة</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Why Join Section -->
+    <section class="relative py-24 bg-black overflow-hidden">
+        <div class="absolute inset-0">
+            <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-[#E91E8C]/10 rounded-full blur-3xl"></div>
+        </div>
+        <div class="container mx-auto px-4 relative z-10">
+            <div class="max-w-5xl mx-auto">
+                <div class="text-center mb-16">
+                    <div class="inline-flex items-center gap-2 bg-white/5 backdrop-blur-sm border border-[#E91E8C]/30 rounded-full px-6 py-3 mb-6">
+                        <span class="text-[#E91E8C] text-[20px]">🏆</span>
+                        <span class="text-white/90 text-[32px]">المميزات</span>
+                    </div>
+                    <h2 class="text-white mb-6 leading-tight text-[30px] font-bold">
+                        ليش الناس بتنضم لـ <span class="text-transparent bg-clip-text bg-gradient-to-r from-[#E91E8C] to-[#6B46C1]">FX Global؟</span>
+                    </h2>
+                </div>
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div class="bg-gradient-to-br from-white/10 to-white/[0.02] backdrop-blur-sm border border-white/10 rounded-2xl p-8">
+                        <div class="flex items-start gap-4">
+                            <span class="text-[#E91E8C] text-2xl">✅</span>
+                            <p class="text-white/90 text-lg">لأننا مش بس بنعلم... إحنا بنمشي معك عمليًا</p>
+                        </div>
+                    </div>
+                    <div class="bg-gradient-to-br from-white/10 to-white/[0.02] backdrop-blur-sm border border-white/10 rounded-2xl p-8">
+                        <div class="flex items-start gap-4">
+                            <span class="text-[#E91E8C] text-2xl">✅</span>
+                            <p class="text-white/90 text-lg">لأنك بتتعلم على بث مباشر مش فيديوهات مكررة</p>
+                        </div>
+                    </div>
+                    <div class="bg-gradient-to-br from-white/10 to-white/[0.02] backdrop-blur-sm border border-white/10 rounded-2xl p-8">
+                        <div class="flex items-start gap-4">
+                            <span class="text-[#E91E8C] text-2xl">✅</span>
+                            <p class="text-white/90 text-lg">لأن طلابنا صاروا متداولين واثقين مش مجرد متفرجين</p>
+                        </div>
+                    </div>
+                    <div class="bg-gradient-to-br from-white/10 to-white/[0.02] backdrop-blur-sm border border-white/10 rounded-2xl p-8">
+                        <div class="flex items-start gap-4">
+                            <span class="text-[#E91E8C] text-2xl">✅</span>
+                            <p class="text-white/90 text-lg">لأنك بتتعلم من ناس فلسطينية فاهمة واقع السوق العربي</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Social Proof Section -->
+    <section id="testimonials" class="relative py-24 bg-black overflow-hidden">
+        <div class="absolute inset-0 opacity-20">
+            <div class="absolute top-20 right-1/4 w-96 h-96 bg-[#E91E8C]/30 rounded-full blur-3xl animate-pulse"></div>
+            <div class="absolute bottom-20 left-1/4 w-96 h-96 bg-[#6B46C1]/30 rounded-full blur-3xl animate-pulse"></div>
+        </div>
+        <div class="container mx-auto px-4 relative z-10">
+            <div class="text-center mb-20">
+                <div class="inline-flex items-center gap-2 bg-white/5 backdrop-blur-sm border border-[#E91E8C]/30 rounded-full px-6 py-3 mb-8">
+                    <span class="text-[#E91E8C] text-[20px]">⭐</span>
+                    <span class="text-white/90 text-[32px]">الناس ما بتصدق الحكي… بتصدق النتائج</span>
+                </div>
+                <h2 class="text-white text-6xl md:text-7xl mb-4">
+                    <span class="text-transparent bg-clip-text bg-gradient-to-r from-[#E91E8C] to-[#6B46C1]">+3000</span>
+                </h2>
+                <p class="text-white/90 text-2xl md:text-3xl">متداول فلسطيني بدأوا معنا</p>
+            </div>
+            <div class="max-w-6xl mx-auto">
+                <h3 class="text-white text-center text-2xl mb-12">شهادات حقيقية من طلابنا 💬</h3>
+                <div class="grid md:grid-cols-3 gap-6">
+                    <div class="bg-gradient-to-br from-white/10 to-white/[0.02] backdrop-blur-sm border border-white/10 rounded-2xl p-8">
+                        <p class="text-white/90 text-lg mb-6">"كنت مفكر التداول قمار… اليوم فاهم السوق."</p>
+                        <div class="border-t border-white/10 pt-4">
+                            <p class="text-[#E91E8C] mb-1">أحمد - رام الله</p>
+                            <p class="text-white/60 text-sm">أول ربح خلال أسبوعين</p>
+                        </div>
+                    </div>
+                    <div class="bg-gradient-to-br from-white/10 to-white/[0.02] backdrop-blur-sm border border-white/10 rounded-2xl p-8">
+                        <p class="text-white/90 text-lg mb-6">"أول مرة أدخل صفقة وأنا مرتاح نفسياً."</p>
+                        <div class="border-t border-white/10 pt-4">
+                            <p class="text-[#E91E8C] mb-1">محمد - نابلس</p>
+                            <p class="text-white/60 text-sm">3 صفقات ناجحة من 4</p>
+                        </div>
+                    </div>
+                    <div class="bg-gradient-to-br from-white/10 to-white/[0.02] backdrop-blur-sm border border-white/10 rounded-2xl p-8">
+                        <p class="text-white/90 text-lg mb-6">"التحليل اليومي غيّر طريقة تفكيري بالسوق كلياً."</p>
+                        <div class="border-t border-white/10 pt-4">
+                            <p class="text-[#E91E8C] mb-1">ليث - الخليل</p>
+                            <p class="text-white/60 text-sm">دخل إضافي ثابت شهرياً</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Registration Form Section -->
+    <section id="register" class="relative py-32 bg-black overflow-hidden">
+        <div class="absolute inset-0 opacity-10">
+            <div class="absolute top-0 right-0 w-[600px] h-[600px] bg-[#E91E8C] rounded-full blur-[120px]"></div>
+            <div class="absolute bottom-0 left-0 w-[600px] h-[600px] bg-[#6B46C1] rounded-full blur-[120px]"></div>
+        </div>
+        <div class="container mx-auto px-4 relative z-10">
+            <div class="max-w-6xl mx-auto">
+                <div class="text-center mb-16">
+                    <h2 class="text-white mb-4 max-w-3xl mx-auto leading-tight text-[28px] font-bold">الفرصة مش راح تضل مفتوحة! 🚀</h2>
+                    <p class="text-white/70 text-xl max-w-2xl mx-auto">احجز مقعدك الآن في التعليم وتعرف كيف تبدأ تداول بثقة</p>
+                </div>
+                <div class="grid lg:grid-cols-5 gap-8">
+                    <div class="lg:col-span-2 space-y-6">
+                        <div class="bg-[#2A1A4D] rounded-2xl p-6">
+                            <h3 class="text-white mb-3">مقاعد محدودة!</h3>
+                            <p class="text-white/80 mb-2">متبقي <span class="text-[#E91E8C] text-xl">37 مقعد فقط</span></p>
+                            <p class="text-white/60 text-sm">في بث هذا الأسبوع ⏱</p>
+                        </div>
+                        <div class="bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-6">
+                            <h3 class="text-white mb-4">ليش تنضم الآن؟</h3>
+                            <div class="space-y-4">
+                                <div class="flex items-start gap-3">
+                                    <span class="text-[#E91E8C]">✅</span>
+                                    <p class="text-white/70 text-sm">بث مباشر مجاني 100%</p>
+                                </div>
+                                <div class="flex items-start gap-3">
+                                    <span class="text-[#E91E8C]">✅</span>
+                                    <p class="text-white/70 text-sm">شاهد تحليل السوق لحظة بلحظة</p>
+                                </div>
+                                <div class="flex items-start gap-3">
+                                    <span class="text-[#E91E8C]">✅</span>
+                                    <p class="text-white/70 text-sm">تفاعل مباشر مع المدربين</p>
+                                </div>
+                                <div class="flex items-start gap-3">
+                                    <span class="text-[#E91E8C]">✅</span>
+                                    <p class="text-white/70 text-sm">بدون أي التزامات مالية</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="lg:col-span-3">
+                        <div class="bg-white/[0.03] backdrop-blur-xl border border-white/10 rounded-3xl p-8 md:p-10">
+                            <h3 class="text-white text-2xl mb-2">سجّل الآن</h3>
+                            <p class="text-white/60 text-sm mb-8">املأ البيانات للحجز</p>
+                            <form id="registration-form" class="space-y-6">
+                                <div>
+                                    <label class="text-white/90 text-sm mb-2 block">الاسم الكامل <span class="text-[#E91E8C]">*</span></label>
+                                    <input type="text" id="fullname" required class="w-full h-12 bg-white/5 border border-white/10 text-white placeholder:text-white/40 rounded-xl px-4" placeholder="أدخل اسمك الكامل">
+                                </div>
+                                <div>
+                                    <label class="text-white/90 text-sm mb-2 block">رقم الواتساب <span class="text-[#E91E8C]">*</span></label>
+                                    <input type="tel" id="phone" required class="w-full h-12 bg-white/5 border border-white/10 text-white placeholder:text-white/40 rounded-xl px-4" placeholder="مثال: 0599123456">
+                                </div>
+                                <div>
+                                    <label class="text-white/90 text-sm mb-2 block">هدفك من التداول <span class="text-white/40 text-xs">(اختياري)</span></label>
+                                    <div class="space-y-2">
+                                        <label class="flex items-center gap-3 bg-white/5 hover:bg-white/10 p-4 rounded-xl border border-white/10 cursor-pointer">
+                                            <input type="radio" name="goal" value="income" class="text-[#E91E8C]">
+                                            <span class="text-white/80 text-sm">💸 بدي أخلق دخل إضافي ثابت يحسّن وضعي المادي</span>
+                                        </label>
+                                        <label class="flex items-center gap-3 bg-white/5 hover:bg-white/10 p-4 rounded-xl border border-white/10 cursor-pointer">
+                                            <input type="radio" name="goal" value="career" class="text-[#E91E8C]">
+                                            <span class="text-white/80 text-sm">🚀 هدفي أخليه شغلي الأساسي وأتفرّغ إله</span>
+                                        </label>
+                                        <label class="flex items-center gap-3 bg-white/5 hover:bg-white/10 p-4 rounded-xl border border-white/10 cursor-pointer">
+                                            <input type="radio" name="goal" value="learn" class="text-[#E91E8C]">
+                                            <span class="text-white/80 text-sm">🎯 بدي أتعلم المجال وأفهمه بعمق قبل ما أبدأ فعليًا</span>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div id="error-message" class="hidden bg-red-500/10 border border-red-500/30 text-red-400 px-4 py-3 rounded-xl text-sm"></div>
+                                <button type="submit" class="w-full h-14 bg-gradient-to-r from-[#E91E8C] to-[#6B46C1] hover:from-[#6B46C1] hover:to-[#E91E8C] text-white shadow-lg rounded-xl">احجز مقعدك الآن 🚀</button>
+                                <p class="text-white/50 text-xs text-center">بياناتك آمنة 100% ومحمية. لن نشارك معلوماتك مع أي طرف ثالث.</p>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Trust Section -->
+    <section class="relative py-24 bg-black overflow-hidden">
+        <div class="absolute inset-0">
+            <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-[#E91E8C]/20 rounded-full blur-3xl animate-pulse"></div>
+        </div>
+        <div class="container mx-auto px-4 relative z-10">
+            <div class="max-w-5xl mx-auto">
+                <div class="text-center mb-16">
+                    <h2 class="text-white mb-8 leading-tight text-[28px]">مش راح تندم… لأنك مش داخل دورة نظرية.</h2>
+                    <p class="text-white/90 text-2xl md:text-3xl px-8 py-6 rounded-2xl bg-gradient-to-r from-[#E91E8C]/20 to-[#6B46C1]/20 border border-[#E91E8C]/30">
+                        أنت داخل مجتمع فعلي بيشتغل بالسوق كل يوم.
+                    </p>
+                </div>
+                <div class="grid md:grid-cols-3 gap-6 mb-16">
+                    <div class="bg-gradient-to-br from-white/10 to-white/[0.02] backdrop-blur-sm border border-white/10 rounded-2xl p-8 text-center">
+                        <div class="inline-flex w-16 h-16 rounded-full bg-gradient-to-br from-[#E91E8C] to-[#6B46C1] items-center justify-center mb-4">❤️</div>
+                        <h3 class="text-white text-lg mb-3">مجتمع داعم</h3>
+                        <p class="text-white/70 text-sm">بتحس إنك مش لحالك، فيه مئات متداولين مثلك بنفس الرحلة</p>
+                    </div>
+                    <div class="bg-gradient-to-br from-white/10 to-white/[0.02] backdrop-blur-sm border border-white/10 rounded-2xl p-8 text-center">
+                        <div class="inline-flex w-16 h-16 rounded-full bg-gradient-to-br from-[#6B46C1] to-[#E91E8C] items-center justify-center mb-4">📈</div>
+                        <h3 class="text-white text-lg mb-3">تطبيق عملي</h3>
+                        <p class="text-white/70 text-sm">مش نظري! بتشوف الصفقات الحقيقية وبتطبق على طول</p>
+                    </div>
+                    <div class="bg-gradient-to-br from-white/10 to-white/[0.02] backdrop-blur-sm border border-white/10 rounded-2xl p-8 text-center">
+                        <div class="inline-flex w-16 h-16 rounded-full bg-gradient-to-br from-[#E91E8C] to-[#6B46C1] items-center justify-center mb-4">📞</div>
+                        <h3 class="text-white text-lg mb-3">دعم مستمر</h3>
+                        <p class="text-white/70 text-sm">فريق الدعم معك 24/7 لأي استفسار أو مساعدة</p>
+                    </div>
+                </div>
+                <div class="text-center">
+                    <button onclick="scrollToSection('register')" class="bg-gradient-to-r from-[#E91E8C] to-[#6B46C1] hover:from-[#6B46C1] hover:to-[#E91E8C] text-white px-12 py-8 text-xl shadow-2xl rounded-xl">انضم للبث المجاني الآن 🚀</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-black/50 backdrop-blur-sm border-t border-[#E91E8C]/20 py-8">
+        <div class="container mx-auto px-4">
+            <div class="text-center">
+                <h3 class="text-[#E91E8C] mb-2">FX GLOBAL</h3>
+                <p class="text-white/50 text-sm mb-4">أكاديمية التداول الفلسطينية الرائدة</p>
+                <div class="flex flex-wrap justify-center gap-6 text-xs text-white/40">
+                    <span>بث مباشر يومي الساعة 3:00</span>
+                    <span>•</span>
+                    <span>3000+ متداول</span>
+                    <span>•</span>
+                    <span>دعم فني 24/7</span>
+                </div>
+                <div class="mt-6 text-xs text-white/30">© 2025 FX GLOBAL Academy. جميع الحقوق محفوظة.</div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Registration Dialog -->
+    <div id="registration-dialog" class="hidden fixed inset-0 z-[100] flex items-center justify-center bg-black/50 backdrop-blur-sm">
+        <div class="bg-[#3D2463] border border-[#E91E8C]/50 rounded-2xl p-8 max-w-md w-full mx-4">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-2xl text-[#E91E8C]">احجز مقعدك المجاني الآن 🔥</h3>
+                <button onclick="hideRegistrationDialog()" class="text-white/60 hover:text-white">✕</button>
+            </div>
+            <form id="dialog-form" class="space-y-6">
+                <div>
+                    <label class="text-white mb-2 block">الاسم الكامل</label>
+                    <input type="text" id="dialog-name" required class="w-full h-12 bg-white/10 border border-white/20 text-white rounded-xl px-4" placeholder="أدخل اسمك الكامل">
+                </div>
+                <div>
+                    <label class="text-white mb-2 block">رقم الواتساب</label>
+                    <input type="tel" id="dialog-whatsapp" required class="w-full h-12 bg-white/10 border border-white/20 text-white rounded-xl px-4" placeholder="مثال: 0599123456">
+                </div>
+                <div>
+                    <label class="text-white mb-2 block">المدينة</label>
+                    <input type="text" id="dialog-city" required class="w-full h-12 bg-white/10 border border-white/20 text-white rounded-xl px-4" placeholder="مثال: رام الله">
+                </div>
+                <button type="submit" class="w-full bg-gradient-to-r from-[#E91E8C] to-[#6B46C1] text-white py-6 rounded-xl">تأكيد الحجز 🎯</button>
+                <p class="text-white/60 text-sm text-center">بياناتك آمنة معنا 100% ولن يتم مشاركتها مع أي طرف ثالث</p>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        function scrollToSection(sectionId) {
+            const element = document.getElementById(sectionId);
+            if (element) {
+                element.scrollIntoView({ behavior: 'smooth' });
+                document.getElementById('mobile-menu').classList.add('hidden');
+            }
+        }
+
+        function showRegistrationDialog() {
+            document.getElementById('registration-dialog').classList.remove('hidden');
+        }
+
+        function hideRegistrationDialog() {
+            document.getElementById('registration-dialog').classList.add('hidden');
+        }
+
+        document.getElementById('mobile-menu-btn').addEventListener('click', function() {
+            const menu = document.getElementById('mobile-menu');
+            menu.classList.toggle('hidden');
+        });
+
+        // Prevent video downloads - disable right-click and keyboard shortcuts
+        document.addEventListener('DOMContentLoaded', function() {
+            const videos = document.querySelectorAll('video');
+            videos.forEach(function(video) {
+                // Disable right-click context menu
+                video.addEventListener('contextmenu', function(e) {
+                    e.preventDefault();
+                    return false;
+                });
+                
+                // Disable keyboard shortcuts (Ctrl+S, Ctrl+Shift+I, F12, etc.)
+                video.addEventListener('keydown', function(e) {
+                    // Disable F12 (Developer Tools)
+                    if (e.keyCode === 123) {
+                        e.preventDefault();
+                        return false;
+                    }
+                    // Disable Ctrl+Shift+I (Developer Tools)
+                    if (e.ctrlKey && e.shiftKey && e.keyCode === 73) {
+                        e.preventDefault();
+                        return false;
+                    }
+                    // Disable Ctrl+S (Save Page)
+                    if (e.ctrlKey && e.keyCode === 83) {
+                        e.preventDefault();
+                        return false;
+                    }
+                });
+            });
+        });
+
+        async function submitRegistration(formData) {
+            try {
+                const response = await fetch('/api/contacts/register/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(formData),
+                });
+
+                if (!response.ok) {
+                    const error = await response.json();
+                    throw new Error(error.detail || error.message || 'فشل التسجيل');
+                }
+
+                return await response.json();
+            } catch (error) {
+                throw error;
+            }
+        }
+
+        document.getElementById('registration-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const form = e.target;
+            const submitBtn = form.querySelector('button[type="submit"]');
+            const errorDiv = document.getElementById('error-message');
+            
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'جاري التسجيل...';
+            errorDiv.classList.add('hidden');
+
+            const formData = {
+                name: document.getElementById('fullname').value,
+                whatsapp: document.getElementById('phone').value,
+                goal: form.querySelector('input[name="goal"]:checked')?.value || ''
+            };
+
+            try {
+                await submitRegistration(formData);
+                alert('تم التسجيل بنجاح! سنتواصل معك قريباً على الواتساب');
+                form.reset();
+            } catch (error) {
+                errorDiv.textContent = error.message;
+                errorDiv.classList.remove('hidden');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'احجز مقعدك الآن 🚀';
+            }
+        });
+
+        document.getElementById('dialog-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const form = e.target;
+            const submitBtn = form.querySelector('button[type="submit"]');
+            
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'جاري الحجز...';
+
+            const formData = {
+                name: document.getElementById('dialog-name').value,
+                whatsapp: document.getElementById('dialog-whatsapp').value,
+                city: document.getElementById('dialog-city').value
+            };
+
+            try {
+                await submitRegistration(formData);
+                alert('تم حجز مقعدك بنجاح! سنتواصل معك قريباً على الواتساب');
+                form.reset();
+                hideRegistrationDialog();
+            } catch (error) {
+                alert('حدث خطأ أثناء التسجيل: ' + error.message);
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'تأكيد الحجز 🎯';
+            }
+        });
+    </script>
+</body>
+</html>

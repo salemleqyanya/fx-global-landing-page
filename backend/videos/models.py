@@ -32,7 +32,7 @@ class Video(models.Model):
         max_length=50,
         default='hero',
         choices=[
-            ('hero', 'Hero Section'),
+            ('hero', 'Starts Page (Hero Section)'),
             ('services', 'Services Section'),
             ('testimonials', 'Testimonials Section'),
             ('other', 'Other'),

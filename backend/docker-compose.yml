@@ -1,0 +1,65 @@
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: fxglobals-web
+    command: ["daphne","-b","0.0.0.0","-p","8000","config.asgi:application"]
+    ports:
+      - "8000:8000"
+      - "4444:4444"  # rpdb debug port
+    env_file: [".env"]
+    environment:
+      - REDIS_URL=redis://redis:6379/0
+      - REDIS_HOST=redis
+      - SECURE_PROXY_SSL_HEADER=HTTP_X_FORWARDED_PROTO,https
+      - USE_X_FORWARDED_HOST=true
+      - CSRF_TRUSTED_ORIGINS=https://info.fxglobals.co,https://www.info.fxglobals.co
+    volumes: [".:/app"]
+    networks: ["my_network"]
+    depends_on: ["db","redis","cache"]
+    restart: always
+
+  db:
+    image: postgres:12
+    container_name: fxglobals-db
+    environment:
+      POSTGRES_DB: fxapp
+      POSTGRES_USER: fxapp
+      POSTGRES_PASSWORD: fxapp12345678
+    volumes: ["pg_data:/var/lib/postgresql/data"]
+    networks: ["my_network"]
+    restart: always
+
+  redis:
+    image: redis:alpine
+    container_name: fxglobals-redis
+    networks: ["my_network"]
+    restart: always
+
+  cache:
+    image: memcached:alpine
+    container_name: fxglobals-memcached
+    networks: ["my_network"]
+    restart: always
+
+  caddy:
+    image: caddy:latest
+    container_name: fxglobals-caddy
+    ports: ["80:80","443:443"]
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on: ["web"]
+    networks: ["my_network"]
+    restart: always
+
+networks:
+  my_network:
+    driver: bridge
+
+volumes:
+  pg_data:
+  caddy_data:
+  caddy_config:

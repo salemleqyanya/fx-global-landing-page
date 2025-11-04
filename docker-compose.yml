@@ -1,0 +1,20 @@
+version: '3.8'
+
+services:
+  web:
+    build: .
+    container_name: landing_page_backend
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend/media:/app/backend/media
+      - ./backend/db.sqlite3:/app/backend/db.sqlite3
+    environment:
+      - DEBUG=True
+      - ALLOWED_HOSTS=localhost,127.0.0.1,0.0.0.0
+    restart: unless-stopped
+    command: >
+      sh -c "python manage.py migrate &&
+             python manage.py collectstatic --noinput &&
+             gunicorn --bind 0.0.0.0:8000 --workers 3 --timeout 120 config.wsgi:application"
+

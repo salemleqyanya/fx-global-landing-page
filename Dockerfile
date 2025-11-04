@@ -33,8 +33,8 @@ RUN python manage.py collectstatic --noinput || echo "Static files collection co
 RUN mkdir -p /app/backend/media
 
 # Expose port
-EXPOSE 8000
+EXPOSE 81
 
 # Run gunicorn
-CMD ["gunicorn", "--bind", "0.0.0.0:8000", "--workers", "3", "--timeout", "120", "config.wsgi:application"]
+CMD ["gunicorn", "--bind", "0.0.0.0:81", "--workers", "3", "--timeout", "120", "config.wsgi:application"]
 

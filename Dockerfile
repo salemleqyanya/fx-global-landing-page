@@ -22,7 +22,6 @@ RUN pip install --no-cache-dir --upgrade pip && \
 
 # Copy project files
 COPY backend/ /app/backend/
-COPY build/ /app/build/
 
 # Collect static files
 WORKDIR /app/backend

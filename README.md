@@ -30,8 +30,8 @@ A modern landing page for FX Global Trading Academy with Django backend and Reac
 
 ```bash
 # Clone the repository
-git clone <your-repo-url>
-cd landing-page-design
+git clone https://github.com/salemleqyanya/fx-global-landing-page.git
+cd fx-global-landing-page
 
 # Build and start
 docker-compose up --build

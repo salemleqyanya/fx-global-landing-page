@@ -5,7 +5,7 @@ services:
     build: .
     container_name: landing_page_backend
     ports:
-      - "8000:8000"
+      - "81:81"
     volumes:
       - ./backend/media:/app/backend/media
       - ./backend/db.sqlite3:/app/backend/db.sqlite3
@@ -16,5 +16,5 @@ services:
     command: >
       sh -c "python manage.py migrate &&
              python manage.py collectstatic --noinput &&
-             gunicorn --bind 0.0.0.0:8000 --workers 3 --timeout 120 config.wsgi:application"
+             gunicorn --bind 0.0.0.0:81 --workers 3 --timeout 120 config.wsgi:application"
 

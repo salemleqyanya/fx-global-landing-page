@@ -25,6 +25,136 @@
         input[name="csrfmiddlewaretoken"] {
             display: none;
         }
+        
+        /* Live Notifications Styles */
+        #notifications-container {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            z-index: 9999;
+            pointer-events: none;
+        }
+        
+        .notification {
+            background: linear-gradient(135deg, rgba(0, 0, 0, 0.95) 0%, rgba(20, 20, 30, 0.95) 100%);
+            border: 1px solid rgba(233, 30, 140, 0.3);
+            backdrop-filter: blur(20px);
+            border-radius: 16px;
+            padding: 16px 20px;
+            margin-bottom: 12px;
+            min-width: 320px;
+            max-width: 380px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(233, 30, 140, 0.2);
+            pointer-events: all;
+            position: relative;
+            overflow: hidden;
+            transform: translateX(-120%);
+            opacity: 0;
+            transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+        
+        .notification.show {
+            transform: translateX(0);
+            opacity: 1;
+        }
+        
+        .notification.hide {
+            transform: translateX(-120%);
+            opacity: 0;
+        }
+        
+        .notification::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, rgba(233, 30, 140, 0.8), transparent);
+        }
+        
+        .notification-content {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            position: relative;
+        }
+        
+        .notification-flag {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            flex-shrink: 0;
+            background: linear-gradient(135deg, rgba(233, 30, 140, 0.2), rgba(107, 70, 193, 0.2));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            border: 2px solid rgba(233, 30, 140, 0.4);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+        
+        .notification-text {
+            flex: 1;
+            color: white;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+        
+        .notification-text .action {
+            color: #E91E8C;
+            font-weight: 600;
+        }
+        
+        .notification-text .name {
+            color: #fff;
+            font-weight: 700;
+        }
+        
+        .notification-text .country {
+            color: #ff6b35;
+            font-weight: 500;
+        }
+        
+        .notification-verified {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            margin-top: 8px;
+            color: #10b981;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        
+        .notification-verified svg {
+            width: 14px;
+            height: 14px;
+        }
+        
+        .notification-close {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            color: rgba(255, 255, 255, 0.7);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            transition: all 0.2s;
+            line-height: 1;
+        }
+        
+        .notification-close:hover {
+            background: rgba(233, 30, 140, 0.3);
+            color: white;
+            transform: rotate(90deg);
+        }
     </style>
 </head>
 <body class="bg-black min-h-screen">
@@ -750,6 +880,183 @@
             } finally {
                 submitBtn.disabled = false;
                 submitBtn.textContent = 'تأكيد الحجز 🎯';
+            }
+        });
+    </script>
+
+    <!-- Live Notifications Container -->
+    <div id="notifications-container"></div>
+
+    <script>
+        // Country data with flags and names
+        const countries = [
+            { name: 'فلسطين', flag: '🇵🇸', code: 'PS' },
+            { name: 'لبنان', flag: '🇱🇧', code: 'LB' },
+            { name: 'الأردن', flag: '🇯🇴', code: 'JO' },
+            { name: 'سوريا', flag: '🇸🇾', code: 'SY' },
+            { name: 'قطر', flag: '🇶🇦', code: 'QA' },
+            { name: 'البحرين', flag: '🇧🇭', code: 'BH' },
+            { name: 'المغرب', flag: '🇲🇦', code: 'MA' },
+            { name: 'الجزائر', flag: '🇩🇿', code: 'DZ' },
+            { name: 'عمان', flag: '🇴🇲', code: 'OM' },
+            { name: 'ليبيا', flag: '🇱🇾', code: 'LY' },
+            { name: 'تونس', flag: '🇹🇳', code: 'TN' },
+            { name: 'مصر', flag: '🇪🇬', code: 'EG' },
+            { name: 'السعودية', flag: '🇸🇦', code: 'SA' },
+            { name: 'الإمارات', flag: '🇦🇪', code: 'AE' },
+            { name: 'العراق', flag: '🇮🇶', code: 'IQ' },
+            { name: 'الكويت', flag: '🇰🇼', code: 'KW' }
+        ];
+
+        // Arabic names pool
+        const names = [
+            'محمد أحمد', 'فاطمة علي', 'علي حسن', 'سارة محمد', 'أحمد سعيد',
+            'مريم خالد', 'خالد نادر', 'نور الدين', 'ليلى أحمد', 'يوسف كريم',
+            'زينب علي', 'عمر محمود', 'سلمى حسن', 'طارق ياسين', 'ريم عبدالله',
+            'حسام الدين', 'ندى محمد', 'بسام خليل', 'هبة أحمد', 'وائل عثمان',
+            'لمى سامي', 'سامر فادي', 'رنا علي', 'أيمن كمال', 'هناء زيد',
+            'إياد ناصر', 'دينا طارق', 'عدنان سليم', 'تسنيم أحمد', 'باسم حسن'
+        ];
+
+        // 18 different notification templates with verbs
+        const notificationTemplates = [
+            { verb: 'قام بشراء', object: 'الدورة', action: 'purchased' },
+            { verb: 'انضم إلى', object: 'البرنامج', action: 'joined' },
+            { verb: 'سجّل في', object: 'المحاضرة', action: 'registered' },
+            { verb: 'احجز مقعد في', object: 'الدورة التدريبية', action: 'booked' },
+            { verb: 'بدأ رحلته مع', object: 'FX Global', action: 'started' },
+            { verb: 'حصل على', object: 'عضويتنا المميزة', action: 'got' },
+            { verb: 'أكمل التسجيل في', object: 'الدورة الأساسية', action: 'completed' },
+            { verb: 'اشترك في', object: 'برنامج التداول', action: 'subscribed' },
+            { verb: 'استثمر في', object: 'مستقبله', action: 'invested' },
+            { verb: 'اختار', object: 'FX Global', action: 'chose' },
+            { verb: 'انضم إلى', object: 'مجتمع المتداولين', action: 'joined' },
+            { verb: 'احجز مكانه في', object: 'المحاضرة التفاعلية', action: 'booked' },
+            { verb: 'بدأ تعلم', object: 'التداول معنا', action: 'started' },
+            { verb: 'سجّل في', object: 'الدورة المتقدمة', action: 'registered' },
+            { verb: 'حصل على', object: 'الدعم الكامل', action: 'got' },
+            { verb: 'انضم إلى', object: 'آلاف الناجحين', action: 'joined' },
+            { verb: 'بدأ مسيرته مع', object: 'FX Global', action: 'started' },
+            { verb: 'سجّل لحضور', object: 'المحاضرة المجانية', action: 'registered' }
+        ];
+
+        let notificationInterval = null;
+        let activeNotifications = 0;
+        const maxActiveNotifications = 3;
+
+        function getRandomItem(array) {
+            return array[Math.floor(Math.random() * array.length)];
+        }
+
+        function getRandomDelay() {
+            // Random delay between 15-30 seconds
+            return (Math.random() * 15000) + 15000;
+        }
+
+        function createNotification() {
+            if (activeNotifications >= maxActiveNotifications) {
+                return;
+            }
+
+            const country = getRandomItem(countries);
+            const name = getRandomItem(names);
+            const template = getRandomItem(notificationTemplates);
+
+            const notification = document.createElement('div');
+            notification.className = 'notification';
+            notification.innerHTML = `
+                <button class="notification-close" onclick="closeNotification(this)">×</button>
+                <div class="notification-content">
+                    <div class="notification-flag">${country.flag}</div>
+                    <div class="notification-text">
+                        <div style="margin-bottom: 6px;">
+                            <span class="action">${template.verb}</span>
+                            <span class="name">${name}</span>
+                            <span class="country">من ${country.name}</span>
+                            <span class="action">${template.object}</span>
+                        </div>
+                        <div class="notification-verified">
+                            <svg fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                            </svg>
+                            <span>Verified by FX GLOBALS</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            const container = document.getElementById('notifications-container');
+            container.appendChild(notification);
+
+            // Trigger animation
+            setTimeout(() => {
+                notification.classList.add('show');
+            }, 10);
+
+            activeNotifications++;
+
+            // Auto-hide after 5 seconds
+            setTimeout(() => {
+                closeNotification(notification.querySelector('.notification-close'));
+            }, 5000);
+        }
+
+        function closeNotification(button) {
+            const notification = button.closest('.notification');
+            if (!notification) return;
+
+            notification.classList.remove('show');
+            notification.classList.add('hide');
+
+            setTimeout(() => {
+                notification.remove();
+                activeNotifications--;
+            }, 400);
+        }
+
+        // Make closeNotification globally accessible
+        window.closeNotification = closeNotification;
+
+        function startNotifications() {
+            // Show first notification after initial delay
+            setTimeout(() => {
+                createNotification();
+                
+                // Schedule next notification
+                scheduleNextNotification();
+            }, getRandomDelay());
+        }
+
+        function scheduleNextNotification() {
+            if (notificationInterval) {
+                clearTimeout(notificationInterval);
+            }
+
+            notificationInterval = setTimeout(() => {
+                createNotification();
+                scheduleNextNotification();
+            }, getRandomDelay());
+        }
+
+        // Start notifications when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            // Wait a bit before starting notifications
+            setTimeout(() => {
+                startNotifications();
+            }, 3000);
+        });
+
+        // Pause notifications when page is not visible
+        document.addEventListener('visibilitychange', function() {
+            if (document.hidden) {
+                if (notificationInterval) {
+                    clearTimeout(notificationInterval);
+                    notificationInterval = null;
+                }
+            } else {
+                if (!notificationInterval) {
+                    scheduleNextNotification();
+                }
             }
         });
     </script>

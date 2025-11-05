@@ -25,7 +25,16 @@ SECRET_KEY = 'django-insecure-l#9)xbe0#1xov$yv%^y15^y8#3)suth1#yu6fxllba60339)2!
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', '0.0.0.0', '*','62.84.179.144']
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', '0.0.0.0', '*','62.84.179.144', 'info.fxglobals.co']
+
+# CSRF Trusted Origins
+CSRF_TRUSTED_ORIGINS = [
+    'https://info.fxglobals.co',
+    'http://localhost:3000',
+    'http://127.0.0.1:3000',
+    'http://localhost:8002',
+    'http://127.0.0.1:8002',
+]
 
 
 # Application definition

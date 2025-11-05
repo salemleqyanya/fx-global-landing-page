@@ -207,12 +207,35 @@
                             {% if hero_video.vimeo_id %}
                                 <iframe src="https://player.vimeo.com/video/{{ hero_video.vimeo_id }}?badge=0&autopause=0&autoplay=1&muted=0" class="absolute inset-0 w-full h-full" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" title="Vimeo Video"></iframe>
                             {% elif hero_video.video_url or hero_video.video_file_url %}
-                                <video id="hero-video" class="absolute inset-0 w-full h-full object-cover" autoplay loop playsinline  controls controlsList="nodownload" disablePictureInPicture preload="auto">
+                                <video id="hero-video" class="absolute inset-0 w-full h-full object-cover" autoplay loop playsinline  controls controlsList="nodownload" disablePictureInPicture>
                                     <source src="{{ hero_video.video_url|default:hero_video.video_file_url }}" type="video/mp4">
                                     <source src="{{ hero_video.video_url|default:hero_video.video_file_url }}" type="video/quicktime">
                                     <source src="{{ hero_video.video_url|default:hero_video.video_file_url }}" type="video/webm">
                                     Your browser does not support the video tag.
                                 </video>
+                                <script>
+                                    // Immediate autoplay attempt
+                                    (function() {
+                                        function tryPlay() {
+                                            var v = document.getElementById('hero-video');
+                                            if (v) {
+                                                 video.play();
+                                                v.muted = true;
+                                                var promise = v.play();
+                                                if (promise !== undefined) {
+                                                    promise.then(function() {
+                                                        setTimeout(function() { v.muted = false; }, 500);
+                                                    }).catch(function() {
+                                                        setTimeout(tryPlay, 200);
+                                                    });
+                                                }
+                                            } else {
+                                                setTimeout(tryPlay, 100);
+                                            }
+                                        }
+                                        tryPlay()
+                                    })();
+                                </script>
                             {% endif %}
                         {% else %}
                             <iframe src="https://player.vimeo.com/video/1133539416?badge=0&autopause=0&autoplay=1&muted=0" class="absolute inset-0 w-full h-full" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" title="Vimeo Video"></iframe>
@@ -749,76 +772,64 @@
             menu.classList.toggle('hidden');
         });
 
-        // Video handling - Autoplay hero video with audio, lazy load testimonials, prevent downloads
-        document.addEventListener('DOMContentLoaded', function() {
-            // Hero video - enable autoplay with audio
-            const heroVideo = document.getElementById('hero-video');
-            if (heroVideo) {
-                // Try to play with sound (may be blocked by browser)
-                heroVideo.muted = false;
-                const playPromise = heroVideo.play();
-                
-                if (playPromise !== undefined) {
-                    playPromise.catch(function(error) {
-                        // Autoplay with sound was prevented, try muted autoplay
-                        heroVideo.muted = true;
-                        heroVideo.play().catch(function() {
-                            console.log('Hero video autoplay prevented by browser');
-                        });
-                        
-                        // Unmute on first user interaction
-                        document.addEventListener('click', function unmuteOnInteraction() {
-                            heroVideo.muted = false;
-                            heroVideo.play().catch(function() {
-                                // Ignore if still blocked
-                            });
-                            document.removeEventListener('click', unmuteOnInteraction);
-                        }, { once: true });
-                    });
-                }
-                
-                // Disable right-click and keyboard shortcuts for hero video
-                heroVideo.addEventListener('contextmenu', function(e) {
-                    e.preventDefault();
-                    return false;
-                });
+        // Hero video autoplay - aggressive approach
+        function initHeroVideo() {
+            var video = document.getElementById('hero-video');
+            video.play();
+            if (!video) {
+                setTimeout(initHeroVideo, 100);
+                 video.play();
+                return;
             }
             
-            // Regular videos - prevent downloads and disable context menu
-            const videos = document.querySelectorAll('video:not(#hero-video)');
-            videos.forEach(function(video) {
-                // Enable audio (video is not muted)
-                video.muted = false;
-                
-                // Disable right-click context menu
-                video.addEventListener('contextmenu', function(e) {
-                    e.preventDefault();
-                    return false;
-                });
-                
-                // Disable keyboard shortcuts (Ctrl+S, Ctrl+Shift+I, F12, etc.)
-                video.addEventListener('keydown', function(e) {
-                    // Disable F12 (Developer Tools)
-                    if (e.keyCode === 123) {
-                        e.preventDefault();
-                        return false;
-                    }
-                    // Disable Ctrl+Shift+I (Developer Tools)
-                    if (e.ctrlKey && e.shiftKey && e.keyCode === 73) {
-                        e.preventDefault();
-                        return false;
-                    }
-                    // Disable Ctrl+S (Save Page)
-                    if (e.ctrlKey && e.keyCode === 83) {
-                        e.preventDefault();
-                        return false;
-                    }
-                });
-            });
+            // Ensure video is muted for autoplay compatibility
+            video.muted = false;
             
-            // Videos are already in HTML with preload="none" to prevent auto-loading
-            // They will load when user clicks play, which is optimal for performance
-        });
+            // Function to play video
+            function playVideo() {
+                if (video && (video.paused || video.ended)) {
+                    video.muted = true;
+                    var promise = video.play();
+                    if (promise !== undefined) {
+                        promise.then(function() {
+                            // Video is playing, unmute after delay
+                            setTimeout(function() {
+                                video.muted = false;
+                            }, 500);
+                        }).catch(function(err) {
+                            // Autoplay blocked, will retry
+                        });
+                    }
+                }
+            }
+            
+            // Try to play immediately
+            playVideo();
+            
+            // Try multiple times
+            
+            // Try when video events fire
+           
+            // Unmute when video starts playing
+         
+            
+            // Keep trying if video is paused
+         
+            
+            // Disable right-click
+            video.addEventListener('contextmenu', function(e) {
+                e.preventDefault();
+            });
+        }
+        
+        // Initialize when DOM is ready
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initHeroVideo);
+        } else {
+            initHeroVideo();
+        }
+        
+        // Also try immediately
 
         function getCookie(name) {
             let cookieValue = null;
@@ -865,7 +876,6 @@
         }
 
         document.getElementById('registration-form').addEventListener('submit', async function(e) {
-            e.preventDefault();
             const form = e.target;
             const submitBtn = form.querySelector('button[type="submit"]');
             const errorDiv = document.getElementById('error-message');
@@ -980,26 +990,26 @@
             'إياد ناصر', 'دينا طارق', 'عدنان سليم', 'تسنيم أحمد', 'باسم حسن'
         ];
 
-        // 18 different notification templates with verbs
+        // 18 different notification templates with verbs (simple format: verb only)
         const notificationTemplates = [
-            { verb: 'قام بشراء', object: 'الدورة', action: 'purchased' },
-            { verb: 'انضم إلى', object: 'البرنامج', action: 'joined' },
-            { verb: 'سجّل في', object: 'المحاضرة', action: 'registered' },
-            { verb: 'احجز مقعد في', object: 'الدورة التدريبية', action: 'booked' },
-            { verb: 'بدأ رحلته مع', object: 'FX Global', action: 'started' },
-            { verb: 'حصل على', object: 'عضويتنا المميزة', action: 'got' },
-            { verb: 'أكمل التسجيل في', object: 'الدورة الأساسية', action: 'completed' },
-            { verb: 'اشترك في', object: 'برنامج التداول', action: 'subscribed' },
-            { verb: 'استثمر في', object: 'مستقبله', action: 'invested' },
-            { verb: 'اختار', object: 'FX Global', action: 'chose' },
-            { verb: 'انضم إلى', object: 'مجتمع المتداولين', action: 'joined' },
-            { verb: 'احجز مكانه في', object: 'المحاضرة التفاعلية', action: 'booked' },
-            { verb: 'بدأ تعلم', object: 'التداول معنا', action: 'started' },
-            { verb: 'سجّل في', object: 'الدورة المتقدمة', action: 'registered' },
-            { verb: 'حصل على', object: 'الدعم الكامل', action: 'got' },
-            { verb: 'انضم إلى', object: 'آلاف الناجحين', action: 'joined' },
-            { verb: 'بدأ مسيرته مع', object: 'FX Global', action: 'started' },
-            { verb: 'سجّل لحضور', object: 'المحاضرة المجانية', action: 'registered' }
+            { verb: 'سجّل', action: 'registered' },
+            { verb: 'انضم', action: 'joined' },
+            { verb: 'احجز', action: 'booked' },
+            { verb: 'اشترك', action: 'subscribed' },
+            { verb: 'بدأ', action: 'started' },
+            { verb: 'حصل', action: 'got' },
+            { verb: 'أكمل', action: 'completed' },
+            { verb: 'اختار', action: 'chose' },
+            { verb: 'استثمر', action: 'invested' },
+            { verb: 'سجّل', action: 'registered' },
+            { verb: 'انضم', action: 'joined' },
+            { verb: 'احجز', action: 'booked' },
+            { verb: 'بدأ', action: 'started' },
+            { verb: 'سجّل', action: 'registered' },
+            { verb: 'حصل', action: 'got' },
+            { verb: 'انضم', action: 'joined' },
+            { verb: 'بدأ', action: 'started' },
+            { verb: 'سجّل', action: 'registered' }
         ];
 
         let notificationInterval = null;
@@ -1041,7 +1051,6 @@
                             <span class="action">${template.verb}</span>
                             <span class="name">${name}</span>
                             <span class="country">من ${country.name}</span>
-                            <span class="action">${template.object}</span>
                         </div>
                         <div class="notification-verified">
                             <svg fill="currentColor" viewBox="0 0 20 20">

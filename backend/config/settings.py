@@ -144,7 +144,6 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
 # WhiteNoise settings
 WHITENOISE_USE_FINDERS = False  # Don't use finders in production (files should be collected)
 WHITENOISE_AUTOREFRESH = False  # Disable auto-refresh in production
-WHITENOISE_ROOT = STATIC_ROOT  # Explicitly set the root directory
 
 MEDIA_URL = 'media/'
 MEDIA_ROOT = BASE_DIR / 'media'

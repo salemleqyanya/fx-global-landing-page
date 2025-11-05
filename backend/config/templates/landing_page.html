@@ -39,6 +39,7 @@
             background: linear-gradient(135deg, rgba(0, 0, 0, 0.95) 0%, rgba(20, 20, 30, 0.95) 100%);
             border: 1px solid rgba(233, 30, 140, 0.3);
             backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
             border-radius: 16px;
             padding: 16px 20px;
             margin-bottom: 12px;
@@ -50,17 +51,18 @@
             overflow: hidden;
             transform: translateX(-120%);
             opacity: 0;
-            transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            transition: transform 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55), opacity 0.5s ease;
+            will-change: transform, opacity;
         }
         
         .notification.show {
-            transform: translateX(0);
-            opacity: 1;
+            transform: translateX(0) !important;
+            opacity: 1 !important;
         }
         
         .notification.hide {
-            transform: translateX(-120%);
-            opacity: 0;
+            transform: translateX(-120%) !important;
+            opacity: 0 !important;
         }
         
         .notification::before {
@@ -958,6 +960,12 @@
                 return;
             }
 
+            const container = document.getElementById('notifications-container');
+            if (!container) {
+                console.error('Notifications container not found!');
+                return;
+            }
+
             const country = getRandomItem(countries);
             const name = getRandomItem(names);
             const template = getRandomItem(notificationTemplates);
@@ -965,7 +973,7 @@
             const notification = document.createElement('div');
             notification.className = 'notification';
             notification.innerHTML = `
-                <button class="notification-close" onclick="closeNotification(this)">×</button>
+                <button class="notification-close" onclick="window.closeNotification(this)">×</button>
                 <div class="notification-content">
                     <div class="notification-flag">${country.flag}</div>
                     <div class="notification-text">
@@ -985,7 +993,6 @@
                 </div>
             `;
 
-            const container = document.getElementById('notifications-container');
             container.appendChild(notification);
 
             // Trigger animation
@@ -997,7 +1004,10 @@
 
             // Auto-hide after 5 seconds
             setTimeout(() => {
-                closeNotification(notification.querySelector('.notification-close'));
+                const closeBtn = notification.querySelector('.notification-close');
+                if (closeBtn) {
+                    window.closeNotification(closeBtn);
+                }
             }, 5000);
         }
 
@@ -1018,14 +1028,21 @@
         window.closeNotification = closeNotification;
 
         function startNotifications() {
-            // Show first notification after initial delay
+            // Show first notification immediately for testing (changed to 1 second)
             setTimeout(() => {
+                console.log('Creating first notification...');
                 createNotification();
                 
                 // Schedule next notification
                 scheduleNextNotification();
-            }, getRandomDelay());
+            }, 1000);
         }
+        
+        // Make createNotification available for testing
+        window.testNotification = function() {
+            console.log('Manual test: Creating notification...');
+            createNotification();
+        };
 
         function scheduleNextNotification() {
             if (notificationInterval) {
@@ -1039,12 +1056,38 @@
         }
 
         // Start notifications when page loads
-        document.addEventListener('DOMContentLoaded', function() {
-            // Wait a bit before starting notifications
+        function initNotifications() {
+            const container = document.getElementById('notifications-container');
+            if (!container) {
+                console.error('Notifications container not found!');
+                return;
+            }
+            console.log('Notifications container found, starting notifications...');
+            
+            // Start the notification cycle
+            startNotifications();
+        }
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', function() {
+                setTimeout(() => {
+                    initNotifications();
+                }, 1000);
+            });
+        } else {
+            // DOM already loaded
             setTimeout(() => {
-                startNotifications();
-            }, 3000);
-        });
+                initNotifications();
+            }, 1000);
+        }
+        
+        // Also try after a short delay as backup
+        setTimeout(() => {
+            if (document.getElementById('notifications-container') && activeNotifications === 0) {
+                console.log('Backup: Starting notifications...');
+                initNotifications();
+            }
+        }, 2000);
 
         // Pause notifications when page is not visible
         document.addEventListener('visibilitychange', function() {

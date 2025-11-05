@@ -207,25 +207,24 @@
                             {% if hero_video.vimeo_id %}
                                 <iframe src="https://player.vimeo.com/video/{{ hero_video.vimeo_id }}?badge=0&autopause=0&autoplay=1&muted=0" class="absolute inset-0 w-full h-full" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" title="Vimeo Video"></iframe>
                             {% elif hero_video.video_url or hero_video.video_file_url %}
-                                <video id="hero-video" class="absolute inset-0 w-full h-full object-cover" autoplay loop playsinline  controls controlsList="nodownload" disablePictureInPicture>
+                                <video id="hero-video" class="absolute inset-0 w-full h-full object-cover" autoplay playsinline loop  controls controlsList="nodownload" disablePictureInPicture preload="auto">
                                     <source src="{{ hero_video.video_url|default:hero_video.video_file_url }}" type="video/mp4">
                                     <source src="{{ hero_video.video_url|default:hero_video.video_file_url }}" type="video/quicktime">
                                     <source src="{{ hero_video.video_url|default:hero_video.video_file_url }}" type="video/webm">
                                     Your browser does not support the video tag.
                                 </video>
                                 <script>
-                                    // Immediate autoplay attempt
+                                    // Immediate autoplay attempt - keep muted for autoplay
                                     (function() {
                                         function tryPlay() {
                                             var v = document.getElementById('hero-video');
                                             if (v) {
-                                                 video.play();
+                                                // Keep muted for autoplay compatibility - don't unmute automatically
                                                 v.muted = true;
                                                 var promise = v.play();
                                                 if (promise !== undefined) {
-                                                    promise.then(function() {
-                                                        setTimeout(function() { v.muted = false; }, 500);
-                                                    }).catch(function() {
+                                                    promise.catch(function() {
+                                                        // Retry if blocked
                                                         setTimeout(tryPlay, 200);
                                                     });
                                                 }
@@ -233,7 +232,7 @@
                                                 setTimeout(tryPlay, 100);
                                             }
                                         }
-                                        tryPlay()
+                                        tryPlay();
                                     })();
                                 </script>
                             {% endif %}
@@ -772,49 +771,94 @@
             menu.classList.toggle('hidden');
         });
 
-        // Hero video autoplay - aggressive approach
+        // Hero video autoplay - continuous loop without pausing
         function initHeroVideo() {
             var video = document.getElementById('hero-video');
-            video.play();
             if (!video) {
                 setTimeout(initHeroVideo, 100);
-                 video.play();
                 return;
             }
             
-            // Ensure video is muted for autoplay compatibility
-            video.muted = false;
+            // Ensure loop is enabled and video is muted for autoplay
+            video.loop = true;
+            video.muted = true;
             
-            // Function to play video
+            var userInteracted = false;
+            var isResuming = false;
+            
+            // Function to play video (keep muted)
             function playVideo() {
                 if (video && (video.paused || video.ended)) {
+                    // Keep muted for autoplay compatibility
                     video.muted = true;
                     var promise = video.play();
                     if (promise !== undefined) {
-                        promise.then(function() {
-                            // Video is playing, unmute after delay
-                            setTimeout(function() {
-                                video.muted = false;
-                            }, 500);
-                        }).catch(function(err) {
+                        promise.catch(function(err) {
                             // Autoplay blocked, will retry
                         });
                     }
                 }
             }
             
+            // Unmute only after user interaction
+            function unmuteVideo() {
+                if (userInteracted && video) {
+                    video.muted = false;
+                }
+            }
+            
             // Try to play immediately
             playVideo();
             
-            // Try multiple times
-            
             // Try when video events fire
-           
-            // Unmute when video starts playing
-         
+            video.addEventListener('canplay', playVideo, { once: false });
+            video.addEventListener('loadeddata', playVideo, { once: false });
+            video.addEventListener('loadedmetadata', playVideo, { once: false });
             
-            // Keep trying if video is paused
-         
+            // Auto-resume if video pauses - but prevent infinite loop
+            video.addEventListener('pause', function() {
+                if (!document.hidden && !isResuming) {
+                    isResuming = true;
+                    setTimeout(function() {
+                        playVideo();
+                        isResuming = false;
+                    }, 100);
+                }
+            });
+            
+            // Ensure video restarts when it ends (loop)
+            video.addEventListener('ended', function() {
+                video.currentTime = 0;
+                playVideo();
+            });
+            
+            // Periodic check to ensure video is playing (every 1000ms to avoid too frequent checks)
+            setInterval(function() {
+                if (video && !document.hidden && !isResuming && (video.paused || video.ended)) {
+                    playVideo();
+                }
+            }, 1000);
+            
+            // Unmute on user interaction (click, touch, scroll, etc.)
+            function onUserInteraction() {
+                if (!userInteracted) {
+                    userInteracted = true;
+                    unmuteVideo();
+                }
+            }
+            
+            document.addEventListener('click', onUserInteraction, { once: true });
+            document.addEventListener('touchstart', onUserInteraction, { once: true });
+            document.addEventListener('keydown', onUserInteraction, { once: true });
+            document.addEventListener('scroll', onUserInteraction, { once: true });
+            
+            // Also allow unmuting via video controls
+            video.addEventListener('click', function() {
+                if (!userInteracted) {
+                    userInteracted = true;
+                    unmuteVideo();
+                }
+            });
             
             // Disable right-click
             video.addEventListener('contextmenu', function(e) {
@@ -828,8 +872,6 @@
         } else {
             initHeroVideo();
         }
-        
-        // Also try immediately
 
         function getCookie(name) {
             let cookieValue = null;
@@ -876,6 +918,7 @@
         }
 
         document.getElementById('registration-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
             const form = e.target;
             const submitBtn = form.querySelector('button[type="submit"]');
             const errorDiv = document.getElementById('error-message');

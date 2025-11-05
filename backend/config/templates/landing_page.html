@@ -26,6 +26,44 @@
             display: none;
         }
         
+        /* Ensure videos are responsive on all devices */
+        video {
+            max-width: 100%;
+            width: 100%;
+        }
+        
+        iframe[src*="vimeo"], iframe[src*="youtube"] {
+            max-width: 100%;
+            width: 100%;
+        }
+        
+        /* Testimonial video container - supports dynamic aspect ratio */
+        .testimonial-video-container {
+            transition: aspect-ratio 0.3s ease;
+        }
+        
+        /* Ensure video fills container properly */
+        .testimonial-video {
+            object-fit: contain;
+            background: #000;
+        }
+        
+        /* Ensure video controls are touch-friendly on mobile */
+        @media (max-width: 768px) {
+            video::-webkit-media-controls-panel {
+                display: flex !important;
+                opacity: 1 !important;
+            }
+            
+            /* Larger touch targets for video controls on mobile */
+            video::-webkit-media-controls-play-button,
+            video::-webkit-media-controls-volume-slider,
+            video::-webkit-media-controls-timeline {
+                min-height: 44px;
+                min-width: 44px;
+            }
+        }
+        
         /* Live Notifications Styles */
         #notifications-container {
             position: fixed;
@@ -234,25 +272,25 @@
     </nav>
 
     <!-- Hero Section -->
-    <section id="hero" class="relative min-h-screen flex items-center justify-center overflow-hidden bg-black pt-20">
+    <section id="hero" class="relative min-h-screen flex items-center justify-center overflow-hidden bg-black pt-16 md:pt-20">
         <div class="absolute inset-0">
-            <div class="absolute top-1/4 right-1/4 w-96 h-96 bg-[#E91E8C]/20 rounded-full blur-3xl animate-pulse"></div>
-            <div class="absolute bottom-1/4 left-1/4 w-96 h-96 bg-[#6B46C1]/20 rounded-full blur-3xl animate-pulse" style="animation-delay: 1s;"></div>
+            <div class="absolute top-1/4 right-1/4 w-48 h-48 md:w-64 md:h-64 lg:w-96 lg:h-96 bg-[#E91E8C]/20 rounded-full blur-3xl animate-pulse"></div>
+            <div class="absolute bottom-1/4 left-1/4 w-48 h-48 md:w-64 md:h-64 lg:w-96 lg:h-96 bg-[#6B46C1]/20 rounded-full blur-3xl animate-pulse" style="animation-delay: 1s;"></div>
         </div>
-        <div class="container mx-auto px-4 py-20 relative z-10">
+        <div class="container mx-auto px-4 py-12 md:py-16 lg:py-20 relative z-10">
             <div class="max-w-5xl mx-auto text-center">
-                <div class="mb-8">
-                    <h1 class="text-white mb-6 leading-tight text-[34px] font-bold underline">أكيد سمعت عن التداول... بس ولا مرة حدا علمك كيف تبدأ صح 💰</h1>
-                    <div class="w-20 h-1 bg-gradient-to-r from-transparent via-[#E91E8C] to-transparent mx-auto mb-6"></div>
-                    <p class="text-white/90 text-xl md:text-2xl leading-relaxed font-bold">إحنا بـ FX Global رح نعلّمك من الصفر كيف تدخل السوق،<br>كيف تحلل بثقة، وكيف تحوّل مهارتك لمصدر دخل حقيقي!</p>
+                <div class="mb-6 md:mb-8">
+                    <h1 class="text-white mb-4 md:mb-6 leading-tight text-2xl sm:text-3xl md:text-[34px] font-bold underline px-2">أكيد سمعت عن التداول... بس ولا مرة حدا علمك كيف تبدأ صح 💰</h1>
+                    <div class="w-16 md:w-20 h-1 bg-gradient-to-r from-transparent via-[#E91E8C] to-transparent mx-auto mb-4 md:mb-6"></div>
+                    <p class="text-white/90 text-base sm:text-lg md:text-xl lg:text-2xl leading-relaxed font-bold px-2">إحنا بـ FX Global رح نعلّمك من الصفر كيف تدخل السوق،<br class="hidden md:block">كيف تحلل بثقة، وكيف تحوّل مهارتك لمصدر دخل حقيقي!</p>
                 </div>
-                <div class="mb-8 max-w-3xl mx-auto">
-                    <div class="relative aspect-video bg-black/30 backdrop-blur-sm rounded-2xl overflow-hidden border-2 border-[#E91E8C]/50 shadow-2xl">
+                <div class="mb-6 md:mb-8 max-w-3xl mx-auto px-2">
+                    <div class="relative aspect-video bg-black/30 backdrop-blur-sm rounded-xl md:rounded-2xl overflow-hidden border-2 border-[#E91E8C]/50 shadow-2xl">
                         {% if hero_video %}
                             {% if hero_video.vimeo_id %}
-                                <iframe src="https://player.vimeo.com/video/{{ hero_video.vimeo_id }}?badge=0&autopause=0&autoplay=1&muted=0" class="absolute inset-0 w-full h-full" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" title="Vimeo Video"></iframe>
+                                <iframe src="https://player.vimeo.com/video/{{ hero_video.vimeo_id }}?badge=0&autopause=0&autoplay=1&muted=0" class="absolute inset-0 w-full h-full rounded-xl md:rounded-2xl" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" title="Vimeo Video"></iframe>
                             {% elif hero_video.video_url or hero_video.video_file_url %}
-                                <video id="hero-video" class="absolute inset-0 w-full h-full object-cover" autoplay playsinline loop  controls controlsList="nodownload" disablePictureInPicture preload="auto">
+                                <video id="hero-video" class="absolute inset-0 w-full h-full object-cover rounded-xl md:rounded-2xl" autoplay playsinline loop controls controlsList="nodownload" disablePictureInPicture preload="auto">
                                     <source src="{{ hero_video.video_url|default:hero_video.video_file_url }}" type="video/mp4">
                                     <source src="{{ hero_video.video_url|default:hero_video.video_file_url }}" type="video/quicktime">
                                     <source src="{{ hero_video.video_url|default:hero_video.video_file_url }}" type="video/webm">
@@ -282,27 +320,27 @@
                                 </script>
                             {% endif %}
                         {% else %}
-                            <iframe src="https://player.vimeo.com/video/1133539416?badge=0&autopause=0&autoplay=1&muted=0" class="absolute inset-0 w-full h-full" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" title="Vimeo Video"></iframe>
+                            <iframe src="https://player.vimeo.com/video/1133539416?badge=0&autopause=0&autoplay=1&muted=0" class="absolute inset-0 w-full h-full rounded-xl md:rounded-2xl" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" title="Vimeo Video"></iframe>
                         {% endif %}
                     </div>
                 </div>
-                <div class="mb-8">
-                    <button onclick="showRegistrationDialog()" class="bg-gradient-to-r from-[#E91E8C] to-[#6B46C1] hover:from-[#6B46C1] hover:to-[#E91E8C] text-white px-16 py-10 text-3xl font-bold shadow-2xl rounded-xl">احجز مقعدك في اول محاضرة تفاعلية لتعليم التداول</button>
+                <div class="mb-6 md:mb-8 px-4">
+                    <button onclick="showRegistrationDialog()" class="bg-gradient-to-r from-[#E91E8C] to-[#6B46C1] hover:from-[#6B46C1] hover:to-[#E91E8C] text-white px-6 py-4 md:px-12 md:py-6 lg:px-16 lg:py-10 text-base sm:text-lg md:text-xl lg:text-2xl xl:text-3xl font-bold shadow-2xl rounded-xl w-full md:w-auto">احجز مقعدك في اول محاضرة تفاعلية لتعليم التداول</button>
                 </div>
-                <div class="flex flex-col md:flex-row justify-center items-center gap-8 text-white/90">
-                    <div class="flex items-center gap-3">
-                        <div class="w-10 h-10 rounded-full bg-white/10 backdrop-blur-sm flex items-center justify-center">👥</div>
-                        <span class="text-[20px]">✅ أكثر من 3000 متداول فلسطيني</span>
+                <div class="flex flex-col md:flex-row justify-center items-center gap-4 md:gap-6 lg:gap-8 text-white/90 px-4">
+                    <div class="flex items-center gap-2 md:gap-3">
+                        <div class="w-8 h-8 md:w-10 md:h-10 rounded-full bg-white/10 backdrop-blur-sm flex items-center justify-center text-sm md:text-base">👥</div>
+                        <span class="text-sm sm:text-base md:text-lg lg:text-[20px]">✅ أكثر من 3000 متداول فلسطيني</span>
                     </div>
                     <div class="hidden md:block w-[2px] h-8 bg-gradient-to-b from-transparent via-[#E91E8C] to-transparent"></div>
-                    <div class="flex items-center gap-3">
-                        <div class="w-10 h-10 rounded-full bg-white/10 backdrop-blur-sm flex items-center justify-center">🔥</div>
-                        <span class="text-[20px]">✅ بث مباشر يومي الساعة 3:00</span>
+                    <div class="flex items-center gap-2 md:gap-3">
+                        <div class="w-8 h-8 md:w-10 md:h-10 rounded-full bg-white/10 backdrop-blur-sm flex items-center justify-center text-sm md:text-base">🔥</div>
+                        <span class="text-sm sm:text-base md:text-lg lg:text-[20px]">✅ بث مباشر يومي الساعة 3:00</span>
                     </div>
                     <div class="hidden md:block w-[2px] h-8 bg-gradient-to-b from-transparent via-[#E91E8C] to-transparent"></div>
-                    <div class="flex items-center gap-3">
-                        <div class="w-10 h-10 rounded-full bg-white/10 backdrop-blur-sm flex items-center justify-center">💬</div>
-                        <span class="text-[20px]">✅ دعم فني 24/7</span>
+                    <div class="flex items-center gap-2 md:gap-3">
+                        <div class="w-8 h-8 md:w-10 md:h-10 rounded-full bg-white/10 backdrop-blur-sm flex items-center justify-center text-sm md:text-base">💬</div>
+                        <span class="text-sm sm:text-base md:text-lg lg:text-[20px]">✅ دعم فني 24/7</span>
                     </div>
                 </div>
             </div>
@@ -451,7 +489,7 @@
     </section>
 
     <!-- Social Proof Section -->
-    <section id="testimonials" class="relative py-16 md:py-24 lg:py-32 bg-black overflow-hidden">
+    <section id="testimonials" class="relative py-12 md:py-16 lg:py-24 xl:py-32 bg-black overflow-hidden">
         <!-- Animated Background -->
         <div class="absolute inset-0 opacity-30">
             <div class="absolute top-0 right-0 w-[400px] h-[400px] md:w-[600px] md:h-[600px] lg:w-[800px] lg:h-[800px] bg-[#E91E8C]/20 rounded-full blur-[150px] animate-pulse"></div>
@@ -461,80 +499,80 @@
         
         <div class="container mx-auto px-4 relative z-10">
             <!-- Header Section -->
-            <div class="text-center mb-8 md:mb-12 lg:mb-16">
-                <div class="inline-flex items-center gap-2 md:gap-3 bg-gradient-to-r from-[#E91E8C]/20 to-[#6B46C1]/20 backdrop-blur-md border border-[#E91E8C]/40 rounded-full px-4 py-2 md:px-6 md:py-3 lg:px-8 lg:py-4 mb-4 md:mb-6 lg:mb-8 shadow-lg shadow-[#E91E8C]/20">
-                    <span class="text-[#E91E8C] text-lg md:text-xl lg:text-2xl animate-bounce">⭐</span>
-                    <span class="text-white/95 text-sm md:text-lg lg:text-xl xl:text-2xl font-semibold">الناس ما بتصدق الحكي… بتصدق النتائج</span>
+            <div class="text-center mb-6 md:mb-8 lg:mb-12 xl:mb-16">
+                <div class="inline-flex items-center gap-2 md:gap-3 bg-gradient-to-r from-[#E91E8C]/20 to-[#6B46C1]/20 backdrop-blur-md border border-[#E91E8C]/40 rounded-full px-3 py-1.5 md:px-4 md:py-2 lg:px-6 lg:py-3 xl:px-8 xl:py-4 mb-3 md:mb-4 lg:mb-6 xl:mb-8 shadow-lg shadow-[#E91E8C]/20">
+                    <span class="text-[#E91E8C] text-base md:text-lg lg:text-xl xl:text-2xl animate-bounce">⭐</span>
+                    <span class="text-white/95 text-xs sm:text-sm md:text-base lg:text-lg xl:text-xl 2xl:text-2xl font-semibold">الناس ما بتصدق الحكي… بتصدق النتائج</span>
                 </div>
-                <h2 class="text-white text-5xl md:text-6xl lg:text-7xl xl:text-8xl mb-4 md:mb-5 lg:mb-6 font-black">
+                <h2 class="text-white text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl mb-3 md:mb-4 lg:mb-5 xl:mb-6 font-black">
                     <span class="text-transparent bg-clip-text bg-gradient-to-r from-[#E91E8C] via-[#6B46C1] to-[#E91E8C] animate-gradient bg-[length:200%_auto]">+3000</span>
                 </h2>
-                <p class="text-white/80 text-lg md:text-xl lg:text-2xl xl:text-3xl font-medium px-4">متداول فلسطيني بدأوا معنا</p>
+                <p class="text-white/80 text-base sm:text-lg md:text-xl lg:text-2xl xl:text-3xl font-medium px-4">متداول فلسطيني بدأوا معنا</p>
             </div>
 
             <!-- Video Testimonials Section -->
             <div class="max-w-7xl mx-auto">
-                <div class="text-center mb-8 md:mb-12 lg:mb-16 px-2">
-                    <h3 class="text-white text-2xl md:text-3xl lg:text-4xl xl:text-5xl mb-3 md:mb-4 font-bold leading-tight">
+                <div class="text-center mb-6 md:mb-8 lg:mb-12 xl:mb-16 px-2">
+                    <h3 class="text-white text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl mb-2 md:mb-3 lg:mb-4 font-bold leading-tight">
                         <span class="block md:inline">مقاطع حقيقية من طلاب جربوا FX Global</span><br class="hidden md:block">
                         <span class="text-transparent bg-clip-text bg-gradient-to-r from-[#E91E8C] to-[#6B46C1]">وحكوا تجربتهم بصراحة</span>
                     </h3>
-                    <div class="w-16 md:w-20 lg:w-24 h-1 bg-gradient-to-r from-[#E91E8C] to-[#6B46C1] mx-auto rounded-full mt-3 md:mt-4"></div>
+                    <div class="w-12 md:w-16 lg:w-20 xl:w-24 h-1 bg-gradient-to-r from-[#E91E8C] to-[#6B46C1] mx-auto rounded-full mt-2 md:mt-3 lg:mt-4"></div>
                 </div>
 
                 {% if testimonials_videos %}
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 lg:gap-8 xl:gap-10">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4 lg:gap-6 xl:gap-8 2xl:gap-10">
                     {% for video in testimonials_videos %}
                     <div class="group relative {% if forloop.counter == 2 %}md:-mt-4 lg:-mt-8 md:mb-4 lg:mb-8{% endif %}">
                         <!-- Card Container -->
-                        <div class="relative bg-gradient-to-br {% if forloop.counter == 2 %}from-[#E91E8C]/30 via-[#6B46C1]/30 to-[#E91E8C]/30 border-2 border-[#E91E8C]/60 shadow-2xl shadow-[#E91E8C]/30{% else %}from-white/10 via-white/5 to-white/[0.02] border border-white/20{% endif %} backdrop-blur-xl rounded-2xl md:rounded-3xl p-4 md:p-5 lg:p-6 overflow-hidden transition-all duration-500 md:hover:scale-105 hover:shadow-2xl {% if forloop.counter == 2 %}hover:shadow-[#E91E8C]/40{% else %}hover:shadow-white/10{% endif %}">
+                        <div class="relative bg-gradient-to-br {% if forloop.counter == 2 %}from-[#E91E8C]/30 via-[#6B46C1]/30 to-[#E91E8C]/30 border-2 border-[#E91E8C]/60 shadow-2xl shadow-[#E91E8C]/30{% else %}from-white/10 via-white/5 to-white/[0.02] border border-white/20{% endif %} backdrop-blur-xl rounded-xl md:rounded-2xl lg:rounded-3xl p-3 md:p-4 lg:p-5 xl:p-6 overflow-hidden transition-all duration-500 md:hover:scale-105 hover:shadow-2xl {% if forloop.counter == 2 %}hover:shadow-[#E91E8C]/40{% else %}hover:shadow-white/10{% endif %}">
                             
                             <!-- Glowing Border Effect for Winner -->
                             {% if forloop.counter == 2 %}
-                            <div class="absolute inset-0 rounded-2xl md:rounded-3xl bg-gradient-to-r from-[#E91E8C]/50 via-[#6B46C1]/50 to-[#E91E8C]/50 opacity-0 group-hover:opacity-100 blur-xl transition-opacity duration-500 -z-10"></div>
+                            <div class="absolute inset-0 rounded-xl md:rounded-2xl lg:rounded-3xl bg-gradient-to-r from-[#E91E8C]/50 via-[#6B46C1]/50 to-[#E91E8C]/50 opacity-0 group-hover:opacity-100 blur-xl transition-opacity duration-500 -z-10"></div>
                             {% endif %}
 
                             <!-- Badge Section -->
-                            <div class="absolute -top-4 md:-top-5 lg:-top-6 {% if forloop.first %}left-4 md:left-6{% elif forloop.last %}left-4 md:left-6{% else %}left-1/2 transform -translate-x-1/2{% endif %} z-30 flex flex-col items-center">
+                            <div class="absolute -top-2 md:-top-3 lg:-top-4 xl:-top-5 {% if forloop.first %}left-2 md:left-3 lg:left-4 xl:left-6{% elif forloop.last %}left-2 md:left-3 lg:left-4 xl:left-6{% else %}left-1/2 transform -translate-x-1/2{% endif %} z-30 flex flex-col items-center">
                                 {% if forloop.counter == 2 %}
                                 <!-- First Place - Crown Badge -->
                                 <div class="relative">
-                                    <div class="w-14 h-14 md:w-16 md:h-16 lg:w-20 lg:h-20 bg-gradient-to-br from-yellow-400 via-yellow-500 to-yellow-600 rounded-full flex items-center justify-center shadow-2xl shadow-yellow-500/50 transform rotate-12 group-hover:rotate-0 transition-transform duration-500">
-                                        <svg class="w-6 h-6 md:w-8 md:h-8 lg:w-10 lg:h-10 text-white drop-shadow-lg" fill="currentColor" viewBox="0 0 20 20">
+                                    <div class="w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 lg:w-18 lg:h-18 xl:w-20 xl:h-20 bg-gradient-to-br from-yellow-400 via-yellow-500 to-yellow-600 rounded-full flex items-center justify-center shadow-2xl shadow-yellow-500/50 transform rotate-12 group-hover:rotate-0 transition-transform duration-500">
+                                        <svg class="w-5 h-5 sm:w-6 sm:h-6 md:w-7 md:h-7 lg:w-9 lg:h-9 xl:w-10 xl:h-10 text-white drop-shadow-lg" fill="currentColor" viewBox="0 0 20 20">
                                             <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
                                         </svg>
                                     </div>
-                                    <div class="absolute -bottom-1 md:-bottom-2 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-[#E91E8C] to-[#6B46C1] px-2 py-0.5 md:px-3 md:py-1 lg:px-4 lg:py-1 rounded-full shadow-lg">
-                                        <span class="text-white text-[10px] md:text-xs font-bold whitespace-nowrap">{{ video.badge_label|default:"وحش الشهر" }}</span>
+                                    <div class="absolute -bottom-0.5 md:-bottom-1 lg:-bottom-2 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-[#E91E8C] to-[#6B46C1] px-1.5 py-0.5 md:px-2 md:py-0.5 lg:px-3 lg:py-1 xl:px-4 xl:py-1 rounded-full shadow-lg">
+                                        <span class="text-white text-[9px] sm:text-[10px] md:text-xs font-bold whitespace-nowrap">{{ video.badge_label|default:"وحش الشهر" }}</span>
                                     </div>
-                                    <div class="absolute -top-1 md:-top-2 -right-1 md:-right-2 text-xl md:text-2xl lg:text-3xl animate-pulse">🔥</div>
+                                    <div class="absolute -top-0.5 md:-top-1 lg:-top-2 -right-0.5 md:-right-1 lg:-right-2 text-base sm:text-lg md:text-xl lg:text-2xl xl:text-3xl animate-pulse">🔥</div>
                                 </div>
                                 {% elif forloop.counter == 1 %}
                                 <!-- Second Place -->
                                 <div class="relative">
-                                    <div class="w-12 h-12 md:w-14 md:h-14 lg:w-18 lg:h-18 bg-gradient-to-br from-blue-400 via-blue-500 to-blue-600 rounded-full flex items-center justify-center shadow-xl shadow-blue-500/50 border-2 md:border-4 border-blue-300/50">
-                                        <span class="text-white text-xl md:text-2xl lg:text-3xl font-black">2</span>
+                                    <div class="w-9 h-9 sm:w-10 sm:h-10 md:w-12 md:h-12 lg:w-14 lg:h-14 xl:w-18 xl:h-18 bg-gradient-to-br from-blue-400 via-blue-500 to-blue-600 rounded-full flex items-center justify-center shadow-xl shadow-blue-500/50 border-2 md:border-3 lg:border-4 border-blue-300/50">
+                                        <span class="text-white text-lg sm:text-xl md:text-2xl lg:text-2xl xl:text-3xl font-black">2</span>
                                     </div>
-                                    <div class="absolute -bottom-1 md:-bottom-2 left-1/2 transform -translate-x-1/2 bg-blue-500/90 px-2 py-0.5 md:px-3 md:py-1 rounded-full backdrop-blur-sm">
-                                        <span class="text-white text-[10px] md:text-xs font-semibold whitespace-nowrap">{{ video.badge_label|default:"طبيب ناجح" }}</span>
+                                    <div class="absolute -bottom-0.5 md:-bottom-1 lg:-bottom-2 left-1/2 transform -translate-x-1/2 bg-blue-500/90 px-1.5 py-0.5 md:px-2 md:py-0.5 lg:px-3 lg:py-1 rounded-full backdrop-blur-sm">
+                                        <span class="text-white text-[9px] sm:text-[10px] md:text-xs font-semibold whitespace-nowrap">{{ video.badge_label|default:"طبيب ناجح" }}</span>
                                     </div>
                                 </div>
                                 {% else %}
                                 <!-- Third Place -->
                                 <div class="relative">
-                                    <div class="w-12 h-12 md:w-14 md:h-14 lg:w-18 lg:h-18 bg-gradient-to-br from-orange-400 via-orange-500 to-orange-600 rounded-full flex items-center justify-center shadow-xl shadow-orange-500/50 border-2 md:border-4 border-orange-300/50">
-                                        <span class="text-white text-xl md:text-2xl lg:text-3xl font-black">3</span>
+                                    <div class="w-9 h-9 sm:w-10 sm:h-10 md:w-12 md:h-12 lg:w-14 lg:h-14 xl:w-18 xl:h-18 bg-gradient-to-br from-orange-400 via-orange-500 to-orange-600 rounded-full flex items-center justify-center shadow-xl shadow-orange-500/50 border-2 md:border-3 lg:border-4 border-orange-300/50">
+                                        <span class="text-white text-lg sm:text-xl md:text-2xl lg:text-2xl xl:text-3xl font-black">3</span>
                                     </div>
-                                    <div class="absolute -bottom-1 md:-bottom-2 left-1/2 transform -translate-x-1/2 bg-orange-500/90 px-2 py-0.5 md:px-3 md:py-1 rounded-full backdrop-blur-sm">
-                                        <span class="text-white text-[10px] md:text-xs font-semibold whitespace-nowrap">{{ video.badge_label|default:"طالب طموح" }}</span>
+                                    <div class="absolute -bottom-0.5 md:-bottom-1 lg:-bottom-2 left-1/2 transform -translate-x-1/2 bg-orange-500/90 px-1.5 py-0.5 md:px-2 md:py-0.5 lg:px-3 lg:py-1 rounded-full backdrop-blur-sm">
+                                        <span class="text-white text-[9px] sm:text-[10px] md:text-xs font-semibold whitespace-nowrap">{{ video.badge_label|default:"طالب طموح" }}</span>
                                     </div>
-                                    <div class="absolute -top-1 md:-top-2 -right-1 md:-right-2 text-lg md:text-xl lg:text-2xl animate-pulse">🔥</div>
+                                    <div class="absolute -top-0.5 md:-top-1 lg:-top-2 -right-0.5 md:-right-1 lg:-right-2 text-sm sm:text-base md:text-lg lg:text-xl xl:text-2xl animate-pulse">🔥</div>
                                 </div>
                                 {% endif %}
                             </div>
 
-                            <!-- Video Player Container -->
-                            <div class="relative w-full h-[240px] sm:h-[280px] md:h-[320px] lg:h-[380px] xl:h-[420px] rounded-xl md:rounded-2xl overflow-hidden bg-gradient-to-br from-black/80 to-black/60 mb-4 md:mb-5 lg:mb-6 shadow-2xl border border-white/10 group-hover:border-white/30 transition-all duration-500 mt-6 md:mt-7 lg:mt-8">
+                            <!-- Video Player Container - Will match video aspect ratio -->
+                            <div class="relative w-full testimonial-video-container aspect-video rounded-lg md:rounded-xl lg:rounded-2xl overflow-hidden bg-gradient-to-br from-black/80 to-black/60 mb-2 md:mb-3 lg:mb-4 xl:mb-5 shadow-2xl border border-white/10 group-hover:border-white/30 transition-all duration-500 mt-3 md:mt-4 lg:mt-5 xl:mt-6">
                                 <!-- Play Button Overlay (if needed) -->
                                 <div class="absolute inset-0 flex items-center justify-center bg-black/20 group-hover:bg-black/10 transition-colors duration-300 z-10 pointer-events-none">
                                     <div class="w-12 h-12 md:w-14 md:h-14 lg:w-16 lg:h-16 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
@@ -545,9 +583,9 @@
                                 </div>
 
                                 {% if video.vimeo_id %}
-                                    <iframe src="https://player.vimeo.com/video/{{ video.vimeo_id }}?badge=0&autopause=0&controls=1&background=0" class="absolute inset-0 w-full h-full rounded-xl md:rounded-2xl" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" loading="lazy" title="{{ video.title }}"></iframe>
+                                    <iframe src="https://player.vimeo.com/video/{{ video.vimeo_id }}?badge=0&autopause=0&controls=1&background=0" class="absolute inset-0 w-full h-full rounded-lg md:rounded-xl lg:rounded-2xl" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" loading="lazy" title="{{ video.title }}"></iframe>
                                 {% elif video.video_url or video.video_file_url %}
-                                    <video class="w-full h-full object-cover rounded-xl md:rounded-2xl" controls playsinline controlsList="nodownload" disablePictureInPicture>
+                                    <video class="testimonial-video w-full h-full object-contain rounded-lg md:rounded-xl lg:rounded-2xl" controls playsinline controlsList="nodownload" disablePictureInPicture>
                                         <source src="{{ video.video_url|default:video.video_file_url }}" type="video/mp4">
                                         <source src="{{ video.video_url|default:video.video_file_url }}" type="video/quicktime">
                                         <source src="{{ video.video_url|default:video.video_file_url }}" type="video/webm">
@@ -566,15 +604,15 @@
                             </div>
 
                             <!-- Video Info Section -->
-                            <div class="text-center space-y-2 md:space-y-3">
+                            <div class="text-center space-y-1.5 md:space-y-2 lg:space-y-3">
                                 {% if video.description %}
-                                    <p class="text-white/95 text-sm md:text-base lg:text-lg xl:text-xl font-semibold leading-relaxed min-h-[2.5rem] md:min-h-[3rem] px-1">
+                                    <p class="text-white/95 text-xs sm:text-sm md:text-base lg:text-lg xl:text-xl font-semibold leading-tight md:leading-relaxed min-h-[2rem] md:min-h-[2.5rem] lg:min-h-[3rem] px-1 line-clamp-2 md:line-clamp-none">
                                         {{ video.description|linebreaksbr }}
                                     </p>
                                 {% endif %}
                                 {% if video.title %}
-                                    <div class="pt-2 md:pt-3 border-t border-white/10">
-                                        <p class="text-transparent bg-clip-text bg-gradient-to-r from-[#E91E8C] to-[#6B46C1] text-sm md:text-base font-bold">
+                                    <div class="pt-1.5 md:pt-2 lg:pt-3 border-t border-white/10">
+                                        <p class="text-transparent bg-clip-text bg-gradient-to-r from-[#E91E8C] to-[#6B46C1] text-xs sm:text-sm md:text-base font-bold">
                                             {{ video.title }}
                                         </p>
                                     </div>
@@ -1225,15 +1263,49 @@
             startNotifications();
         }
 
+        // Match testimonial video container to video aspect ratio
+        function adjustTestimonialVideoAspectRatio() {
+            const testimonialVideos = document.querySelectorAll('.testimonial-video');
+            
+            testimonialVideos.forEach(function(video) {
+                function updateAspectRatio() {
+                    if (video.videoWidth && video.videoHeight) {
+                        const aspectRatio = video.videoWidth / video.videoHeight;
+                        const container = video.closest('.testimonial-video-container');
+                        
+                        if (container && aspectRatio > 0) {
+                            // Remove aspect-video class and set custom aspect ratio
+                            container.style.aspectRatio = aspectRatio + ' / 1';
+                        }
+                    }
+                }
+                
+                // Try to get dimensions when video metadata loads
+                if (video.readyState >= 1) {
+                    // Video metadata already loaded
+                    updateAspectRatio();
+                } else {
+                    // Wait for metadata
+                    video.addEventListener('loadedmetadata', updateAspectRatio, { once: true });
+                }
+                
+                // Also try when video can play
+                video.addEventListener('canplay', updateAspectRatio, { once: true });
+            });
+        }
+        
+        // Initialize testimonial video aspect ratio adjustment
         if (document.readyState === 'loading') {
             document.addEventListener('DOMContentLoaded', function() {
                 setTimeout(() => {
+                    adjustTestimonialVideoAspectRatio();
                     initNotifications();
                 }, 1000);
             });
         } else {
             // DOM already loaded
             setTimeout(() => {
+                adjustTestimonialVideoAspectRatio();
                 initNotifications();
             }, 1000);
         }

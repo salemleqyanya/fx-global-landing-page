@@ -48,7 +48,7 @@ services:
     container_name: fxglobals-caddy
     ports: ["80:80","443:443"]
     volumes:
-      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - ./backend/Caddyfile:/etc/caddy/Caddyfile:ro
       - caddy_data:/data
       - caddy_config:/config
     depends_on: ["web"]

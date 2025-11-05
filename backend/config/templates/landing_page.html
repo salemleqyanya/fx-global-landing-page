@@ -207,7 +207,7 @@
                             {% if hero_video.vimeo_id %}
                                 <iframe src="https://player.vimeo.com/video/{{ hero_video.vimeo_id }}?badge=0&autopause=0&muted=0" class="absolute inset-0 w-full h-full" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" title="Vimeo Video"></iframe>
                             {% elif hero_video.video_url or hero_video.video_file_url %}
-                                <video class="absolute inset-0 w-full h-full object-cover" autoplay loop playsinline controlsList="nodownload" disablePictureInPicture style="pointer-events: none;">
+                                <video class="absolute inset-0 w-full h-full object-cover" loop playsinline controls controlsList="nodownload" disablePictureInPicture>
                                     <source src="{{ hero_video.video_url|default:hero_video.video_file_url }}" type="video/mp4">
                                     <source src="{{ hero_video.video_url|default:hero_video.video_file_url }}" type="video/quicktime">
                                     <source src="{{ hero_video.video_url|default:hero_video.video_file_url }}" type="video/webm">
@@ -749,37 +749,12 @@
             menu.classList.toggle('hidden');
         });
 
-        // Video handling - Enable audio and handle autoplay
+        // Video handling - Prevent downloads and disable context menu
         document.addEventListener('DOMContentLoaded', function() {
             const videos = document.querySelectorAll('video');
             videos.forEach(function(video) {
-                // Enable audio (video is no longer muted)
+                // Enable audio (video is not muted)
                 video.muted = false;
-                
-                // Try to play with sound
-                const playPromise = video.play();
-                
-                // If autoplay with sound is blocked, try muted autoplay
-                if (playPromise !== undefined) {
-                    playPromise.catch(function(error) {
-                        // Autoplay with sound was prevented
-                        // Try muted autoplay as fallback
-                        video.muted = true;
-                        video.play().catch(function() {
-                            console.log('Video autoplay prevented by browser');
-                        });
-                    });
-                }
-                
-                // Enable sound after user interaction
-                document.addEventListener('click', function() {
-                    if (video.muted) {
-                        video.muted = false;
-                        video.play().catch(function() {
-                            // Ignore if still blocked
-                        });
-                    }
-                }, { once: true });
                 
                 // Disable right-click context menu
                 video.addEventListener('contextmenu', function(e) {

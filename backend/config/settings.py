@@ -36,7 +36,6 @@ CSRF_TRUSTED_ORIGINS = [
     'http://127.0.0.1:8002',
 ]
 
-
 # Application definition
 
 INSTALLED_APPS = [
@@ -137,13 +136,9 @@ STATIC_URL = 'static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 # WhiteNoise configuration for serving static files
-# Using CompressedStaticFilesStorage instead of CompressedManifestStaticFilesStorage
-# to avoid manifest errors when staticfiles aren't fully collected
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
-
-# WhiteNoise settings
-WHITENOISE_USE_FINDERS = False  # Don't use finders in production (files should be collected)
 WHITENOISE_AUTOREFRESH = False  # Disable auto-refresh in production
+WHITENOISE_USE_FINDERS = False  # Don't use finders in production (files should be collected)
 
 MEDIA_URL = 'media/'
 MEDIA_ROOT = BASE_DIR / 'media'

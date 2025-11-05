@@ -16,13 +16,17 @@ urlpatterns = [
     re_path(r'^images/(?P<path>.*)$', serve, {'document_root': settings.MEDIA_ROOT}),
 ]
 
-# Serve media files (required even in production when using reverse proxy)
+# Serve media files - always enabled regardless of DEBUG setting
 urlpatterns += [
     re_path(r'^media/(?P<path>.*)$', serve, {
         'document_root': settings.MEDIA_ROOT,
         'show_indexes': False,
     }),
 ]
+
+# Also add static helper for development
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 # Serve static files in development (WhiteNoise handles static files automatically in production)
 if settings.DEBUG:

@@ -205,9 +205,9 @@
                     <div class="relative aspect-video bg-black/30 backdrop-blur-sm rounded-2xl overflow-hidden border-2 border-[#E91E8C]/50 shadow-2xl">
                         {% if hero_video %}
                             {% if hero_video.vimeo_id %}
-                                <iframe src="https://player.vimeo.com/video/{{ hero_video.vimeo_id }}?badge=0&autopause=0&muted=0" class="absolute inset-0 w-full h-full" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" title="Vimeo Video"></iframe>
+                                <iframe src="https://player.vimeo.com/video/{{ hero_video.vimeo_id }}?badge=0&autopause=0&autoplay=1&muted=0" class="absolute inset-0 w-full h-full" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" title="Vimeo Video"></iframe>
                             {% elif hero_video.video_url or hero_video.video_file_url %}
-                                <video class="absolute inset-0 w-full h-full object-cover" loop playsinline controls controlsList="nodownload" disablePictureInPicture>
+                                <video id="hero-video" class="absolute inset-0 w-full h-full object-cover" autoplay loop playsinline  controls controlsList="nodownload" disablePictureInPicture preload="auto">
                                     <source src="{{ hero_video.video_url|default:hero_video.video_file_url }}" type="video/mp4">
                                     <source src="{{ hero_video.video_url|default:hero_video.video_file_url }}" type="video/quicktime">
                                     <source src="{{ hero_video.video_url|default:hero_video.video_file_url }}" type="video/webm">
@@ -215,7 +215,7 @@
                                 </video>
                             {% endif %}
                         {% else %}
-                            <iframe src="https://player.vimeo.com/video/1133539416?badge=0&autopause=0&muted=0" class="absolute inset-0 w-full h-full" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" title="Vimeo Video"></iframe>
+                            <iframe src="https://player.vimeo.com/video/1133539416?badge=0&autopause=0&autoplay=1&muted=0" class="absolute inset-0 w-full h-full" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" title="Vimeo Video"></iframe>
                         {% endif %}
                     </div>
                 </div>
@@ -478,7 +478,7 @@
                                 </div>
 
                                 {% if video.vimeo_id %}
-                                    <iframe src="https://player.vimeo.com/video/{{ video.vimeo_id }}?badge=0&autopause=0&controls=1&background=0" class="absolute inset-0 w-full h-full rounded-2xl" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" title="{{ video.title }}"></iframe>
+                                    <iframe src="https://player.vimeo.com/video/{{ video.vimeo_id }}?badge=0&autopause=0&controls=1&background=0" class="absolute inset-0 w-full h-full rounded-2xl" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" loading="lazy" title="{{ video.title }}"></iframe>
                                 {% elif video.video_url or video.video_file_url %}
                                     <video class="w-full h-full object-cover rounded-2xl" controls playsinline controlsList="nodownload" disablePictureInPicture>
                                         <source src="{{ video.video_url|default:video.video_file_url }}" type="video/mp4">
@@ -749,9 +749,43 @@
             menu.classList.toggle('hidden');
         });
 
-        // Video handling - Prevent downloads and disable context menu
+        // Video handling - Autoplay hero video with audio, lazy load testimonials, prevent downloads
         document.addEventListener('DOMContentLoaded', function() {
-            const videos = document.querySelectorAll('video');
+            // Hero video - enable autoplay with audio
+            const heroVideo = document.getElementById('hero-video');
+            if (heroVideo) {
+                // Try to play with sound (may be blocked by browser)
+                heroVideo.muted = false;
+                const playPromise = heroVideo.play();
+                
+                if (playPromise !== undefined) {
+                    playPromise.catch(function(error) {
+                        // Autoplay with sound was prevented, try muted autoplay
+                        heroVideo.muted = true;
+                        heroVideo.play().catch(function() {
+                            console.log('Hero video autoplay prevented by browser');
+                        });
+                        
+                        // Unmute on first user interaction
+                        document.addEventListener('click', function unmuteOnInteraction() {
+                            heroVideo.muted = false;
+                            heroVideo.play().catch(function() {
+                                // Ignore if still blocked
+                            });
+                            document.removeEventListener('click', unmuteOnInteraction);
+                        }, { once: true });
+                    });
+                }
+                
+                // Disable right-click and keyboard shortcuts for hero video
+                heroVideo.addEventListener('contextmenu', function(e) {
+                    e.preventDefault();
+                    return false;
+                });
+            }
+            
+            // Regular videos - prevent downloads and disable context menu
+            const videos = document.querySelectorAll('video:not(#hero-video)');
             videos.forEach(function(video) {
                 // Enable audio (video is not muted)
                 video.muted = false;
@@ -781,6 +815,9 @@
                     }
                 });
             });
+            
+            // Videos are already in HTML with preload="none" to prevent auto-loading
+            // They will load when user clicks play, which is optimal for performance
         });
 
         function getCookie(name) {

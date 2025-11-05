@@ -16,7 +16,14 @@ urlpatterns = [
     re_path(r'^images/(?P<path>.*)$', serve, {'document_root': settings.MEDIA_ROOT}),
 ]
 
-# Serve media files in development (WhiteNoise handles static files automatically)
+# Serve media files (required even in production when using reverse proxy)
+urlpatterns += [
+    re_path(r'^media/(?P<path>.*)$', serve, {
+        'document_root': settings.MEDIA_ROOT,
+        'show_indexes': False,
+    }),
+]
+
+# Serve static files in development (WhiteNoise handles static files automatically in production)
 if settings.DEBUG:
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

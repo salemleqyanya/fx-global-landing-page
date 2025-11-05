@@ -558,44 +558,53 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 lg:gap-8 max-w-6xl mx-auto">
                     {% for video in testimonials_videos %}
                     <div class="group relative {% if forloop.counter == 2 %}md:-mt-6 lg:-mt-8{% endif %}">
-                        <!-- Card Container -->
-                        <div class="relative {% if forloop.counter == 2 %}bg-gradient-to-br from-[#E91E8C]/20 via-[#6B46C1]/20 to-[#E91E8C]/20 border-2 border-[#E91E8C]/50{% else %}bg-black/40 border border-white/10{% endif %} backdrop-blur-sm rounded-2xl overflow-hidden transition-all duration-300 hover:shadow-2xl {% if forloop.counter == 2 %}hover:shadow-[#E91E8C]/30 hover:border-[#E91E8C]/70{% else %}hover:border-white/20{% endif %}">
-                            
-                            <!-- Badge Section -->
-                            <div class="absolute -top-3 -right-3 z-30">
-                                {% if forloop.counter == 2 %}
-                                <!-- Winner Badge - Star + Label -->
-                                <div class="flex flex-col items-end gap-1">
-                                    <div class="w-12 h-12 md:w-14 md:h-14 bg-gradient-to-br from-yellow-400 via-yellow-500 to-yellow-600 rounded-full flex items-center justify-center shadow-lg shadow-yellow-500/50">
-                                        <svg class="w-7 h-7 md:w-8 md:h-8 text-white" fill="currentColor" viewBox="0 0 20 20">
+                        <!-- Badge Label - Above Card -->
+                        <div class="mb-4 md:mb-5 text-center">
+                            {% if forloop.counter == 2 %}
+                            <!-- Winner Badge - Star + Label -->
+                            <div class="flex flex-col items-center gap-2.5">
+                                <div class="relative">
+                                    <div class="w-14 h-14 md:w-16 md:h-16 bg-gradient-to-br from-yellow-400 via-yellow-500 to-yellow-600 rounded-full flex items-center justify-center shadow-xl shadow-yellow-500/60 animate-pulse">
+                                        <svg class="w-8 h-8 md:w-9 md:h-9 text-white drop-shadow-lg" fill="currentColor" viewBox="0 0 20 20">
                                             <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
                                         </svg>
                                     </div>
-                                    <div class="bg-gradient-to-r from-[#E91E8C] to-[#6B46C1] px-3 py-1.5 rounded-lg shadow-md">
-                                        <span class="text-white text-xs md:text-sm font-bold">{{ video.badge_label|default:"وحش الشهر" }}</span>
-                                    </div>
+                                    <div class="absolute -top-1 -right-1 text-xl animate-bounce">🔥</div>
                                 </div>
-                                {% elif forloop.counter == 1 %}
-                                <!-- Orange Badge -->
-                                <div class="bg-gradient-to-br from-orange-500 to-orange-600 px-4 py-2 rounded-lg shadow-lg">
-                                    <span class="text-white text-sm md:text-base font-bold">{{ video.badge_label|default:"طبيب ناجح" }}</span>
+                                <div class="relative inline-block bg-gradient-to-r from-[#E91E8C] via-[#6B46C1] to-[#E91E8C] bg-[length:200%_auto] px-5 py-2.5 md:px-6 md:py-3 rounded-xl shadow-lg border border-white/20 backdrop-blur-sm">
+                                    <span class="text-white text-sm md:text-base font-bold tracking-wide">{{ video.badge_label|default:"وحش الشهر" }}</span>
                                 </div>
-                                {% else %}
-                                <!-- Blue Badge -->
-                                <div class="bg-gradient-to-br from-blue-500 to-blue-600 px-4 py-2 rounded-lg shadow-lg">
-                                    <span class="text-white text-sm md:text-base font-bold">{{ video.badge_label|default:"طلبة طموحة" }}</span>
-                                </div>
-                                {% endif %}
                             </div>
+                            {% elif forloop.counter == 1 %}
+                            <!-- Orange Badge -->
+                            <div class="relative inline-block">
+                                <div class="bg-gradient-to-br from-orange-500 via-orange-600 to-orange-700 px-5 py-2.5 md:px-6 md:py-3 rounded-xl shadow-lg border border-orange-300/30 backdrop-blur-sm">
+                                    <span class="text-white text-sm md:text-base font-bold tracking-wide">{{ video.badge_label|default:"طبيب ناجح" }}</span>
+                                </div>
+                                <div class="absolute -top-1 -right-1 w-3 h-3 bg-orange-400 rounded-full animate-ping"></div>
+                            </div>
+                            {% else %}
+                            <!-- Blue Badge -->
+                            <div class="relative inline-block">
+                                <div class="bg-gradient-to-br from-blue-500 via-blue-600 to-blue-700 px-5 py-2.5 md:px-6 md:py-3 rounded-xl shadow-lg border border-blue-300/30 backdrop-blur-sm">
+                                    <span class="text-white text-sm md:text-base font-bold tracking-wide">{{ video.badge_label|default:"طلبة طموحة" }}</span>
+                                </div>
+                                <div class="absolute -top-1 -right-1 w-3 h-3 bg-blue-400 rounded-full animate-ping"></div>
+                            </div>
+                            {% endif %}
+                        </div>
+                        
+                        <!-- Card Container -->
+                        <div class="relative {% if forloop.counter == 2 %}bg-gradient-to-br from-[#E91E8C]/20 via-[#6B46C1]/20 to-[#E91E8C]/20 border-2 border-[#E91E8C]/50{% else %}bg-black/40 border border-white/10{% endif %} backdrop-blur-sm rounded-2xl overflow-hidden transition-all duration-300 hover:shadow-2xl {% if forloop.counter == 2 %}hover:shadow-[#E91E8C]/30 hover:border-[#E91E8C]/70{% else %}hover:border-white/20{% endif %}">
 
                             <!-- Video Player Container -->
                             <div class="relative w-full aspect-video bg-black rounded-t-2xl overflow-hidden">
                                 {% if video.vimeo_id %}
                                     <div class="vimeo-wrapper">
-                                        <iframe src="https://player.vimeo.com/video/{{ video.vimeo_id }}?badge=0&autopause=0&controls=1&background=0&responsive=1&title=0&byline=0&portrait=0&dnt=1" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen loading="lazy" title="{{ video.title }}"></iframe>
+                                        <iframe src="https://player.vimeo.com/video/{{ video.vimeo_id }}?badge=0&autopause=0&controls=1&background=0&loop=1&responsive=1&title=0&byline=0&portrait=0&dnt=1" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen loading="lazy" title="{{ video.title }}"></iframe>
                                     </div>
                                 {% elif video.video_url or video.video_file_url %}
-                                    <video class="testimonial-video" controls playsinline controlsList="nodownload" disablePictureInPicture>
+                                    <video class="testimonial-video" controls playsinline loop controlsList="nodownload" disablePictureInPicture>
                                         <source src="{{ video.video_url|default:video.video_file_url }}" type="video/mp4">
                                         <source src="{{ video.video_url|default:video.video_file_url }}" type="video/quicktime">
                                         <source src="{{ video.video_url|default:video.video_file_url }}" type="video/webm">
@@ -1372,9 +1381,44 @@
         if (document.readyState === 'loading') {
             document.addEventListener('DOMContentLoaded', function() {
                 setTimeout(initVimeoHeroVideo, 1000);
+                initAllVideosLoop();
             });
         } else {
             setTimeout(initVimeoHeroVideo, 1000);
+            initAllVideosLoop();
+        }
+        
+        // Ensure all videos loop
+        function initAllVideosLoop() {
+            // HTML5 videos - ensure loop attribute
+            const html5Videos = document.querySelectorAll('video.testimonial-video, video#hero-video');
+            html5Videos.forEach(function(video) {
+                video.loop = true;
+                // Ensure video restarts when it ends
+                video.addEventListener('ended', function() {
+                    video.currentTime = 0;
+                    video.play();
+                });
+            });
+            
+            // Vimeo testimonials videos - ensure loop
+            const testimonialVimeoIframes = document.querySelectorAll('.vimeo-wrapper iframe');
+            testimonialVimeoIframes.forEach(function(iframe) {
+                // Skip hero video iframe (already handled by initVimeoHeroVideo)
+                if (iframe.closest('#hero')) {
+                    return;
+                }
+                if (window.Vimeo) {
+                    const player = new Vimeo.Player(iframe);
+                    player.ready().then(function() {
+                        player.setLoop(true);
+                        // Ensure video restarts when it ends
+                        player.on('ended', function() {
+                            player.play();
+                        });
+                    });
+                }
+            });
         }
     </script>
 </body>

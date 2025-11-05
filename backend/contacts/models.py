@@ -13,6 +13,8 @@ class CustomerContact(models.Model):
     
     name = models.CharField(max_length=200, verbose_name="الاسم الكامل")
     whatsapp = models.CharField(max_length=20, verbose_name="رقم الواتساب")
+    message = models.TextField(verbose_name="الرسالة", default="", blank=True)
+    address = models.CharField(max_length=200, blank=True, null=True, verbose_name="العنوان")
     goal = models.CharField(
         max_length=20, 
         choices=GOAL_CHOICES, 

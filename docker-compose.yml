@@ -31,11 +31,6 @@ services:
     networks: ["my_network"]
     restart: always
 
-  redis:
-    image: redis:alpine
-    container_name: fxglobals-redis
-    networks: ["my_network"]
-    restart: always
 
   cache:
     image: memcached:alpine

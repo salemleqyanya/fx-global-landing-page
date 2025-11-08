@@ -390,18 +390,18 @@
         </div>
         <div class="container mx-auto px-4 relative z-10">
             <div class="max-w-6xl mx-auto bg-white/[0.04] border border-white/10 rounded-[32px] overflow-hidden shadow-[0_40px_120px_-40px_rgba(106,17,203,0.6)]">
-                <div class="grid md:grid-cols-[2fr,3fr] gap-0">
-                    <div class="relative p-8 md:p-10 lg:p-12 space-y-6 border-b md:border-b-0 md:border-l border-white/5 bg-gradient-to-br from-[#1B0F2C]/90 via-[#180A24]/90 to-[#12081D]/95">
-                        <div class="inline-flex items-center gap-3 bg-gradient-to-r from-[#E91E8C]/30 to-[#6B46C1]/30 border border-[#E91E8C]/40 rounded-full px-6 py-2 text-white/90 tracking-wide">
+                <div class="grid grid-cols-1 lg:grid-cols-[2fr,3fr] gap-0">
+                    <div class="relative p-6 sm:p-8 lg:p-12 space-y-6 border-b lg:border-b-0 lg:border-l border-white/5 bg-gradient-to-br from-[#1B0F2C]/90 via-[#180A24]/90 to-[#12081D]/95">
+                        <div class="inline-flex items-center gap-3 bg-gradient-to-r from-[#E91E8C]/30 to-[#6B46C1]/30 border border-[#E91E8C]/40 rounded-full px-5 py-1.5 sm:px-6 sm:py-2 text-white/90 tracking-wide mx-auto lg:mx-0">
                             <span class="text-lg md:text-xl lg:text-2xl">🏆</span>
                             <span class="text-sm md:text-base font-semibold">{{ featured_testimonial_video.badge_label|default:"وحش الشهر" }}</span>
                         </div>
-                        <div class="space-y-4">
-                            <h2 class="text-white text-3xl md:text-4xl font-black leading-snug">
+                        <div class="space-y-4 text-center lg:text-left">
+                            <h2 class="text-white text-2xl sm:text-3xl md:text-4xl font-black leading-snug">
                                 أقوى قصة نجاح لهذا الشهر
                             </h2>
                             {% if featured_testimonial_video.title %}
-                            <p class="text-white/80 text-base md:text-lg">
+                            <p class="text-white/80 text-sm sm:text-base md:text-lg">
                                 {{ featured_testimonial_video.title }}
                             </p>
                             {% endif %}
@@ -423,8 +423,8 @@
                                 <span class="text-sm md:text-base">تعرف على مجتمع FX Global من منظور طالب حقيقي</span>
                             </div>
                         </div>
-                        <div class="pt-4">
-                            <button onclick="scrollToSection('register')" class="inline-flex items-center justify-center gap-3 bg-white text-black font-bold px-8 py-3 md:px-10 md:py-4 rounded-xl shadow-xl shadow-black/40 hover:bg-[#F4E3FF] transition">
+                        <div class="pt-2 sm:pt-4">
+                            <button onclick="scrollToSection('register')" class="inline-flex w-full sm:w-auto items-center justify-center gap-3 bg-white text-black font-bold px-6 py-3 sm:px-8 sm:py-3 md:px-10 md:py-4 rounded-xl shadow-xl shadow-black/40 hover:bg-[#F4E3FF] transition">
                                 <span>احجز مقعدك الآن</span>
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
@@ -432,17 +432,17 @@
                             </button>
                         </div>
                     </div>
-                    <div class="relative">
+                    <div class="relative mt-6 lg:mt-0">
                         <div class="absolute inset-0 bg-gradient-to-tr from-[#E91E8C]/10 via-transparent to-[#6B46C1]/20 pointer-events-none"></div>
-                        <div class="relative h-full p-6 md:p-8 lg:p-10">
-                            <div class="relative h-full w-full rounded-[28px] border border-white/10 bg-black/70 shadow-[0_30px_80px_-40px_rgba(60,0,120,0.8)] overflow-hidden">
-                                <div class="absolute inset-0 opacity-60 bg-gradient-to-br from-[#E91E8C]/20 via-transparent to-[#6B46C1]/20 mix-blend-screen"></div>
-                                <div class="absolute -top-10 -left-10 w-40 h-40 rounded-full bg-[#E91E8C]/30 blur-3xl"></div>
-                                <div class="absolute -bottom-16 -right-12 w-48 h-48 rounded-full bg-[#6B46C1]/40 blur-3xl"></div>
-                                <div class="relative h-full">
+                        <div class="relative p-6 sm:p-8 lg:p-10 h-full">
+                            <div class="relative w-full aspect-[9/16] sm:aspect-video lg:h-full lg:aspect-auto rounded-[28px] border border-white/10 bg-black/70 shadow-[0_30px_80px_-40px_rgba(60,0,120,0.8)] overflow-hidden">
+                                <div class="absolute inset-0 opacity-60 bg-gradient-to-br from-[#E91E8C]/20 via-transparent to-[#6B46C1]/20 mix-blend-screen pointer-events-none"></div>
+                                <div class="absolute -top-10 -left-10 w-40 h-40 rounded-full bg-[#E91E8C]/30 blur-3xl pointer-events-none"></div>
+                                <div class="absolute -bottom-16 -right-12 w-48 h-48 rounded-full bg-[#6B46C1]/40 blur-3xl pointer-events-none"></div>
+                                <div class="relative w-full h-full pointer-events-auto">
                                     {% if featured_testimonial_video.vimeo_id %}
-                                        <div class="vimeo-wrapper h-full">
-                                            <iframe class="h-full" src="https://player.vimeo.com/video/{{ featured_testimonial_video.vimeo_id }}?badge=0&autopause=0&controls=1&background=0&loop=1&responsive=1&title=0&byline=0&portrait=0&dnt=1" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen loading="lazy" title="{{ featured_testimonial_video.title|default:'Featured Testimonial' }}"></iframe>
+                                        <div class="vimeo-wrapper">
+                                            <iframe class="w-full h-full" src="https://player.vimeo.com/video/{{ featured_testimonial_video.vimeo_id }}?badge=0&autopause=0&controls=1&background=0&loop=1&responsive=1&title=0&byline=0&portrait=0&dnt=1" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen loading="lazy" title="{{ featured_testimonial_video.title|default:'Featured Testimonial' }}"></iframe>
                                         </div>
                                     {% elif featured_testimonial_video.video_url or featured_testimonial_video.video_file_url %}
                                         <video class="testimonial-video h-full w-full object-cover" controls playsinline loop controlsList="nodownload" disablePictureInPicture>

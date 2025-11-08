@@ -382,47 +382,80 @@
     </section>
 
     {% if featured_testimonial_video %}
-    <section id="months-beast" class="relative bg-black py-12 md:py-16 lg:py-20">
-        <div class="absolute inset-0 pointer-events-none select-none opacity-20">
-            <div class="absolute -top-32 right-1/2 translate-x-1/2 w-[320px] h-[320px] md:w-[480px] md:h-[480px] bg-[#E91E8C]/20 rounded-full blur-[140px]"></div>
-            <div class="absolute bottom-0 left-1/2 -translate-x-1/2 w-[260px] h-[260px] md:w-[420px] md:h-[420px] bg-[#6B46C1]/20 rounded-full blur-[160px]"></div>
+    <section id="months-beast" class="relative bg-gradient-to-b from-black via-[#12091F] to-black py-14 md:py-20">
+        <div class="absolute inset-0 pointer-events-none select-none">
+            <div class="absolute top-10 right-0 w-64 h-64 md:w-96 md:h-96 bg-[#E91E8C]/10 rounded-full blur-[140px]"></div>
+            <div class="absolute bottom-0 left-1/2 -translate-x-1/2 w-[420px] h-[420px] bg-[#6B46C1]/5 rounded-full blur-[200px]"></div>
+            <div class="absolute inset-y-8 left-8 w-[2px] bg-gradient-to-b from-[#E91E8C] via-transparent to-[#6B46C1] opacity-60"></div>
         </div>
         <div class="container mx-auto px-4 relative z-10">
-            <div class="max-w-5xl mx-auto text-center space-y-6 md:space-y-8">
-                <div class="inline-flex items-center gap-2 md:gap-3 bg-gradient-to-r from-[#E91E8C]/20 to-[#6B46C1]/20 backdrop-blur-md border border-[#E91E8C]/40 rounded-full px-4 py-2 md:px-6 md:py-3 lg:px-8 lg:py-4 shadow-lg shadow-[#E91E8C]/20">
-                    <span class="text-[#E91E8C] text-lg md:text-xl lg:text-2xl">🎥</span>
-                    <span class="text-white/90 text-sm md:text-base lg:text-lg font-semibold tracking-wide">
-                        {{ featured_testimonial_video.badge_label|default:"وحش الشهر" }}
-                    </span>
-                </div>
-                <h2 class="text-white text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-black leading-tight">
-                    شاهد أقوى قصة نجاح لهذا الشهر
-                </h2>
-                {% if featured_testimonial_video.title %}
-                <p class="text-white/70 text-base md:text-lg lg:text-xl">
-                    {{ featured_testimonial_video.title }}
-                </p>
-                {% endif %}
-                <div class="relative mx-auto max-w-4xl w-full">
-                    <div class="relative aspect-video bg-black/60 border-2 border-[#E91E8C]/40 rounded-3xl overflow-hidden shadow-2xl shadow-[#E91E8C]/30">
-                        {% if featured_testimonial_video.vimeo_id %}
-                            <div class="vimeo-wrapper">
-                                <iframe src="https://player.vimeo.com/video/{{ featured_testimonial_video.vimeo_id }}?badge=0&autopause=0&controls=1&background=0&loop=1&responsive=1&title=0&byline=0&portrait=0&dnt=1" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen loading="lazy" title="{{ featured_testimonial_video.title|default:'Featured Testimonial' }}"></iframe>
+            <div class="max-w-6xl mx-auto bg-white/[0.04] border border-white/10 rounded-[32px] overflow-hidden shadow-[0_40px_120px_-40px_rgba(106,17,203,0.6)]">
+                <div class="grid md:grid-cols-[2fr,3fr] gap-0">
+                    <div class="relative p-8 md:p-10 lg:p-12 space-y-6 border-b md:border-b-0 md:border-l border-white/5 bg-gradient-to-br from-[#1B0F2C]/90 via-[#180A24]/90 to-[#12081D]/95">
+                        <div class="inline-flex items-center gap-3 bg-gradient-to-r from-[#E91E8C]/30 to-[#6B46C1]/30 border border-[#E91E8C]/40 rounded-full px-6 py-2 text-white/90 tracking-wide">
+                            <span class="text-lg md:text-xl lg:text-2xl">🏆</span>
+                            <span class="text-sm md:text-base font-semibold">{{ featured_testimonial_video.badge_label|default:"وحش الشهر" }}</span>
+                        </div>
+                        <div class="space-y-4">
+                            <h2 class="text-white text-3xl md:text-4xl font-black leading-snug">
+                                أقوى قصة نجاح لهذا الشهر
+                            </h2>
+                            {% if featured_testimonial_video.title %}
+                            <p class="text-white/80 text-base md:text-lg">
+                                {{ featured_testimonial_video.title }}
+                            </p>
+                            {% endif %}
+                            <p class="text-white/60 text-sm md:text-base leading-relaxed">
+                                شاهد كيف طلابنا بنقلوا تجربتهم بلحظة الفوز الحقيقي، كيف تغيّرت طريقة تفكيرهم، وكيف صار عندهم رؤية واضحة للتداول. هذا الفيديو موجود حصريًا لأنه هو الأبرز بين كل إنجازات طلابنا هذا الشهر.
+                            </p>
+                        </div>
+                        <div class="space-y-3">
+                            <div class="flex items-center gap-3 text-white/80">
+                                <span class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-lg">⚡️</span>
+                                <span class="text-sm md:text-base">ملهم للطلاب الجدد اللي ببلشوا بنفس الظروف</span>
                             </div>
-                        {% elif featured_testimonial_video.video_url or featured_testimonial_video.video_file_url %}
-                            <video class="testimonial-video h-full w-full object-cover" controls playsinline loop controlsList="nodownload" disablePictureInPicture>
-                                <source src="{{ featured_testimonial_video.video_url|default:featured_testimonial_video.video_file_url }}" type="video/mp4">
-                                <source src="{{ featured_testimonial_video.video_url|default:featured_testimonial_video.video_file_url }}" type="video/quicktime">
-                                <source src="{{ featured_testimonial_video.video_url|default:featured_testimonial_video.video_file_url }}" type="video/webm">
-                                Your browser does not support the video tag.
-                            </video>
-                        {% endif %}
+                            <div class="flex items-center gap-3 text-white/80">
+                                <span class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-lg">🎯</span>
+                                <span class="text-sm md:text-base">خطوة بخطوة من بداية الدورة لمرحلة الاحتراف</span>
+                            </div>
+                            <div class="flex items-center gap-3 text-white/80">
+                                <span class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-lg">🤝</span>
+                                <span class="text-sm md:text-base">تعرف على مجتمع FX Global من منظور طالب حقيقي</span>
+                            </div>
+                        </div>
+                        <div class="pt-4">
+                            <button onclick="scrollToSection('register')" class="inline-flex items-center justify-center gap-3 bg-white text-black font-bold px-8 py-3 md:px-10 md:py-4 rounded-xl shadow-xl shadow-black/40 hover:bg-[#F4E3FF] transition">
+                                <span>احجز مقعدك الآن</span>
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+                                </svg>
+                            </button>
+                        </div>
                     </div>
-                </div>
-                <div>
-                    <button onclick="scrollToSection('register')" class="inline-flex items-center justify-center bg-gradient-to-r from-[#E91E8C] to-[#6B46C1] hover:from-[#6B46C1] hover:to-[#E91E8C] text-white px-10 py-4 md:px-14 md:py-5 lg:px-20 lg:py-6 text-lg md:text-xl lg:text-2xl font-bold rounded-2xl shadow-2xl shadow-[#E91E8C]/40 transition-transform duration-200 hover:scale-[1.03]">
-                        احجز مقعدك الآن
-                    </button>
+                    <div class="relative">
+                        <div class="absolute inset-0 bg-gradient-to-tr from-[#E91E8C]/10 via-transparent to-[#6B46C1]/20 pointer-events-none"></div>
+                        <div class="relative h-full p-6 md:p-8 lg:p-10">
+                            <div class="relative h-full w-full rounded-[28px] border border-white/10 bg-black/70 shadow-[0_30px_80px_-40px_rgba(60,0,120,0.8)] overflow-hidden">
+                                <div class="absolute inset-0 opacity-60 bg-gradient-to-br from-[#E91E8C]/20 via-transparent to-[#6B46C1]/20 mix-blend-screen"></div>
+                                <div class="absolute -top-10 -left-10 w-40 h-40 rounded-full bg-[#E91E8C]/30 blur-3xl"></div>
+                                <div class="absolute -bottom-16 -right-12 w-48 h-48 rounded-full bg-[#6B46C1]/40 blur-3xl"></div>
+                                <div class="relative h-full">
+                                    {% if featured_testimonial_video.vimeo_id %}
+                                        <div class="vimeo-wrapper h-full">
+                                            <iframe class="h-full" src="https://player.vimeo.com/video/{{ featured_testimonial_video.vimeo_id }}?badge=0&autopause=0&controls=1&background=0&loop=1&responsive=1&title=0&byline=0&portrait=0&dnt=1" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen loading="lazy" title="{{ featured_testimonial_video.title|default:'Featured Testimonial' }}"></iframe>
+                                        </div>
+                                    {% elif featured_testimonial_video.video_url or featured_testimonial_video.video_file_url %}
+                                        <video class="testimonial-video h-full w-full object-cover" controls playsinline loop controlsList="nodownload" disablePictureInPicture>
+                                            <source src="{{ featured_testimonial_video.video_url|default:featured_testimonial_video.video_file_url }}" type="video/mp4">
+                                            <source src="{{ featured_testimonial_video.video_url|default:featured_testimonial_video.video_file_url }}" type="video/quicktime">
+                                            <source src="{{ featured_testimonial_video.video_url|default:featured_testimonial_video.video_file_url }}" type="video/webm">
+                                            Your browser does not support the video tag.
+                                        </video>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

@@ -5,7 +5,7 @@ from .models import CustomerContact
 class CustomerContactSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomerContact
-        fields = ['id', 'name', 'whatsapp', 'message', 'address', 'goal', 'city', 'created_at', 'is_contacted']
+        fields = ['id', 'name', 'phone', 'whatsapp', 'message', 'address', 'goal', 'city', 'created_at', 'is_contacted']
         read_only_fields = ['id', 'created_at', 'is_contacted']
 
 
@@ -13,7 +13,17 @@ class CustomerContactCreateSerializer(serializers.ModelSerializer):
     """Serializer for creating customer contacts (public API)"""
     class Meta:
         model = CustomerContact
-        fields = ['name', 'whatsapp', 'message', 'address', 'goal', 'city']
+        fields = ['name', 'phone', 'whatsapp', 'message', 'address', 'goal', 'city']
+    
+    def validate_phone(self, value):
+        """Validate phone number"""
+        if not value:
+            raise serializers.ValidationError("رقم الجوال مطلوب")
+        # Remove any non-digit characters
+        cleaned = ''.join(filter(str.isdigit, value))
+        if len(cleaned) < 8:
+            raise serializers.ValidationError("رقم الجوال غير صحيح")
+        return cleaned
     
     def validate_whatsapp(self, value):
         """Validate WhatsApp number"""

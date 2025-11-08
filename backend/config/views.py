@@ -84,8 +84,28 @@ def landing_page(request):
         except Exception:
             pass
     
+    featured_testimonial_video = None
+    featured_index = None
+    for idx, video in enumerate(testimonials_videos):
+        label = (video.get('badge_label') or '').lower()
+        if 'وحش' in label or 'beast' in label or 'month' in label or 'الشهر' in label:
+            featured_testimonial_video = video
+            featured_index = idx
+            break
+
+    if featured_testimonial_video is None and testimonials_videos:
+        featured_testimonial_video = testimonials_videos[0]
+        featured_index = 0
+
+    other_testimonials_videos = testimonials_videos
+    if featured_index is not None:
+        other_testimonials_videos = [
+            video for idx, video in enumerate(testimonials_videos) if idx != featured_index
+        ]
+
     context = {
         'hero_video': hero_video,
-        'testimonials_videos': testimonials_videos,
+        'featured_testimonial_video': featured_testimonial_video,
+        'testimonials_videos': other_testimonials_videos,
     }
     return render(request, 'landing_page.html', context)

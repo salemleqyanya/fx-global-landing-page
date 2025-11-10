@@ -1,0 +1,140 @@
+{% extends "exams/base_exam.html" %}
+
+{% block title %}امتحان التداول{% endblock %}
+
+{% block extra_head %}
+    <style>
+        .question-card {
+            padding: 28px;
+            border-radius: 28px;
+            border: 1px solid rgba(255,255,255,0.08);
+            background: rgba(12, 6, 30, 0.75);
+            box-shadow: 0 30px 60px -45px rgba(87, 51, 177, 0.8);
+            display: grid;
+            gap: 20px;
+        }
+        @media (min-width: 920px) {
+            .question-card {
+                grid-template-columns: 1.1fr 1fr;
+                align-items: center;
+            }
+        }
+        .question-header {
+            display:flex;
+            align-items:center;
+            justify-content:space-between;
+            gap:16px;
+        }
+        .question-header h2 {
+            margin:0;
+            font-size:22px;
+            font-weight:800;
+        }
+        .question-number {
+            display:inline-flex;
+            align-items:center;
+            justify-content:center;
+            width:48px;
+            height:48px;
+            border-radius:16px;
+            background:linear-gradient(120deg,#ff3cac,#784ba0);
+            font-weight:700;
+            font-size:18px;
+        }
+        .options-wrapper {
+            display:flex;
+            flex-direction:column;
+            gap:14px;
+        }
+        .options-wrapper label {
+            background:rgba(255,255,255,0.04);
+            border:1px solid rgba(255,255,255,0.08);
+            border-radius:18px;
+            padding:16px 20px;
+            display:flex;
+            align-items:center;
+            justify-content:space-between;
+            gap:14px;
+            cursor:pointer;
+            transition:all 0.2s ease;
+        }
+        .options-wrapper label:hover {
+            border-color:rgba(233,30,140,0.45);
+            transform:translateY(-2px);
+        }
+        .options-wrapper input[type="radio"] {
+            width:20px;
+            height:20px;
+            accent-color:#e91e8c;
+        }
+        .submit-wrapper {
+            margin-top:34px;
+            display:flex;
+            justify-content:center;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+    <section style="padding: 60px 0;">
+        <div class="container" style="display:grid;gap:30px;">
+            <div style="text-align:center;">
+                <span class="badge">مرحبا {{ participant.name }}</span>
+                <h1 style="margin:18px 0;font-size:34px;font-weight:800;">امتحان التداول - اختبر قرارك</h1>
+                <p style="color:rgba(255,255,255,0.7);max-width:640px;margin:0 auto;">
+                    لكل سؤال عندك خيارين فقط: <strong>شراء</strong> أو <strong>بيع</strong>. ركّز بالصورة، اختار القرار اللي بتحسه الأنسب،
+                    وبعد ما تخلص رح تشوف التحليل الكامل لكل سؤال.
+                </p>
+            </div>
+            <form method="post" novalidate style="display:grid;gap:26px;">
+                {% csrf_token %}
+                {% for item in question_field_pairs %}
+                    {% with question=item.question field=item.field current=item.current_value %}
+                    <div class="question-card">
+                        <div class="chart-blur">
+                            <button type="button"
+                                    class="chart-zoom-btn"
+                                    data-image="{{ question.chart_image.url }}"
+                                    aria-label="عرض الشارت بالحجم الكامل">
+                                <img src="{{ question.chart_image.url }}"
+                                     alt="{{ question.title }}">
+                                <span class="chart-zoom-hint">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-4.35-4.35m0 0A7.5 7.5 0 1 0 7.5 15a7.5 7.5 0 0 0 9.15 1.65Z"/>
+                                    </svg>
+                                    اضغط للتكبير
+                                </span>
+                            </button>
+                        </div>
+                        <div class="question-content" style="display:flex;flex-direction:column;gap:18px;">
+                            <div class="question-header">
+                                <div class="question-number">{{ forloop.counter }}</div>
+                                <h2>{{ question.title }}</h2>
+                            </div>
+                            <div class="options-wrapper">
+                                {% for value, label in field.field.choices %}
+                                    {% with field_name=field.html_name %}
+                                    <label>
+                                        <span style="font-weight:600;">{{ label }}</span>
+                                        <input type="radio" name="{{ field_name }}" value="{{ value }}"
+                                            {% if current == value %}checked{% endif %}
+                                            required>
+                                    </label>
+                                    {% endwith %}
+                                {% endfor %}
+                                {% if field.errors %}
+                                    <p style="color:#fb7185;font-size:13px;margin:4px 0 0;">{{ field.errors.0 }}</p>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    {% endwith %}
+                {% endfor %}
+                <div class="submit-wrapper">
+                    <button type="submit" class="btn-primary">إرسل الإجابات وشوف النتيجة</button>
+                </div>
+            </form>
+        </div>
+    </section>
+{% endblock %}
+

@@ -12,6 +12,7 @@ urlpatterns = [
     path('master-co/', admin.site.urls),
     path('api/contacts/', include('contacts.urls')),
     path('api/videos/', include('videos.urls')),
+    path('exam/', include('exams.urls', namespace='exams')),
     path('', landing_page, name='landing_page'),
     re_path(r'^images/(?P<path>.*)$', serve, {'document_root': settings.MEDIA_ROOT}),
 ]

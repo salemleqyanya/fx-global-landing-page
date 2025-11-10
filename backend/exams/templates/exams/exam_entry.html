@@ -1,0 +1,256 @@
+{% extends "exams/base_exam.html" %}
+
+{% block title %}دخول اختبار التداول{% endblock %}
+
+{% block extra_head %}
+    <style>
+        .entry-section {
+            padding: clamp(50px, 9vw, 90px) 0;
+        }
+        .entry-grid {
+            display: grid;
+            gap: clamp(28px, 6vw, 48px);
+            align-items: stretch;
+        }
+        @media (min-width: 980px) {
+            .entry-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+        .entry-hero {
+            position: relative;
+            border-radius: 34px;
+            padding: clamp(30px, 6vw, 42px);
+            overflow: hidden;
+            background: radial-gradient(circle at -10% 10%, rgba(233, 30, 140, 0.28), rgba(8, 5, 20, 0.95));
+            border: 1px solid rgba(233, 30, 140, 0.25);
+            box-shadow: 0 35px 110px -60px rgba(56, 189, 248, 0.45);
+        }
+        .entry-hero::after {
+            content: '';
+            position: absolute;
+            inset: auto auto -25% 60%;
+            width: clamp(180px, 32vw, 280px);
+            aspect-ratio: 1;
+            border-radius: 50%;
+            background: linear-gradient(135deg, rgba(233, 30, 140, 0.35), rgba(107, 70, 193, 0.35));
+            filter: blur(40px);
+            opacity: 0.8;
+            pointer-events: none;
+        }
+        .entry-hero h1 {
+            font-weight: 800;
+            font-size: clamp(28px, 4.5vw, 38px);
+            margin: 18px 0 12px;
+        }
+        .entry-hero p {
+            margin: 0 0 26px;
+            font-size: clamp(16px, 2vw, 18px);
+            color: rgba(255, 255, 255, 0.78);
+            line-height: 1.8;
+        }
+        .entry-checks {
+            display: grid;
+            gap: 18px;
+            margin: 28px 0;
+        }
+        .entry-check {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 14px 18px;
+            border-radius: 18px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            background: rgba(5, 1, 17, 0.36);
+        }
+        .entry-check span.icon {
+            width: 34px;
+            height: 34px;
+            border-radius: 12px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(130deg, rgba(233, 30, 140, 0.6), rgba(30, 64, 175, 0.6));
+        }
+        .entry-form-card {
+            border-radius: 34px;
+            padding: clamp(30px, 6vw, 42px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            background: rgba(6, 4, 16, 0.85);
+            backdrop-filter: blur(18px);
+            box-shadow: 0 30px 90px -50px rgba(15, 23, 42, 0.75);
+        }
+        .entry-form-card h2 {
+            font-weight: 800;
+            font-size: clamp(24px, 3.5vw, 30px);
+            margin: 0 0 12px;
+        }
+        .entry-form-card p.description {
+            margin: 0 0 28px;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 15px;
+            line-height: 1.8;
+        }
+        .messages-stack {
+            display: grid;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+        .message-box {
+            padding: 12px 16px;
+            border-radius: 18px;
+            border: 1px solid;
+            font-size: 14px;
+        }
+        .message-box.info {
+            border-color: rgba(59, 130, 246, 0.4);
+            background: rgba(59, 130, 246, 0.12);
+        }
+        .message-box.warning {
+            border-color: rgba(251, 191, 36, 0.4);
+            background: rgba(251, 191, 36, 0.12);
+        }
+        .entry-form-grid {
+            display: grid;
+            gap: 22px;
+        }
+        .field-label {
+            display: block;
+            margin-bottom: 10px;
+            color: rgba(255, 255, 255, 0.85);
+            font-weight: 600;
+        }
+        .field-error {
+            margin-top: 6px;
+            font-size: 13px;
+            color: #fb7185;
+        }
+        .btn-primary.wide {
+            width: 100%;
+            justify-content: center;
+            margin-top: 8px;
+            padding: 16px 20px;
+            font-size: 17px;
+        }
+        .privacy-note {
+            margin-top: 16px;
+            font-size: 12px;
+            text-align: center;
+            color: rgba(255, 255, 255, 0.45);
+        }
+        .exam-input {
+            width: 100%;
+            height: 54px;
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            background: rgba(255, 255, 255, 0.04);
+            color: #fff;
+            padding: 0 18px;
+            font-size: 15px;
+            transition: border-color 0.25s ease, box-shadow 0.25s ease, background 0.25s ease;
+        }
+        .exam-input::placeholder {
+            color: rgba(255, 255, 255, 0.35);
+        }
+        .exam-input:focus {
+            outline: none;
+            border-color: rgba(233, 30, 140, 0.55);
+            background: rgba(255, 255, 255, 0.07);
+            box-shadow: 0 0 0 4px rgba(233, 30, 140, 0.18);
+        }
+        .exam-input:invalid {
+            box-shadow: none;
+        }
+        .exam-input:-webkit-autofill,
+        .exam-input:-webkit-autofill:hover,
+        .exam-input:-webkit-autofill:focus {
+            -webkit-text-fill-color: #fff;
+            transition: background-color 5000s ease-in-out 0s;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+    <section class="entry-section">
+        <div class="container">
+            <div class="entry-grid">
+                <div class="entry-hero">
+                    <span class="badge">مرحبا بك في اختبار التداول التفاعلي</span>
+                    <h1>قبل ما تفوت على Charts حقيقية، خلينا نعرفك أكثر</h1>
+                    <p>
+                        الاختبار مصمم ليقيس سرعة قرارك بين الشراء أو البيع. كل إجابة بتنعرض لك مع الدليل،
+                        وبتساعدنا نحدد أي مستوى تدريبي مناسب إلك. البيانات اللي بتسجلها هون رح تستخدم فقط للتواصل
+                        معك بعد ما نحلل نتيجة الامتحان.
+                    </p>
+                    <div class="entry-checks">
+                        <div class="entry-check">
+                            <span class="icon">🤝</span>
+                            <div>
+                                <strong>متابعة شخصية</strong>
+                                <div style="color:rgba(255,255,255,0.6);font-size:14px;">بنتواصل معك مباشرة لتعزيز نقاط القوة</div>
+                            </div>
+                        </div>
+                        <div class="entry-check">
+                            <span class="icon">📊</span>
+                            <div>
+                                <strong>تحليل حقيقي للسوق</strong>
+                                <div style="color:rgba(255,255,255,0.6);font-size:14px;">الأسئلة مبنية على لقطات من جلسات تداول حية</div>
+                            </div>
+                        </div>
+                        <div class="entry-check">
+                            <span class="icon">🔒</span>
+                            <div>
+                                <strong>بياناتك محفوظة</strong>
+                                <div style="color:rgba(255,255,255,0.6);font-size:14px;">ما بنشارك أي معلومة مع أي طرف خارجي</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="entry-form-card">
+                    <h2>سجل معلومات الدخول</h2>
+                    <p class="description">
+                        بعد ما تسجل، رح ينفتح الامتحان مباشرة. تأكد إن رقمك صحيح لأنه الطريقة اللي راح نرسل لك من خلالها التقييم التفصيلي.
+                    </p>
+
+                    {% if messages %}
+                        <div class="messages-stack">
+                            {% for message in messages %}
+                                <div class="message-box {{ message.tags|default:'info' }}">
+                                    {{ message }}
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+
+                    <form method="post" novalidate class="entry-form-grid">
+                        {% csrf_token %}
+                        <div>
+                            <label class="field-label" for="{{ form.name.id_for_label }}">{{ form.name.label }}</label>
+                            {{ form.name }}
+                            {% if form.name.errors %}
+                                <p class="field-error">{{ form.name.errors.0 }}</p>
+                            {% endif %}
+                        </div>
+                        <div>
+                            <label class="field-label" for="{{ form.phone.id_for_label }}">{{ form.phone.label }}</label>
+                            {{ form.phone }}
+                            {% if form.phone.errors %}
+                                <p class="field-error">{{ form.phone.errors.0 }}</p>
+                            {% endif %}
+                        </div>
+                        <div>
+                            <label class="field-label" for="{{ form.email.id_for_label }}">{{ form.email.label }}</label>
+                            {{ form.email }}
+                            {% if form.email.errors %}
+                                <p class="field-error">{{ form.email.errors.0 }}</p>
+                            {% endif %}
+                        </div>
+                        <button type="submit" class="btn-primary wide">افتح الامتحان الآن</button>
+                        <p class="privacy-note">بضغطك على بدء الامتحان فأنت توافق على تواصل فريق FX Global معك بخصوص النتيجة.</p>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}

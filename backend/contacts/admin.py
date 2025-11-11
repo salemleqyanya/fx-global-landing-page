@@ -3,14 +3,24 @@ from django.http import HttpResponse
 from django.utils import timezone
 import csv
 
-from .models import CustomerContact
+from .models import CustomerContact, LandingPage
 
 
 @admin.register(CustomerContact)
 class CustomerContactAdmin(admin.ModelAdmin):
-    list_display = ['name', 'phone', 'whatsapp', 'goal', 'city', 'address', 'created_at', 'is_contacted']
-    list_filter = ['is_contacted', 'goal', 'created_at']
-    search_fields = ['name', 'phone', 'whatsapp', 'city', 'address', 'message']
+    list_display = [
+        'name',
+        'phone',
+        'whatsapp',
+        'goal',
+        'city',
+        'address',
+        'landing_page',
+        'created_at',
+        'is_contacted',
+    ]
+    list_filter = ['is_contacted', 'goal', 'created_at', 'landing_page']
+    search_fields = ['name', 'phone', 'whatsapp', 'city', 'address', 'message', 'landing_page__name', 'landing_page__short_code']
     readonly_fields = ['created_at']
     list_editable = ['is_contacted']
     date_hierarchy = 'created_at'
@@ -18,7 +28,7 @@ class CustomerContactAdmin(admin.ModelAdmin):
     
     fieldsets = (
         ('معلومات العميل', {
-            'fields': ('name', 'phone', 'whatsapp', 'city', 'address')
+            'fields': ('name', 'phone', 'whatsapp', 'city', 'address', 'landing_page')
         }),
         ('التفاصيل', {
             'fields': ('goal', 'message', 'notes')
@@ -44,6 +54,7 @@ class CustomerContactAdmin(admin.ModelAdmin):
             'Goal',
             'City',
             'Address',
+            'Landing Page',
             'Message',
             'Notes',
             'Is Contacted',
@@ -59,6 +70,7 @@ class CustomerContactAdmin(admin.ModelAdmin):
                 contact.get_goal_display() if contact.goal else '',
                 contact.city or '',
                 contact.address or '',
+                contact.landing_page.short_code if contact.landing_page else '',
                 contact.message.replace('\n', ' ').strip() if contact.message else '',
                 contact.notes.replace('\n', ' ').strip() if contact.notes else '',
                 'Yes' if contact.is_contacted else 'No',
@@ -68,3 +80,19 @@ class CustomerContactAdmin(admin.ModelAdmin):
         return response
 
     export_contacts_csv.short_description = "تصدير كملف CSV"
+
+
+@admin.register(LandingPage)
+class LandingPageAdmin(admin.ModelAdmin):
+    list_display = ['name', 'short_code', 'template', 'is_active', 'created_at']
+    search_fields = ['name', 'short_code', 'description']
+    list_filter = ['is_active', 'template', 'created_at']
+    readonly_fields = ['uuid', 'short_code', 'created_at']
+    fieldsets = (
+        ('تفاصيل الصفحة', {
+            'fields': ('name', 'description', 'template', 'is_active')
+        }),
+        ('التتبع', {
+            'fields': ('uuid', 'short_code', 'created_at')
+        }),
+    )

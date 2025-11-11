@@ -13,6 +13,7 @@ urlpatterns = [
     path('api/contacts/', include('contacts.urls')),
     path('api/videos/', include('videos.urls')),
     path('exam/', include('exams.urls', namespace='exams')),
+    re_path(r'^(?P<short_code>[A-Za-z0-9]{8})/$', landing_page, name='landing_page_short'),
     path('', landing_page, name='landing_page'),
     re_path(r'^images/(?P<path>.*)$', serve, {'document_root': settings.MEDIA_ROOT}),
 ]
@@ -25,10 +26,9 @@ urlpatterns += [
     }),
 ]
 
-# Also add static helper for development
-if settings.DEBUG:
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 # Serve static files in development (WhiteNoise handles static files automatically in production)
-if settings.DEBUG:
-    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+
+urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

@@ -1084,6 +1084,8 @@
             initHeroVideo();
         }
 
+        const landingPageCode = "{{ landing_page.short_code|default:'' }}";
+
         function getCookie(name) {
             let cookieValue = null;
             if (document.cookie && document.cookie !== '') {
@@ -1150,7 +1152,8 @@
                 whatsapp: document.getElementById('whatsapp').value.trim(),
                 message: document.getElementById('message').value.trim(),
                 address: document.getElementById('address').value.trim() || null,
-                goal: form.querySelector('input[name="goal"]:checked')?.value || ''
+                goal: form.querySelector('input[name="goal"]:checked')?.value || '',
+                landing_code: landingPageCode || null,
             };
 
             try {
@@ -1195,7 +1198,8 @@
                 whatsapp: document.getElementById('dialog-whatsapp').value.trim(),
                 message: document.getElementById('dialog-message').value.trim(),
                 address: document.getElementById('dialog-address').value.trim() || null,
-                city: document.getElementById('dialog-city').value.trim() || null
+                city: document.getElementById('dialog-city').value.trim() || null,
+                landing_code: landingPageCode || null,
             };
 
             try {

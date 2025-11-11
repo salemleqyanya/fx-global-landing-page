@@ -7,7 +7,7 @@ import urllib.parse
 from contacts.models import LandingPage
 
 
-def landing_page(request, short_code=None):
+def landing_page(request, short_code=None, force_template=None):
     """Render the landing page"""
     landing_page_obj = None
     if short_code:
@@ -173,7 +173,10 @@ def landing_page(request, short_code=None):
         'timeline_steps': timeline_steps,
     }
     template_name = 'landing_page.html'
-    if landing_page_obj and landing_page_obj.template == 'neon':
+    if (
+        force_template == 'neon'
+        or (landing_page_obj and landing_page_obj.template == 'neon')
+    ):
         template_name = 'landing_page_neon.html'
 
     return render(request, template_name, context)

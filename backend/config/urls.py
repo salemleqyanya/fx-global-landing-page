@@ -13,6 +13,7 @@ urlpatterns = [
     path('api/contacts/', include('contacts.urls')),
     path('api/videos/', include('videos.urls')),
     path('exam/', include('exams.urls', namespace='exams')),
+    path('vip-signals/', landing_page, {'force_template': 'neon'}, name='vip-signals'),
     re_path(r'^(?P<short_code>[A-Za-z0-9]{8})/$', landing_page, name='landing_page_short'),
     path('', landing_page, name='landing_page'),
     re_path(r'^images/(?P<path>.*)$', serve, {'document_root': settings.MEDIA_ROOT}),

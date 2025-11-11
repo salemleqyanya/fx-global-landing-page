@@ -20,6 +20,14 @@
     <script>
       window.LANDING_PAGE_CODE = "{{ landing_page.short_code|default_if_none:'' }}";
     </script>
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-K325KBZCMM"></script>
+<script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-K325KBZCMM');
+</script>
   </head>
   <body class="bg-black">
     <div class="global-background"></div>
@@ -674,12 +682,47 @@
                 <span class="text-red-400 text-lg">🔥 عرض لفترة محدودة - اشترك الآن</span>
               </div>
               <h2 class="text-3xl md:text-5xl text-white font-bold text-glow">
-                اختر باقتك وابدأ بتحقيق الأرباح <span class="text-pink-400">اليوم</span>
+                اختر باقتك وابدأ رحلة أرباحك <span class="text-pink-400">اليوم</span>
               </h2>
               <p class="text-xl text-gray-400">الأسعار الحالية متاحة لفترة محدودة فقط!</p>
             </header>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-7xl mx-auto">
               <article class="relative p-6 rounded-3xl border-3 bg-gradient-to-br from-[#694393]/20 to-[#DF2E88]/20 border-purple-500/40 backdrop-blur-lg card-hover fade-up">
+                <div class="text-center border-b border-purple-500/30 pb-4 mb-4">
+                  <h3 class="text-2xl md:text-3xl">👑 الباقة السنوية</h3>
+                </div>
+                <div class="bg-black/40 rounded-2xl p-5 border border-pink-500/30 mb-5">
+                  <div class="text-center mb-4">
+                    <div class="flex items-center justify-center gap-2 mb-2">
+                      <span class="text-red-400 text-sm">السعر الأصلي</span>
+                    </div>
+                    <div class="text-4xl md:text-5xl font-black text-gray-500 line-through opacity-60">$900</div>
+                  </div>
+                  <div class="relative my-4">
+                    <div class="absolute inset-0 flex items-center"><div class="w-full border-t-2 border-dashed border-pink-500/30"></div></div>
+                    <div class="relative flex justify-center">
+                      <span class="bg-gradient-to-r from-pink-500 to-purple-600 px-4 py-1.5 rounded-full text-sm">خصم حصري</span>
+                    </div>
+                  </div>
+                  <div class="text-center">
+                    <div class="flex items-center justify-center gap-2 mb-3">
+                      <span class="text-green-400 text-base">السعر الآن فقط</span>
+                    </div>
+                    <div class="text-5xl md:text-6xl font-black bg-gradient-to-r from-green-400 via-emerald-400 to-green-500 bg-clip-text text-transparent inline-block mb-3">$500</div>
+                    <div class="inline-block bg-gradient-to-r from-yellow-400/20 to-orange-400/20 border-2 border-yellow-400/50 rounded-full px-5 py-2 text-yellow-400 text-base glow-pulse" data-color="yellow">🎉 وفّر $400 - أفضل قيمة</div>
+                  </div>
+                </div>
+                <ul class="space-y-3 text-gray-200 text-base mb-5">
+                  <li class="flex items-start gap-3"><span class="text-green-400 text-xl">✔</span> توصيات يومية مدروسة</li>
+                  <li class="flex items-start gap-3"><span class="text-green-400 text-xl">✔</span> متابعة أداء أسبوعية</li>
+                  <li class="flex items-start gap-3"><span class="text-green-400 text-xl">✔</span> قناة تيليجرام خاصة</li>
+                  <li class="flex items-start gap-3"><span class="text-green-400 text-xl">✔</span> دعم مباشر على التيليجرام</li>
+                  <li class="flex items-start gap-3"><span class="text-green-400 text-xl">✔</span> توفير $400 عن السعر الأصلي</li>
+                </ul>
+                <a href="#registration-form" class="inline-flex justify-center w-full py-4 rounded-full bg-gradient-to-r from-purple-500 via-purple-600 to-pink-500 text-lg font-bold hover:from-purple-600 hover:via-purple-700 hover:to-pink-600 transition-all cta-button glow-pulse">🔥 اشترك الآن – $500 فقط</a>
+              </article>
+              <article class="relative p-6 rounded-3xl border-3 bg-gradient-to-br from-[#694393]/40 to-[#DF2E88]/40 border-pink-500 shadow-2xl shadow-pink-500/30 backdrop-blur-lg card-hover fade-up" style="transition-delay:0.1s;">
+                <div class="absolute -top-4 inset-inline-start-1/2 -translate-x-1/2 bg-gradient-to-r from-pink-500 to-purple-600 px-4 py-1.5 rounded-full text-xs shadow-2xl z-20 border-2 border-yellow-400/50">⭐ الأكثر طلباً</div>
                 <div class="text-center border-b border-purple-500/30 pb-4 mb-4">
                   <h3 class="text-2xl md:text-3xl">💎 الباقة الشهرية</h3>
                 </div>
@@ -692,16 +735,12 @@
                   </div>
                   <div class="relative my-4">
                     <div class="absolute inset-0 flex items-center"><div class="w-full border-t-2 border-dashed border-pink-500/30"></div></div>
-                    <div class="relative flex justify-center">
-                      <span class="bg-gradient-to-r from-pink-500 to-purple-600 px-4 py-1.5 rounded-full text-sm">خصم حصري</span>
-                    </div>
+                    <div class="relative flex justify-center"><span class="bg-gradient-to-r from-pink-500 to-purple-600 px-4 py-1.5 rounded-full text-sm">خصم حصري</span></div>
                   </div>
                   <div class="text-center">
-                    <div class="flex items-center justify-center gap-2 mb-3">
-                      <span class="text-green-400 text-base">السعر الآن فقط</span>
-                    </div>
+                    <div class="flex items-center justify-center gap-2 mb-3"><span class="text-green-400 text-base">السعر الآن فقط</span></div>
                     <div class="text-5xl md:text-6xl font-black bg-gradient-to-r from-green-400 via-emerald-400 to-green-500 bg-clip-text text-transparent inline-block mb-3">$100</div>
-                    <div class="inline-block bg-gradient-to-r from-yellow-400/20 to-orange-400/20 border-2 border-yellow-400/50 rounded-full px-5 py-2 text-yellow-400 text-base glow-pulse" data-color="yellow">🎉 وفّر 50$ اليوم</div>
+                    <div class="inline-block bg-gradient-to-r from-yellow-400/20 to-orange-400/20 border-2 border-yellow-400/50 rounded-full px-5 py-2 text-yellow-400 text-base glow-pulse" data-color="yellow">🎉 وفّر $50 اليوم</div>
                   </div>
                 </div>
                 <ul class="space-y-3 text-gray-200 text-base mb-5">
@@ -709,12 +748,11 @@
                   <li class="flex items-start gap-3"><span class="text-green-400 text-xl">✔</span> متابعة أداء أسبوعية</li>
                   <li class="flex items-start gap-3"><span class="text-green-400 text-xl">✔</span> قناة تيليجرام خاصة</li>
                   <li class="flex items-start gap-3"><span class="text-green-400 text-xl">✔</span> دعم مباشر على التيليجرام</li>
-                  <li class="flex items-start gap-3"><span class="text-green-400 text-xl">✔</span> توفير 50$ عن السعر الأصلي</li>
+                  <li class="flex items-start gap-3"><span class="text-green-400 text-xl">✔</span> توفير $50 عن السعر الأصلي</li>
                 </ul>
-                <a href="#registration-form" class="inline-flex justify-center w-full py-4 rounded-full bg-gradient-to-r from-purple-500 via-purple-600 to-pink-500 text-lg font-bold hover:from-purple-600 hover:via-purple-700 hover:to-pink-600 transition-all cta-button glow-pulse">🔥 اشترك الآن – 100$ فقط</a>
+                <a href="#registration-form" class="inline-flex justify-center w-full py-4 rounded-full bg-gradient-to-r from-pink-500 via-pink-600 to-purple-600 text-lg font-bold hover:from-pink-600 hover:via-pink-700 hover:to-purple-700 transition-all cta-button glow-pulse">⚡ اشترك الآن – $100 فقط</a>
               </article>
-              <article class="relative p-6 rounded-3xl border-3 bg-gradient-to-br from-[#694393]/40 to-[#DF2E88]/40 border-pink-500 shadow-2xl shadow-pink-500/30 backdrop-blur-lg card-hover fade-up" style="transition-delay:0.1s;">
-                <div class="absolute -top-4 inset-inline-start-1/2 -translate-x-1/2 bg-gradient-to-r from-pink-500 to-purple-600 px-4 py-1.5 rounded-full text-xs shadow-2xl z-20 border-2 border-yellow-400/50">⭐ الأكثر طلباً</div>
+              <article class="relative p-6 rounded-3xl border-3 bg-gradient-to-br from-[#694393]/20 to-[#DF2E88]/20 border-purple-500/40 backdrop-blur-lg card-hover fade-up" style="transition-delay:0.2s;">
                 <div class="text-center border-b border-purple-500/30 pb-4 mb-4">
                   <h3 class="text-2xl md:text-3xl">🚀 باقة 3 أشهر</h3>
                 </div>
@@ -723,56 +761,26 @@
                     <div class="flex items-center justify-center gap-2 mb-2">
                       <span class="text-red-400 text-sm">السعر الأصلي</span>
                     </div>
-                    <div class="text-4xl md:text-5xl font-black text-gray-500 line-through opacity-60">$360</div>
+                    <div class="text-4xl md:text-5xl font-black text-gray-500 line-through opacity-60">$450</div>
                   </div>
                   <div class="relative my-4">
                     <div class="absolute inset-0 flex items-center"><div class="w-full border-t-2 border-dashed border-pink-500/30"></div></div>
-                    <div class="relative flex justify-center"><span class="bg-gradient-to-r from-pink-500 to-purple-600 px-4 py-1.5 rounded-full text-sm">توفير 120$</span></div>
+                    <div class="relative flex justify-center"><span class="bg-gradient-to-r from-pink-500 to-purple-600 px-4 py-1.5 rounded-full text-sm">خصم حصري</span></div>
                   </div>
                   <div class="text-center">
                     <div class="flex items-center justify-center gap-2 mb-3"><span class="text-green-400 text-base">السعر الآن فقط</span></div>
-                    <div class="text-5xl md:text-6xl font-black bg-gradient-to-r from-green-400 via-emerald-400 to-green-500 bg-clip-text text-transparent inline-block mb-3">$240</div>
-                    <div class="inline-block bg-gradient-to-r from-yellow-400/20 to-orange-400/20 border-2 border-yellow-400/50 rounded-full px-5 py-2 text-yellow-400 text-base glow-pulse" data-color="yellow">🎉 توفير 33% + جلسة متابعة مجانية</div>
+                    <div class="text-5xl md:text-6xl font-black bg-gradient-to-r from-green-400 via-emerald-400 to-green-500 bg-clip-text text-transparent inline-block mb-3">$250</div>
+                    <div class="inline-block bg-gradient-to-r from-yellow-400/20 to-orange-400/20 border-2 border-yellow-400/50 rounded-full px-5 py-2 text-yellow-400 text-base glow-pulse" data-color="yellow">🎉 وفّر $200 - صفقة العمر</div>
                   </div>
                 </div>
                 <ul class="space-y-3 text-gray-200 text-base mb-5">
-                  <li class="flex items-start gap-3"><span class="text-green-400 text-xl">✔</span> كل مزايا الباقة الشهرية</li>
-                  <li class="flex items-start gap-3"><span class="text-green-400 text-xl">✔</span> خطة تداول متكاملة لكل أسبوع</li>
-                  <li class="flex items-start gap-3"><span class="text-green-400 text-xl">✔</span> إدارة مخاطر محسّنة على مدار الربع</li>
-                  <li class="flex items-start gap-3"><span class="text-green-400 text-xl">✔</span> متابعة خاصة مع أحد خبراء الفريق</li>
-                  <li class="flex items-start gap-3"><span class="text-green-400 text-xl">✔</span> جلسة مراجعة شهرية للأداء</li>
+                  <li class="flex items-start gap-3"><span class="text-green-400 text-xl">✔</span> توصيات يومية مدروسة</li>
+                  <li class="flex items-start gap-3"><span class="text-green-400 text-xl">✔</span> متابعة أداء أسبوعية</li>
+                  <li class="flex items-start gap-3"><span class="text-green-400 text-xl">✔</span> قناة تيليجرام خاصة</li>
+                  <li class="flex items-start gap-3"><span class="text-green-400 text-xl">✔</span> دعم مباشر على التيليجرام</li>
+                  <li class="flex items-start gap-3"><span class="text-green-400 text-xl">✔</span> توفير $200 عن السعر الأصلي</li>
                 </ul>
-                <a href="#registration-form" class="inline-flex justify-center w-full py-4 rounded-full bg-gradient-to-r from-pink-500 via-pink-600 to-purple-600 text-lg font-bold hover:from-pink-600 hover:via-pink-700 hover:to-purple-700 transition-all cta-button glow-pulse">⚡ اشترك بـ 240$ (بدل 360$)</a>
-              </article>
-              <article class="relative p-6 rounded-3xl border-3 bg-gradient-to-br from-[#694393]/20 to-[#DF2E88]/20 border-purple-500/40 backdrop-blur-lg card-hover fade-up" style="transition-delay:0.2s;">
-                <div class="text-center border-b border-purple-500/30 pb-4 mb-4">
-                  <h3 class="text-2xl md:text-3xl">👑 باقة 6 أشهر</h3>
-                </div>
-                <div class="bg-black/40 rounded-2xl p-5 border border-pink-500/30 mb-5">
-                  <div class="text-center mb-4">
-                    <div class="flex items-center justify-center gap-2 mb-2">
-                      <span class="text-red-400 text-sm">السعر الأصلي</span>
-                    </div>
-                    <div class="text-4xl md:text-5xl font-black text-gray-500 line-through opacity-60">$720</div>
-                  </div>
-                  <div class="relative my-4">
-                    <div class="absolute inset-0 flex items-center"><div class="w-full border-t-2 border-dashed border-pink-500/30"></div></div>
-                    <div class="relative flex justify-center"><span class="bg-gradient-to-r from-pink-500 to-purple-600 px-4 py-1.5 rounded-full text-sm">خصم 40% + هدايا VIP</span></div>
-                  </div>
-                  <div class="text-center">
-                    <div class="flex items-center justify-center gap-2 mb-3"><span class="text-green-400 text-base">السعر الآن فقط</span></div>
-                    <div class="text-5xl md:text-6xl font-black bg-gradient-to-r from-green-400 via-emerald-400 to-green-500 bg-clip-text text-transparent inline-block mb-3">$430</div>
-                    <div class="inline-block bg-gradient-to-r from-yellow-400/20 to-orange-400/20 border-2 border-yellow-400/50 rounded-full px-5 py-2 text-yellow-400 text-base glow-pulse" data-color="yellow">🎉 التوفير 290$ + حساب تداول تجريبي VIP</div>
-                  </div>
-                </div>
-                <ul class="space-y-3 text-gray-200 text-base mb-5">
-                  <li class="flex items-start gap-3"><span class="text-green-400 text-xl">✔</span> خطة تداول نصف سنوية</li>
-                  <li class="flex items-start gap-3"><span class="text-green-400 text-xl">✔</span> تقارير أداء أسبوعية مفصلة</li>
-                  <li class="flex items-start gap-3"><span class="text-green-400 text-xl">✔</span> مكالمات دعم خاصة مع خبير استثمار</li>
-                  <li class="flex items-start gap-3"><span class="text-green-400 text-xl">✔</span> دخول حصري لدورات FX Global</li>
-                  <li class="flex items-start gap-3"><span class="text-green-400 text-xl">✔</span> خطة مضاعفة رأس المال خلال 6 أشهر</li>
-                </ul>
-                <a href="#registration-form" class="inline-flex justify-center w-full py-4 rounded-full bg-gradient-to-r from-purple-500 via-purple-600 to-pink-500 text-lg font-bold hover:from-purple-600 hover:via-purple-700 hover:to-pink-600 transition-all cta-button glow-pulse">👑 اشترك بـ 430$ (بدل 720$)</a>
+                <a href="#registration-form" class="inline-flex justify-center w-full py-4 rounded-full bg-gradient-to-r from-purple-500 via-purple-600 to-pink-500 text-lg font-bold hover:from-purple-600 hover:via-purple-700 hover:to-pink-600 transition-all cta-button glow-pulse">🔥 اشترك الآن – $250 فقط</a>
               </article>
             </div>
           </div>
@@ -830,16 +838,16 @@
                 <span class="text-lg font-semibold">اختر هدفك من الاشتراك</span>
                 <div class="space-y-3">
                   <label class="flex items-center gap-3 bg-black/30 p-4 rounded-lg border border-purple-500/30 hover:border-pink-500/50 transition-colors cursor-pointer">
-                    <input type="radio" name="plan" value="الباقة الشهرية – 100$" class="accent-pink-500 w-5 h-5" checked />
+                    <input type="radio" name="plan" value="monthly" class="accent-pink-500 w-5 h-5" checked />
                     <span class="flex-1">🔘 توصيات شهرية</span>
                   </label>
                   <label class="flex items-center gap-3 bg-black/30 p-4 rounded-lg border border-purple-500/30 hover:border-pink-500/50 transition-colors cursor-pointer">
-                    <input type="radio" name="plan" value="باقة 3 أشهر – 240$" class="accent-pink-500 w-5 h-5" />
+                    <input type="radio" name="plan" value="quarterly" class="accent-pink-500 w-5 h-5" />
                     <span class="flex-1">🔘 توصيات 3 أشهر</span>
                   </label>
                   <label class="flex items-center gap-3 bg-black/30 p-4 rounded-lg border border-purple-500/30 hover:border-pink-500/50 transition-colors cursor-pointer">
-                    <input type="radio" name="plan" value="باقة 6 أشهر – 430$" class="accent-pink-500 w-5 h-5" />
-                    <span class="flex-1">🔘 توصيات 6 أشهر</span>
+                    <input type="radio" name="plan" value="annual" class="accent-pink-500 w-5 h-5" />
+                    <span class="flex-1">🔘 توصيات سنوية</span>
                   </label>
                 </div>
               </div>

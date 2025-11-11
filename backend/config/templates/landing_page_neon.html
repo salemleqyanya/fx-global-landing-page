@@ -18,7 +18,8 @@
     <script src="https://cdn.tailwindcss.com?plugins=forms,typography"></script>
     <link rel="stylesheet" href="{% static 'new_landing/custom.css' %}" />
     <script>
-      window.LANDING_PAGE_CODE = "{{ landing_page.short_code|default_if_none:'' }}";
+      const rawLandingCode = "{{ landing_page.short_code|default_if_none:'' }}";
+      window.LANDING_PAGE_CODE = rawLandingCode ? rawLandingCode.trim() : '';
     </script>
 
 <!-- Google tag (gtag.js) -->
@@ -854,7 +855,7 @@
                 </div>
               </div>
 
-              <div class="space-y-2 fade-up" style="transition-delay: 0.4s%;">
+              <div class="space-y-2 fade-up" style="transition-delay: 0.4s;">
                 <label for="notes" class="text-lg font-semibold">
                   ملاحظات إضافية <span class="text-gray-400">(اختياري)</span>
                 </label>

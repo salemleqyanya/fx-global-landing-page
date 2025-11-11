@@ -27,7 +27,12 @@ class CustomerContactSerializer(serializers.ModelSerializer):
 
 class CustomerContactCreateSerializer(serializers.ModelSerializer):
     """Serializer for creating customer contacts (public API)"""
-    landing_code = serializers.CharField(write_only=True, required=False, allow_blank=True)
+    landing_code = serializers.CharField(
+        write_only=True,
+        required=False,
+        allow_blank=True,
+        allow_null=True,
+    )
 
     class Meta:
         model = CustomerContact
@@ -60,7 +65,8 @@ class CustomerContactCreateSerializer(serializers.ModelSerializer):
         return value.strip()
 
     def create(self, validated_data):
-        landing_code = validated_data.pop('landing_code', '').strip().upper()
+        landing_code_raw = validated_data.pop('landing_code', '')
+        landing_code = (landing_code_raw or '').strip().upper()
         landing_page = None
         if landing_code:
             landing_page = LandingPage.objects.filter(short_code=landing_code).first()

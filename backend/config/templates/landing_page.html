@@ -1085,6 +1085,7 @@
         }
 
         const landingPageCode = "{{ landing_page.short_code|default:'' }}";
+        const normalizedLandingCode = landingPageCode ? landingPageCode.trim() : '';
 
         function getCookie(name) {
             let cookieValue = null;
@@ -1153,7 +1154,7 @@
                 message: document.getElementById('message').value.trim(),
                 address: document.getElementById('address').value.trim() || null,
                 goal: form.querySelector('input[name="goal"]:checked')?.value || '',
-                landing_code: landingPageCode || null,
+                landing_code: normalizedLandingCode,
             };
 
             try {
@@ -1199,7 +1200,7 @@
                 message: document.getElementById('dialog-message').value.trim(),
                 address: document.getElementById('dialog-address').value.trim() || null,
                 city: document.getElementById('dialog-city').value.trim() || null,
-                landing_code: landingPageCode || null,
+                landing_code: normalizedLandingCode,
             };
 
             try {

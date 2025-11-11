@@ -227,6 +227,11 @@ function setupRegistrationForm() {
     ].filter(Boolean);
     const composedMessage = composedMessageParts.join('\n');
 
+    const landingCode =
+      typeof window !== 'undefined' && typeof window.LANDING_PAGE_CODE === 'string'
+        ? window.LANDING_PAGE_CODE.trim()
+        : '';
+
     const payload = {
       name: userName,
       phone,
@@ -235,7 +240,7 @@ function setupRegistrationForm() {
       goal: null,
       address: null,
       city: null,
-      landing_code: window.LANDING_PAGE_CODE || null,
+      landing_code: landingCode,
     };
 
     if (!payload.name || !payload.phone) {

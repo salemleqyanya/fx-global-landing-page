@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FX Global Elite Program</title>
+    {% load static %}
+    <script src="https://cdn.tailwindcss.com?plugins=forms,typography"></script>
+    <link rel="stylesheet" href="{% static 'new_elite/elite.css' %}" />
+    <style>
+      /* Minimal keyframes to mimic subtle animated gradient in hero (no React/Motion) */
+      @keyframes bgShift {
+        0% { background: radial-gradient(circle at 20% 30%, rgba(105, 67, 147, 0.3) 0%, transparent 50%); }
+        50% { background: radial-gradient(circle at 80% 70%, rgba(223, 46, 136, 0.25) 0%, transparent 50%); }
+        100% { background: radial-gradient(circle at 20% 30%, rgba(105, 67, 147, 0.3) 0%, transparent 50%); }
+      }
+      .animated-bg { animation: bgShift 25s ease-in-out infinite; }
+      /* Scroll-in animation helpers */
+      .anim-init { opacity: 0; transform: translateY(24px); transition: opacity .9s ease, transform .9s ease; }
+      .anim-in { opacity: 1; transform: none; }
+      .delay-1 { transition-delay: .15s; }
+      .delay-2 { transition-delay: .3s; }
+      .delay-3 { transition-delay: .45s; }
+      .delay-4 { transition-delay: .6s; }
+      .divider-grow { transform-origin: center; scale: 0 1; transition: scale 1s ease; }
+      .divider-in { scale: 1 1; }
+      .lift { transition: transform .4s ease, box-shadow .4s ease; }
+      .lift:hover { transform: translateY(-8px); }
+      @keyframes floatY { 0% { transform: translateY(0) } 50% { transform: translateY(-16px) } 100% { transform: translateY(0) } }
+      .particle { animation: floatY 3.2s ease-in-out infinite; }
+    </style>
+  </head>
+  <body>
+    <div class="relative bg-black overflow-x-hidden" style="direction: rtl;">
+      <!-- HERO SECTION -->
+      <section class="relative min-h-screen flex items-center justify-center overflow-hidden anim-init">
+        <!-- Cinematic Background -->
+        <div class="absolute inset-0 z-0">
+          <!-- Chess Background Image -->
+          <div
+            class="absolute inset-0 w-full h-full"
+            style="
+              background-image: url(&quot;{% static 'new_assets/affa7724b2e3a6a3c4338b8942b610a0a98e99ba.png' %}&quot;);
+              background-size: cover;
+              background-position: center;
+              background-repeat: no-repeat;
+            "
+          ></div>
+          <!-- Dark Overlay -->
+          <div class="absolute inset-0 bg-black/40"></div>
+          <!-- Deep Black Base + subtle animated gradient -->
+          <div class="w-full h-full bg-gradient-to-b from-black/60 via-transparent to-black/80">
+            <div class="absolute inset-0 opacity-20 animated-bg"></div>
+          </div>
+          <!-- Luxury Vignette -->
+          <div class="absolute inset-0" style="
+            background: radial-gradient(circle at center, rgba(0,0,0,0) 0%, rgba(0,0,0,0.2) 50%, rgba(0,0,0,0.6) 100%);
+          "></div>
+        </div>
+
+        <!-- Content -->
+        <div class="relative z-20 text-center px-6 w-full max-w-7xl mx-auto">
+          <!-- Elite Badge -->
+          <div class="mb-6 md:mb-8">
+            <div
+              class="inline-block px-4 md:px-6 py-1.5 md:py-2 rounded-full backdrop-blur-xl"
+              style="
+                background: rgba(255, 255, 255, 0.03);
+                border: 1px solid rgba(201, 58, 168, 0.3);
+                box-shadow: 0 4px 24px rgba(201, 58, 168, 0.1);
+              "
+            >
+              <span class="text-xs md:text-sm tracking-widest text-[#C93AA8]" style="font-weight: 600;">
+                نخبة 2026 FX GLOBAL
+              </span>
+            </div>
+          </div>
+
+          <!-- Title -->
+          <h1 class="relative text-3xl sm:text-4xl md:text-6xl lg:text-8xl text-white mb-6 md:mb-8 leading-tight px-4 md:px-0 anim-init delay-1" style="font-weight: 900;">
+            <span class="block">مش أي حدا بقدر يكون</span>
+            <span class="block bg-gradient-to-l from-[#C93AA8] via-[#DF2E88] to-[#694393] bg-clip-text text-transparent">
+              من النخبة.
+            </span>
+          </h1>
+
+          <!-- Divider -->
+          <div class="w-16 md:w-24 h-px mx-auto mb-6 md:mb-8 bg-gradient-to-r from-transparent via-[#C93AA8] to-transparent divider-grow"></div>
+
+          <!-- Subtitle -->
+          <p class="text-base sm:text-lg md:text-2xl text-white/70 mb-8 md:mb-12 max-w-3xl mx-auto leading-relaxed px-4 md:px-0 anim-init delay-2">
+            الـ 1% اللي قرروا يفكروا،
+            <br class="hidden sm:block" />
+            <span class="sm:inline block mt-1 sm:mt-0 font-bold font-normal"> ويتصرفوا زي المتداولين الحقيقيين.</span>
+          </p>
+
+          <!-- Video -->
+          <div class="mb-8 md:mb-12 max-w-5xl mx-auto px-4 md:px-0 anim-init delay-3" id="video-container">
+            <div
+              class="relative aspect-video rounded-2xl md:rounded-3xl overflow-hidden backdrop-blur-xl group"
+              style="
+                background: rgba(0, 0, 0, 0.3);
+                border: 1px solid rgba(255, 255, 255, 0.05);
+                box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5), 0 0 80px rgba(201, 58, 168, 0.1);
+              "
+            >
+              <iframe
+                id="hero-video"
+                src="https://player.vimeo.com/video/1137236076?autoplay=1&loop=1&muted=1&background=1"
+                class="absolute inset-0 w-full h-full"
+                frameborder="0"
+                allow="autoplay; fullscreen; picture-in-picture"
+                allowfullscreen
+                title="نخبة FX Global 2026"
+              ></iframe>
+              <!-- Edge blend overlays -->
+              <div
+                class="absolute inset-0 pointer-events-none"
+                style="
+                  background:
+                    linear-gradient(to right, rgba(0, 0, 0, 0.4) 0%, transparent 10%, transparent 90%, rgba(0, 0, 0, 0.4) 100%),
+                    linear-gradient(to bottom, rgba(0, 0, 0, 0.3) 0%, transparent 15%, transparent 85%, rgba(0, 0, 0, 0.5) 100%);
+                "
+              ></div>
+              <div
+                class="absolute inset-0 pointer-events-none mix-blend-overlay opacity-10"
+                style="background: linear-gradient(135deg, rgba(105, 67, 147, 0.3) 0%, rgba(201, 58, 168, 0.3) 100%);"
+              ></div>
+            </div>
+          </div>
+
+          <!-- CTA -->
+          <div>
+            <button
+              id="join-btn"
+              class="relative px-8 md:px-12 py-5 md:py-7 text-lg md:text-xl overflow-hidden group rounded-xl text-white"
+              style="
+                background: linear-gradient(135deg, #694393 0%, #DF2E88 100%);
+                border: 1px solid rgba(255, 255, 255, 0.2);
+                box-shadow: 0 8px 32px rgba(201, 58, 168, 0.3);
+                font-weight: 600;
+              "
+            >
+              <span class="relative z-10 tracking-wide">انضم للنخبة</span>
+              <span class="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent translate-x-[-100%] group-hover:translate-x-[200%] transition duration-700"></span>
+            </button>
+          </div>
+
+          <!-- Scroll indicator -->
+          <div class="absolute bottom-12 left-1/2 transform -translate-x-1/2 text-white/40">▼</div>
+        </div>
+      </section>
+
+      <!-- Section Transition (wave) -->
+      <div class="absolute left-0 right-0" style="bottom:-1px">
+        <svg class="w-full h-24 md:h-32" viewBox="0 0 1440 120" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M0,64 C240,20 480,20 720,64 C960,108 1200,108 1440,64 L1440,120 L0,120 Z" fill="url(#gradient1)"/>
+          <defs>
+            <linearGradient id="gradient1" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stop-color="#694393" stop-opacity="0.3"/>
+              <stop offset="50%" stop-color="#DF2E88" stop-opacity="0.5"/>
+              <stop offset="100%" stop-color="#C93AA8" stop-opacity="0.3"/>
+            </linearGradient>
+          </defs>
+        </svg>
+      </div>
+
+      <!-- Philosophy Section -->
+      <section class="relative min-h-[80vh] flex items-center justify-center py-20 overflow-hidden anim-init">
+        <div class="absolute inset-0 bg-black">
+          <div class="absolute inset-0 opacity-30 animated-bg"></div>
+        </div>
+        <div class="relative z-10 max-w-7xl mx-auto px-6 text-center">
+          <h2 class="text-3xl sm:text-4xl md:text-6xl lg:text-7xl text-white mb-4 md:mb-6 px-4 anim-init delay-1" style="font-weight:900">
+            <span class="bg-gradient-to-l from-[#C93AA8] via-[#DF2E88] to-[#694393] bg-clip-text text-transparent">فلسفة النخبة</span>
+          </h2>
+          <div class="w-24 md:w-32 h-px mx-auto mb-4 md:mb-6 bg-gradient-to-r from-transparent via-[#C93AA8] to-transparent divider-grow"></div>
+          <p class="text-lg sm:text-xl md:text-2xl text-white/70 px-4 mb-12 md:mb-20 anim-init delay-2">الشطرنج علّمنا: كل حركة لها ثمن.</p>
+          <div class="grid md:grid-cols-3 gap-6 md:gap-8 anim-init delay-3">
+            <div class="relative p-6 md:p-10 rounded-2xl md:rounded-3xl backdrop-blur-xl h-full overflow-hidden lift" style="background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.08);box-shadow:0 20px 50px rgba(0,0,0,0.5);">
+              <div class="relative mb-6 md:mb-8">
+                <div class="w-14 h-14 md:w-16 md:h-16 mx-auto rounded-2xl flex items-center justify-center" style="background:linear-gradient(135deg,#694393 0%,#C93AA8 100%);box-shadow:0 10px 40px rgba(105,67,147,0.4);">
+                  <span class="text-white text-xl">👑</span>
+                </div>
+              </div>
+              <h3 class="text-2xl md:text-3xl text-white mb-3 md:mb-4" style="font-weight:800">الملوك بياخذوا قراراتهم بايدهم</h3>
+              <p class="text-base md:text-lg text-white/60 leading-relaxed">بيقودوا، بيخططوا، وبيتحكموا بمصيرهم.</p>
+            </div>
+            <div class="relative p-6 md:p-10 rounded-2xl md:rounded-3xl backdrop-blur-xl h-full overflow-hidden lift" style="background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.08);box-shadow:0 20px 50px rgba(0,0,0,0.5);">
+              <div class="relative mb-6 md:mb-8">
+                <div class="w-14 h-14 md:w-16 md:h-16 mx-auto rounded-2xl flex items-center justify-center" style="background:linear-gradient(135deg,#DF2E88 0%,#C93AA8 100%);box-shadow:0 10px 40px rgba(223,46,136,0.4);">
+                  <span class="text-white text-xl">🎯</span>
+                </div>
+              </div>
+              <h3 class="text-2xl md:text-3xl text-white mb-3 md:mb-4" style="font-weight:800">الدقة قبل السرعة</h3>
+              <p class="text-base md:text-lg text-white/60 leading-relaxed">حركة وحدة صح أحسن من 100 حركة غلط.</p>
+            </div>
+            <div class="relative p-6 md:p-10 rounded-2xl md:rounded-3xl backdrop-blur-xl h-full overflow-hidden lift" style="background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.08);box-shadow:0 20px 50px rgba(0,0,0,0.5);">
+              <div class="relative mb-6 md:mb-8">
+                <div class="w-14 h-14 md:w-16 md:h-16 mx-auto rounded-2xl flex items-center justify-center" style="background:linear-gradient(135deg,#C93AA8 0%,#DF2E88 100%);box-shadow:0 10px 40px rgba(201,58,168,0.4);">
+                  <span class="text-white text-xl">📈</span>
+                </div>
+              </div>
+              <h3 class="text-2xl md:text-3xl text-white mb-3 md:mb-4" style="font-weight:800">النتائج مش صدفة</h3>
+              <p class="text-base md:text-lg text-white/60 leading-relaxed">هي نتيجة تفكير استراتيجي وانضباط حديدي.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Transition (diagonal) -->
+      <div class="absolute left-0 right-0 h-24 md:h-32" style="bottom:-1px">
+        <div class="w-full h-full" style="background:linear-gradient(135deg, rgba(105,67,147,0.3) 0%, rgba(223,46,136,0.5) 50%, rgba(201,58,168,0.3) 100%);clip-path:polygon(0 0, 100% 100%, 0 100%);"></div>
+      </div>
+
+      <!-- Program Section -->
+      <section class="relative min-h-[80vh] py-20 overflow-hidden anim-init">
+        <div class="absolute inset-0 bg-gradient-to-br from-black via-[#694393]/10 to-black"></div>
+        <div class="relative z-10 max-w-7xl mx-auto px-6">
+          <div class="text-center mb-12 md:mb-20">
+            <h2 class="text-3xl sm:text-4xl md:text-6xl lg:text-7xl text-white mb-4 md:mb-6 px-4 anim-init delay-1" style="font-weight:900">
+              <span class="bg-gradient-to-l from-[#C93AA8] via-[#DF2E88] to-[#694393] bg-clip-text text-transparent">البرنامج</span>
+            </h2>
+            <div class="w-24 md:w-32 h-px mx-auto mb-4 md:mb-6 bg-gradient-to-r from-transparent via-[#C93AA8] to-transparent divider-grow"></div>
+            <p class="text-lg sm:text-xl md:text-2xl text-white/70 px-4 anim-init delay-2">6 أشهر بتفصلك عن النسخة الأقوى منك.</p>
+          </div>
+
+          <!-- Features -->
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 mb-16 md:mb-24 anim-init delay-3">
+            <div class="relative p-4 md:p-6 rounded-2xl backdrop-blur-xl text-center lift" style="background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.06);">
+              <div class="text-white/80 text-xl mb-3">🗓️</div>
+              <h3 class="text-white font-bold mb-1">6 أشهر</h3>
+              <p class="text-white/50 text-sm">تدريب مكثف</p>
+            </div>
+            <div class="relative p-4 md:p-6 rounded-2xl backdrop-blur-xl text-center lift" style="background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.06);">
+              <div class="text-white/80 text-xl mb-3">👥</div>
+              <h3 class="text-white font-bold mb-1">نخبة محدودة</h3>
+              <p class="text-white/50 text-sm">أماكن حصرية</p>
+            </div>
+            <div class="relative p-4 md:p-6 rounded-2xl backdrop-blur-xl text-center lift" style="background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.06);">
+              <div class="text-white/80 text-xl mb-3">🏆</div>
+              <h3 class="text-white font-bold mb-1">نتائج حقيقية</h3>
+              <p class="text-white/50 text-sm">مش وعود فاضية</p>
+            </div>
+            <div class="relative p-4 md:p-6 rounded-2xl backdrop-blur-xl text-center lift" style="background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.06);">
+              <div class="text-white/80 text-xl mb-3">⚡</div>
+              <h3 class="text-white font-bold mb-1">تطبيق عملي</h3>
+              <p class="text-white/50 text-sm">من اليوم الأول</p>
+            </div>
+          </div>
+
+          <!-- Delivery options -->
+          <div class="grid md:grid-cols-2 gap-4 md:gap-6 mb-16 md:mb-24">
+            <div class="relative p-6 md:p-8 rounded-2xl md:rounded-3xl backdrop-blur-xl overflow-hidden" style="background:rgba(255,255,255,0.03);border:2px solid #C93AA8;box-shadow:0 20px 50px rgba(201,58,168,0.3);">
+              <div class="absolute inset-0 bg-gradient-to-br from-[#C93AA8]/10 to-transparent"></div>
+              <div class="relative">
+                <div class="flex items-center justify-between mb-4">
+                  <h3 class="text-2xl md:text-3xl text-white" style="font-weight:800">أونلاين</h3>
+                  <span class="px-4 py-2 rounded-full text-xs md:text-sm bg-green-500/20 text-green-400 border border-green-500/30" style="font-weight:700">متاح الآن ✓</span>
+                </div>
+                <p class="text-sm md:text-base text-white/70 leading-relaxed">ابدأ رحلتك مع النخبة من أي مكان. التسجيل مفتوح.</p>
+              </div>
+            </div>
+            <div class="relative p-6 md:p-8 rounded-2xl md:rounded-3xl backdrop-blur-xl overflow-hidden opacity-60" style="background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.1);">
+              <div class="absolute inset-0 bg-gradient-to-br from-[#DF2E88]/10 to-transparent"></div>
+              <div class="relative">
+                <div class="flex items-center justify-between mb-4">
+                  <h3 class="text-2xl md:text-3xl text-white" style="font-weight:800">أوفلاين</h3>
+                  <span class="px-4 py-2 rounded-full text-xs md:text-sm bg-red-500/20 text-red-400 border border-red-500/30" style="font-weight:700">مغلق</span>
+                </div>
+                <p class="text-sm md:text-base text-white/70 leading-relaxed mb-2">جاري التنفيذ - المجموعة حالياً في المستوى الثاني.</p>
+                <p class="text-xs md:text-sm text-white/50">التسجيل متاح فقط في القسم الأونلاين.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Modules -->
+          <div class="space-y-6 md:space-y-8">
+            <div class="relative p-6 md:p-12 rounded-2xl md:rounded-3xl backdrop-blur-xl overflow-hidden" style="background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.08);box-shadow:0 20px 50px rgba(0,0,0,0.5);">
+              <div class="absolute right-0 top-0 bottom-0 w-1" style="background:#694393"></div>
+              <div class="relative">
+                <h3 class="text-2xl md:text-4xl text-white mb-3 md:mb-4" style="font-weight:800">المستوى الأول</h3>
+                <p class="text-sm md:text-lg mb-2 md:mb-3 tracking-wide" style="color:#694393;font-weight:600">أول خمسة أسابيع</p>
+                <p class="text-base md:text-xl text-white/60 leading-relaxed mb-2">أساسيات التداول و المدرسة الكلاسيكية (أربع أسابيع)</p>
+                <p class="text-sm md:text-base text-white/40 leading-relaxed">الأسبوع الأخير: امتحان في المستوى الأول</p>
+              </div>
+            </div>
+            <div class="relative p-6 md:p-12 rounded-2xl md:rounded-3xl backdrop-blur-xl overflow-hidden" style="background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.08);box-shadow:0 20px 50px rgba(0,0,0,0.5);">
+              <div class="absolute right-0 top-0 bottom-0 w-1" style="background:#DF2E88"></div>
+              <div class="relative">
+                <h3 class="text-2xl md:text-4xl text-white mb-3 md:mb-4" style="font-weight:800">المستوى الثاني</h3>
+                <p class="text-sm md:text-lg mb-2 md:mb-3 tracking-wide" style="color:#DF2E88;font-weight:600">تسعة أسابيع</p>
+                <p class="text-base md:text-xl text-white/60 leading-relaxed mb-2">مدرسة التحليل مفاهيم الأموال الذكية (SMC) (ثمانية أسابيع)</p>
+                <p class="text-sm md:text-base text-white/40 leading-relaxed">الأسبوع الأخير: امتحان في المستوى الثاني</p>
+              </div>
+            </div>
+            <div class="relative p-6 md:p-12 rounded-2xl md:rounded-3xl backdrop-blur-xl overflow-hidden" style="background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.08);box-shadow:0 20px 50px rgba(0,0,0,0.5);">
+              <div class="absolute right-0 top-0 bottom-0 w-1" style="background:#C93AA8"></div>
+              <div class="relative">
+                <h3 class="text-2xl md:text-4xl text-white mb-3 md:mb-4" style="font-weight:800">المستوى الثالث</h3>
+                <p class="text-sm md:text-lg mb-2 md:mb-3 tracking-wide" style="color:#C93AA8;font-weight:600">خمسة أسابيع</p>
+                <p class="text-base md:text-xl text-white/60 leading-relaxed mb-2">مدرسة تحليل السيولة (ICT) (أربعة أسابيع)</p>
+                <p class="text-sm md:text-base text-white/40 leading-relaxed">الأسبوع الأخير: امتحان في المستوى الثالث</p>
+              </div>
+            </div>
+            <div class="relative p-6 md:p-12 rounded-2xl md:rounded-3xl backdrop-blur-xl overflow-hidden" style="background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.08);box-shadow:0 20px 50px rgba(0,0,0,0.5);">
+              <div class="absolute right-0 top-0 bottom-0 w-1" style="background:#694393"></div>
+              <div class="relative">
+                <h3 class="text-2xl md:text-4xl text-white mb-3 md:mb-4" style="font-weight:800">استراتيجيات الصفقات الناجحة</h3>
+                <p class="text-sm md:text-lg mb-2 md:mb-3 tracking-wide" style="color:#694393;font-weight:600">أسبوعين</p>
+                <p class="text-base md:text-xl text-white/60 leading-relaxed mb-2">الأسبوع الأول: تطبيق عملي على دمج مدارس التحليل</p>
+                <p class="text-sm md:text-base text-white/40 leading-relaxed">الأسبوع الثاني: امتحان يكمل في صفقة ناجحة</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Transition (particles simple) -->
+      <div class="relative h-24 md:h-32 overflow-hidden">
+        <div class="absolute w-1 h-1 rounded-full particle" style="left:10%;top:50%;background:#DF2E88;box-shadow:0 0 10px #DF2E88;animation-delay:0s;"></div>
+        <div class="absolute w-1 h-1 rounded-full particle" style="left:20%;top:55%;background:#694393;box-shadow:0 0 10px #694393;animation-delay:.2s;"></div>
+        <div class="absolute w-1 h-1 rounded-full particle" style="left:30%;top:52%;background:#DF2E88;box-shadow:0 0 10px #DF2E88;animation-delay:.4s;"></div>
+        <div class="absolute w-1 h-1 rounded-full particle" style="left:40%;top:58%;background:#694393;box-shadow:0 0 10px #694393;animation-delay:.6s;"></div>
+      </div>
+
+      <!-- Vision Section -->
+      <section class="relative min-h-[70vh] flex items-center justify-center py-20 overflow-hidden anim-init">
+        <div class="absolute inset-0">
+          <div class="absolute inset-0 bg-gradient-to-br from-black via-[#DF2E88]/10 to-black"></div>
+          <div class="absolute inset-0 opacity-20 animated-bg"></div>
+        </div>
+        <div class="relative z-10 max-w-6xl mx-auto px-6 text-center">
+          <div class="inline-flex items-center gap-3 mb-6">
+            <span class="w-8 h-8 md:w-10 md:h-10 text-[#C93AA8]">✨</span>
+          </div>
+          <h2 class="text-3xl sm:text-4xl md:text-6xl lg:text-7xl text-white mb-4 md:mb-6 px-4 anim-init delay-1" style="font-weight:900">
+            <span class="bg-gradient-to-l from-[#C93AA8] via-[#DF2E88] to-[#694393] bg-clip-text text-transparent">الرؤية</span>
+          </h2>
+          <div class="w-24 md:w-32 h-px mx-auto mb-4 md:mb-6 bg-gradient-to-r from-transparent via-[#C93AA8] to-transparent divider-grow"></div>
+          <p class="text-lg sm:text-xl md:text-2xl text-white/70 px-4 mb-12 anim-init delay-2">في نهاية البرنامج، ما رح تكون نفس الشخص.</p>
+
+          <div class="relative p-8 md:p-16 rounded-2xl md:rounded-3xl backdrop-blur-xl overflow-hidden group" style="background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.08);box-shadow:0 30px 80px rgba(0,0,0,0.6);">
+            <div class="absolute inset-0 opacity-20 animated-bg"></div>
+            <div class="relative space-y-6 md:space-y-8 anim-init delay-3" dir="rtl">
+              <div class="flex items-start gap-4 md:gap-6">
+                <div class="flex-shrink-0 mt-1">
+                  <div class="w-7 h-7 rounded-lg flex items-center justify-center" style="background:linear-gradient(135deg,#694393 0%,#C93AA8 100%);box-shadow:0 4px 16px rgba(105,67,147,0.4);">
+                    <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                  </div>
+                </div>
+                <p class="text-base sm:text-lg md:text-2xl text-white/80 leading-relaxed font-bold text-right">تفكر زي محترف، مش زي مبتدئ.</p>
+              </div>
+              <div class="flex items-start gap-4 md:gap-6">
+                <div class="flex-shrink-0 mt-1">
+                  <div class="w-7 h-7 rounded-lg flex items-center justify-center" style="background:linear-gradient(135deg,#DF2E88 0%,#C93AA8 100%);box-shadow:0 4px 16px rgba(223,46,136,0.4);">
+                    <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                  </div>
+                </div>
+                <p class="text-base sm:text-lg md:text-2xl text-white/80 leading-relaxed font-bold text-right">تتحكم بعواطفك، مش هي اللي تتحكم فيك.</p>
+              </div>
+              <div class="flex items-start gap-4 md:gap-6">
+                <div class="flex-shrink-0 mt-1">
+                  <div class="w-7 h-7 rounded-lg flex items-center justify-center" style="background:linear-gradient(135deg,#C93AA8 0%,#DF2E88 100%);box-shadow:0 4px 16px rgba(201,58,168,0.4);">
+                    <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                  </div>
+                </div>
+                <p class="text-base sm:text-lg md:text-2xl text-white/80 leading-relaxed font-bold text-right">تفهم إنه الخسارة جزء من اللعبة، مش نهايتها.</p>
+              </div>
+              <div class="flex items-start gap-4 md:gap-6">
+                <div class="flex-shrink-0 mt-1">
+                  <div class="w-7 h-7 rounded-lg flex items-center justify-center" style="background:linear-gradient(135deg,#694393 0%,#C93AA8 100%);box-shadow:0 4px 16px rgba(105,67,147,0.4);">
+                    <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                  </div>
+                </div>
+                <p class="text-base sm:text-lg md:text-2xl text-white/80 leading-relaxed font-bold text-right">تشتغل بنظام، مش بعشوائية.</p>
+              </div>
+            </div>
+          </div>
+          <div class="mt-12 md:mt-16 text-center px-4">
+            <p class="text-xl sm:text-2xl md:text-3xl text-white/50 italic">"رح تكون جزء من الـ 1%."</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Transition (wave) -->
+      <div class="absolute left-0 right-0" style="bottom:-1px">
+        <svg class="w-full h-24 md:h-32" viewBox="0 0 1440 120" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M0,64 C240,20 480,20 720,64 C960,108 1200,108 1440,64 L1440,120 L0,120 Z" fill="url(#gradient2)"/>
+          <defs>
+            <linearGradient id="gradient2" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stop-color="#694393" stop-opacity="0.3"/>
+              <stop offset="50%" stop-color="#DF2E88" stop-opacity="0.5"/>
+              <stop offset="100%" stop-color="#C93AA8" stop-opacity="0.3"/>
+            </linearGradient>
+          </defs>
+        </svg>
+      </div>
+
+      <!-- Registration Form -->
+      <section id="registration-form" class="relative min-h-[60vh] flex items-center justify-center py-20 overflow-hidden anim-init">
+        <div class="absolute inset-0 bg-black">
+          <div class="absolute inset-0 opacity-20 animated-bg"></div>
+        </div>
+        <div class="relative z-10 max-w-4xl mx-auto px-6 w-full text-center">
+          <h2 class="text-3xl sm:text-4xl md:text-6xl lg:text-7xl text-white mb-4 md:mb-6 px-4 anim-init delay-1" style="font-weight:900">
+            <span class="bg-gradient-to-l from-[#C93AA8] via-[#DF2E88] to-[#694393] bg-clip-text text-transparent">ابدأ رحلتك</span>
+          </h2>
+          <div class="w-24 md:w-32 h-px mx-auto mb-4 md:mb-6 bg-gradient-to-r from-transparent via-[#C93AA8] to-transparent divider-grow"></div>
+          <p class="text-lg sm:text-xl md:text-2xl text-white/70 px-4 mb-12 anim-init delay-2">اترك بياناتك وخلينا نتواصل معك</p>
+          <div class="relative p-6 md:p-16 rounded-2xl md:rounded-3xl backdrop-blur-xl overflow-hidden anim-init delay-3" style="background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.08);box-shadow:0 30px 80px rgba(0,0,0,0.6);">
+            <div class="absolute inset-0 opacity-20 animated-bg"></div>
+            <form id="elite-form" action="/api/contacts/register/" method="post" class="relative space-y-5 md:space-y-6 text-right">
+              {% csrf_token %}
+              <input type="hidden" name="landing_code" value="{{ landing_code|default:'ELITE2026' }}" />
+              <div>
+                <label class="block text-white/80 mb-2 md:mb-3 text-base md:text-lg" style="font-weight:600">الاسم الكامل</label>
+                <input id="name" name="name" type="text" required class="w-full px-4 md:px-6 py-4 md:py-6 text-base md:text-lg rounded-2xl border-white/10 bg-white/5 text-white placeholder:text-white/40 focus:border-[#C93AA8] focus:ring-2 focus:ring-[#C93AA8]/30 transition-all" placeholder="أدخل اسمك الكامل" style="direction:rtl" />
+              </div>
+              <div class="grid md:grid-cols-2 gap-5 md:gap-6">
+                <div>
+                  <label class="block text-white/80 mb-2 md:mb-3 text-base md:text-lg" style="font-weight:600">رقم الهاتف</label>
+                  <input id="phone" name="phone" type="tel" required class="w-full px-4 md:px-6 py-4 md:py-6 text-base md:text-lg rounded-2xl border-white/10 bg-white/5 text-white placeholder:text-white/40 focus:border-[#C93AA8] focus:ring-2 focus:ring-[#C93AA8]/30 transition-all" placeholder="05XX XXX XXX" />
+                </div>
+                <div>
+                  <label class="block text-white/80 mb-2 md:mb-3 text-base md:text-lg" style="font-weight:600">رقم الواتساب</label>
+                  <input id="whatsapp" name="whatsapp" type="tel" required class="w-full px-4 md:px-6 py-4 md:py-6 text-base md:text-lg rounded-2xl border-white/10 bg-white/5 text-white placeholder:text-white/40 focus:border-[#C93AA8] focus:ring-2 focus:ring-[#C93AA8]/30 transition-all" placeholder="+972 XX XXX XXXX" />
+                </div>
+              </div>
+              <div>
+                <label class="block text-white/80 mb-2 md:mb-3 text-base md:text-lg" style="font-weight:600">المدينة</label>
+                <input id="city" name="city" type="text" required class="w-full px-4 md:px-6 py-4 md:py-6 text-base md:text-lg rounded-2xl border-white/10 bg-white/5 text-white placeholder:text-white/40 focus:border-[#C93AA8] focus:ring-2 focus:ring-[#C93AA8]/30 transition-all" placeholder="أدخل مدينتك (مثال: الرياض)" />
+              </div>
+              <div>
+                <label class="block text-white/80 mb-2 md:mb-3 text-base md:text-lg" style="font-weight:600">رسالة (اختياري)</label>
+                <textarea id="message" name="message" rows="4" class="w-full px-4 md:px-6 py-4 md:py-6 text-base md:text-lg rounded-2xl border-white/10 bg-white/5 text-white placeholder:text-white/40 focus:border-[#C93AA8] focus:ring-2 focus:ring-[#C93AA8]/30 transition-all resize-none" placeholder="أخبرنا المزيد عن اهتماماتك..." style="direction:rtl"></textarea>
+              </div>
+              <div class="pt-2 md:pt-4">
+                <button type="submit" class="w-full relative px-8 md:px-12 py-5 md:py-8 text-lg md:text-2xl overflow-hidden group rounded-xl text-white" style="background:linear-gradient(135deg,#694393 0%,#DF2E88 100%);border:1px solid rgba(255,255,255,0.2);box-shadow:0 12px 48px rgba(201,58,168,0.4);font-weight:700;">
+                  إرسال الطلب
+                </button>
+              </div>
+              <p id="elite-status" class="text-center text-white/40 text-xs md:text-sm">معلوماتك محفوظة ومؤمنة بالكامل</p>
+            </form>
+          </div>
+        </div>
+      </section>
+
+      <!-- Final CTA -->
+      <section class="relative min-h-[60vh] flex items-center justify-center py-16 overflow-hidden anim-init">
+        <div class="absolute inset-0 bg-black">
+          <div class="absolute inset-0 opacity-25 animated-bg"></div>
+        </div>
+        <div class="relative z-10 max-w-5xl mx-auto px-6 text-center">
+          <div class="relative p-10 md:p-24 rounded-2xl md:rounded-3xl backdrop-blur-xl overflow-hidden anim-init delay-2" style="background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.1);box-shadow:0 30px 100px rgba(0,0,0,0.7);">
+            <div class="absolute inset-0 opacity-30 animated-bg"></div>
+            <div class="relative mb-8">
+              <div class="text-5xl md:text-8xl">👑</div>
+            </div>
+            <h2 class="text-3xl sm:text-4xl md:text-6xl lg:text-7xl text-white mb-6 md:mb-8 px-4 anim-init delay-3" style="font-weight:900">
+              <span class="bg-gradient-to-l from-[#C93AA8] via-[#DF2E88] to-[#694393] bg-clip-text text-transparent">جاهز تنضم للنخبة؟</span>
+            </h2>
+            <div class="w-24 md:w-32 h-px mx-auto mb-6 md:mb-8 bg-gradient-to-r from-transparent via-[#C93AA8] to-transparent divider-grow"></div>
+            <p class="text-lg sm:text-xl md:text-2xl text-white/70 mb-8 md:mb-12 leading-relaxed px-4 anim-init delay-4">
+              الأماكن محدودة. القرار إلك.
+              <br />
+              <span class="text-[#C93AA8]" style="font-weight:700">البداية من هون.</span>
+            </p>
+            <button id="join-btn-bottom" class="relative px-10 md:px-16 py-5 md:py-8 text-lg md:text-2xl overflow-hidden group rounded-xl text-white" style="background:linear-gradient(135deg,#694393 0%,#DF2E88 100%);border:1px solid rgba(255,255,255,0.2);box-shadow:0 12px 48px rgba(201,58,168,0.4);font-weight:700;">
+              سجّل الآن
+            </button>
+            <p class="relative mt-12 text-sm sm:text-base md:text-lg text-white/40 italic px-4">"في النهاية، الاختيار دايماً إلك. اختار تكون نخبة."</p>
+          </div>
+          <p class="mt-12 text-white/30 text-xs md:text-sm">نخبة FX Global 2026 © جميع الحقوق محفوظة</p>
+        </div>
+      </section>
+    </div>
+
+    <script src="{% static 'new_elite/site.js' %}"></script>
+    <script src="{% static 'new_elite/elite.js' %}" defer></script>
+    <script>
+      // Secondary CTA button scroll
+      (function () {
+        var btn = document.getElementById('join-btn-bottom');
+        if (btn) {
+          btn.addEventListener('click', function () {
+            var formSection = document.getElementById('registration-form');
+            if (formSection && formSection.scrollIntoView) {
+              formSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+          });
+        }
+      })();
+      // Reveal on scroll
+      (function () {
+        var addIn = function (el) {
+          if (el.classList.contains('divider-grow')) {
+            el.classList.add('divider-in');
+          } else {
+            el.classList.add('anim-in');
+          }
+        };
+        var targets = Array.prototype.slice.call(document.querySelectorAll('.anim-init, .divider-grow'));
+        if (!('IntersectionObserver' in window)) {
+          targets.forEach(addIn);
+          return;
+        }
+        var io = new IntersectionObserver(function (entries) {
+          entries.forEach(function (entry) {
+            if (entry.isIntersecting) {
+              addIn(entry.target);
+              io.unobserve(entry.target);
+            }
+          });
+        }, { threshold: 0.25 });
+        targets.forEach(function (el) { io.observe(el); });
+      })();
+    </script>
+  </body>
+  </html>
+
+

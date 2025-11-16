@@ -1,0 +1,22 @@
+/* Elite page custom styles */
+html, body {
+  font-family: 'Cairo', system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, 'Fira Sans', 'Droid Sans', 'Helvetica Neue', Arial;
+}
+
+/* Utility wrapper width to align with templates */
+.container-w {
+  max-width: 110rem;
+}
+
+/* Status message styles */
+#elite-status {
+  min-height: 1.25rem;
+}
+
+/* Basic focus ring for better a11y when Tailwind isn't available */
+input:focus, textarea:focus, button:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(217, 70, 239, 0.35);
+}
+
+

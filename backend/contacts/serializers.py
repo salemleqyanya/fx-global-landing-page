@@ -71,6 +71,15 @@ class CustomerContactCreateSerializer(serializers.ModelSerializer):
         if landing_code:
             landing_page = LandingPage.objects.filter(short_code=landing_code).first()
 
-        contact = CustomerContact.objects.create(landing_page=landing_page, **validated_data)
+        # Ensure city is saved even if empty/whitespace was provided
+        city_value = validated_data.pop('city', None)
+        if isinstance(city_value, str):
+            city_value = city_value.strip() or None
+
+        contact = CustomerContact.objects.create(
+            landing_page=landing_page,
+            city=city_value,
+            **validated_data
+        )
         return contact
 

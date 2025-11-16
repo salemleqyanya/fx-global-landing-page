@@ -180,3 +180,21 @@ def landing_page(request, short_code=None, force_template=None):
         template_name = 'landing_page_neon.html'
 
     return render(request, template_name, context)
+
+
+def elite_program(request):
+    """Render Elite landing page with working form submission."""
+    from contacts.models import LandingPage
+    # Ensure a unique LandingPage code exists for Elite
+    desired_code = request.GET.get('code', 'NOKHBEH01').upper()
+    landing_page_obj = LandingPage.objects.filter(short_code=desired_code).first()
+    if landing_page_obj is None:
+        landing_page_obj = LandingPage(
+            name='Elite Program Landing',
+            template='neon',
+            is_active=True,
+        )
+        # Assign explicit code before first save so model doesn't auto-generate a random one
+        landing_page_obj.short_code = desired_code
+        landing_page_obj.save()
+    return render(request, 'elite.html', {'landing_code': landing_page_obj.short_code})

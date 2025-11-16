@@ -1,13 +1,16 @@
 from rest_framework import status
-from rest_framework.decorators import api_view, permission_classes
+from rest_framework.decorators import api_view, permission_classes, authentication_classes
 from rest_framework.permissions import AllowAny, IsAdminUser
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 from .models import CustomerContact
 from .serializers import CustomerContactSerializer, CustomerContactCreateSerializer
+from django.views.decorators.csrf import csrf_exempt
 
 
+@csrf_exempt
 @api_view(['POST'])
+@authentication_classes([])  # Disable SessionAuthentication to avoid CSRF enforcement by DRF
 @permission_classes([AllowAny])
 def register_customer(request):
     """Public endpoint for customer registration"""

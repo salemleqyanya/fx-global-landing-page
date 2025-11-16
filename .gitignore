@@ -18,7 +18,6 @@ build/
 # Django
 *.log
 db.sqlite3-journal
-/backend/staticfiles/
 /backend/media/
 /backend/*.pyc
 /backend/__pycache__/

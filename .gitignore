@@ -24,7 +24,7 @@ db.sqlite3-journal
 
 # Environment variables
 
-
+db.sqlite3
 
 # IDE
 .vscode/

@@ -8,6 +8,17 @@
     <script src="https://cdn.tailwindcss.com?plugins=forms,typography"></script>
     <link rel="stylesheet" href="{% static 'new_elite/elite.css' %}" />
     <style>
+      /* Ensure proper scrolling */
+      html, body {
+        height: 100%;
+        overflow-x: hidden;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+      }
+      body {
+        margin: 0;
+        padding: 0;
+      }
       /* Minimal keyframes to mimic subtle animated gradient in hero (no React/Motion) */
       @keyframes bgShift {
         0% { background: radial-gradient(circle at 20% 30%, rgba(105, 67, 147, 0.3) 0%, transparent 50%); }
@@ -31,9 +42,9 @@
     </style>
   </head>
   <body>
-    <div class="relative bg-black overflow-x-hidden" style="direction: rtl;">
+    <div class="relative bg-black overflow-x-hidden" style="direction: rtl; min-height: 100vh;">
       <!-- HERO SECTION -->
-      <section class="relative min-h-screen flex items-center justify-center overflow-hidden anim-init">
+      <section class="relative min-h-screen flex items-center justify-center anim-init">
         <!-- Cinematic Background -->
         <div class="absolute inset-0 z-0">
           <!-- Chess Background Image -->
@@ -106,7 +117,7 @@
             >
               <iframe
                 id="hero-video"
-                src="https://player.vimeo.com/video/1137236076?autoplay=1&loop=1&muted=1&background=1"
+                src="https://player.vimeo.com/video/1137236076?autoplay=1&loop=1&muted=1&controls=1"
                 class="absolute inset-0 w-full h-full"
                 frameborder="0"
                 allow="autoplay; fullscreen; picture-in-picture"
@@ -166,7 +177,7 @@
       </div>
 
       <!-- Philosophy Section -->
-      <section class="relative min-h-[80vh] flex items-center justify-center py-20 overflow-hidden anim-init">
+      <section class="relative min-h-[80vh] flex items-center justify-center py-20 anim-init">
         <div class="absolute inset-0 bg-black">
           <div class="absolute inset-0 opacity-30 animated-bg"></div>
         </div>
@@ -214,7 +225,7 @@
       </div>
 
       <!-- Program Section -->
-      <section class="relative min-h-[80vh] py-20 overflow-hidden anim-init">
+      <section class="relative min-h-[80vh] py-20 anim-init">
         <div class="absolute inset-0 bg-gradient-to-br from-black via-[#694393]/10 to-black"></div>
         <div class="relative z-10 max-w-7xl mx-auto px-6">
           <div class="text-center mb-12 md:mb-20">
@@ -325,7 +336,7 @@
       </div>
 
       <!-- Vision Section -->
-      <section class="relative min-h-[70vh] flex items-center justify-center py-20 overflow-hidden anim-init">
+      <section class="relative min-h-[70vh] flex items-center justify-center py-20 anim-init">
         <div class="absolute inset-0">
           <div class="absolute inset-0 bg-gradient-to-br from-black via-[#DF2E88]/10 to-black"></div>
           <div class="absolute inset-0 opacity-20 animated-bg"></div>
@@ -398,7 +409,7 @@
       </div>
 
       <!-- Registration Form -->
-      <section id="registration-form" class="relative min-h-[60vh] flex items-center justify-center py-20 overflow-hidden anim-init">
+      <section id="registration-form" class="relative min-h-[60vh] flex items-center justify-center py-20 anim-init">
         <div class="absolute inset-0 bg-black">
           <div class="absolute inset-0 opacity-20 animated-bg"></div>
         </div>
@@ -447,7 +458,7 @@
       </section>
 
       <!-- Final CTA -->
-      <section class="relative min-h-[60vh] flex items-center justify-center py-16 overflow-hidden anim-init">
+      <section class="relative min-h-[60vh] flex items-center justify-center py-16 anim-init">
         <div class="absolute inset-0 bg-black">
           <div class="absolute inset-0 opacity-25 animated-bg"></div>
         </div>

@@ -87,3 +87,136 @@ class CustomerContact(models.Model):
     
     def __str__(self):
         return f"{self.name} - {self.whatsapp}"
+
+
+class Payment(models.Model):
+    """Model for tracking Lahza payment transactions"""
+    
+    STATUS_CHOICES = [
+        ('pending', 'Pending'),
+        ('success', 'Success'),
+        ('failed', 'Failed'),
+        ('cancelled', 'Cancelled'),
+    ]
+    
+    SOURCE_CHOICES = [
+        ('black_friday', 'Black Friday'),
+        ('checkout', 'Checkout'),
+        ('other', 'Other'),
+    ]
+    
+    # Lahza transaction details
+    reference = models.CharField(max_length=100, unique=True, verbose_name="Payment Reference")
+    transaction_id = models.CharField(max_length=100, blank=True, null=True, verbose_name="Transaction ID")
+    
+    # Customer information
+    customer_name = models.CharField(max_length=200, verbose_name="Customer Name")
+    customer_email = models.EmailField(verbose_name="Customer Email")
+    
+    # Payment details
+    amount = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Amount")
+    currency = models.CharField(max_length=3, default='USD', verbose_name="Currency")
+    
+    # Offer information
+    offer_type = models.CharField(max_length=50, blank=True, null=True, verbose_name="Offer Type")
+    offer_name = models.CharField(max_length=200, blank=True, null=True, verbose_name="Offer Name")
+    
+    # Payment status
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending', verbose_name="Status")
+    source = models.CharField(max_length=20, choices=SOURCE_CHOICES, default='checkout', verbose_name="Source")
+    
+    # Metadata
+    metadata = models.JSONField(default=dict, blank=True, verbose_name="Metadata")
+    lahza_response = models.JSONField(default=dict, blank=True, verbose_name="Lahza Response")
+    
+    # Timestamps
+    created_at = models.DateTimeField(default=timezone.now, verbose_name="Created At")
+    updated_at = models.DateTimeField(auto_now=True, verbose_name="Updated At")
+    paid_at = models.DateTimeField(blank=True, null=True, verbose_name="Paid At")
+    
+    class Meta:
+        verbose_name = "Payment"
+        verbose_name_plural = "Payments"
+        ordering = ['-created_at']
+        indexes = [
+            models.Index(fields=['reference']),
+            models.Index(fields=['customer_email']),
+            models.Index(fields=['status']),
+            models.Index(fields=['created_at']),
+        ]
+    
+    def __str__(self):
+        return f"{self.reference} - {self.customer_email} - ${self.amount} ({self.status})"
+    
+    def mark_as_success(self, transaction_data=None):
+        """Mark payment as successful"""
+        from django.utils import timezone
+        self.status = 'success'
+        if not self.paid_at:
+            self.paid_at = timezone.now()
+        if transaction_data:
+            # Don't overwrite lahza_response if it's already set (might have more data)
+            if not self.lahza_response or not isinstance(self.lahza_response, dict):
+                self.lahza_response = {}
+            if isinstance(transaction_data, dict):
+                self.lahza_response.update(transaction_data)
+            if 'id' in transaction_data:
+                self.transaction_id = str(transaction_data['id'])
+        self.save()
+    
+    def mark_as_failed(self, error_message=None):
+        """Mark payment as failed"""
+        self.status = 'failed'
+        if error_message:
+            if 'errors' not in self.metadata:
+                self.metadata['errors'] = []
+            self.metadata['errors'].append({
+                'message': error_message,
+                'timestamp': timezone.now().isoformat()
+            })
+        self.save()
+
+
+class BlackFridaySettings(models.Model):
+    """Model for storing Black Friday sale settings"""
+    
+    # Use singleton pattern - only one active settings object
+    is_active = models.BooleanField(default=True, verbose_name="Active Settings")
+    end_date = models.DateTimeField(verbose_name="Sale End Date/Time")
+    created_at = models.DateTimeField(default=timezone.now, verbose_name="Created At")
+    updated_at = models.DateTimeField(auto_now=True, verbose_name="Updated At")
+    
+    class Meta:
+        verbose_name = "Black Friday Settings"
+        verbose_name_plural = "Black Friday Settings"
+        ordering = ['-created_at']
+    
+    def __str__(self):
+        return f"Black Friday Sale - Ends: {self.end_date}"
+    
+    def save(self, *args, **kwargs):
+        # Ensure only one active settings object exists
+        if self.is_active:
+            BlackFridaySettings.objects.filter(is_active=True).exclude(pk=self.pk).update(is_active=False)
+        super().save(*args, **kwargs)
+    
+    @classmethod
+    def get_active_settings(cls):
+        """Get the active Black Friday settings"""
+        settings = cls.objects.filter(is_active=True).first()
+        if not settings:
+            # Check if any settings exist at all (even inactive ones)
+            any_settings = cls.objects.first()
+            if any_settings:
+                # If there are inactive settings, activate the most recent one
+                settings = cls.objects.order_by('-created_at').first()
+                settings.is_active = True
+                settings.save()
+            else:
+                # Only create default settings if NO settings exist at all
+                # Use a fixed date (midnight of next day) that won't change
+                from datetime import timedelta
+                tomorrow = timezone.now() + timedelta(days=1)
+                tomorrow = tomorrow.replace(hour=0, minute=0, second=0, microsecond=0)
+                settings = cls.objects.create(end_date=tomorrow, is_active=True)
+        return settings

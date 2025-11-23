@@ -35,6 +35,8 @@ CSRF_TRUSTED_ORIGINS = [
     'http://127.0.0.1:3000',
     'http://localhost:8002',
     'http://127.0.0.1:8002',
+    'http://localhost:8009',
+    'http://127.0.0.1:8009',
 ]
 
 # Application definition
@@ -135,8 +137,10 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
 STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'static')
-STATICFILES_DIRS = [os.path.join(BASE_DIR, 'staticfiles')]
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')  # Where collectstatic collects files
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static'),  # Source static files directory
+]
 PROJECT_PATH = os.path.join(BASE_DIR, 'staticfiles')
 # WhiteNoise configuration for serving static files
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
@@ -166,6 +170,34 @@ CORS_ALLOWED_ORIGINS = [
     "http://127.0.0.1:3000",
     "http://localhost:8002",
     "http://127.0.0.1:8002",
+    "http://localhost:8009",
+    "http://127.0.0.1:8009",
 ]
 
 CORS_ALLOW_CREDENTIALS = True
+# Frontend URL for password reset links
+FRONTEND_URL = os.getenv('FRONTEND_URL', 'http://localhost:8009')
+
+
+LAHZA_SECRET_KEY = os.getenv('LAHZA_SECRET_KEY', 'sk_test_ppMyMbmAtVKU8Z2iuHUsuxG46LV6EdlSC')
+LAHZA_PUBLIC_KEY = os.getenv('LAHZA_PUBLIC_KEY', 'pk_test_I4yPfCO5DHBtNApOgmjxobn55fGqFCJhk')
+LAHZA_BASE_URL = os.getenv('LAHZA_BASE_URL', 'https://api.lahza.io')
+LAHZA_CALLBACK_URL = os.getenv(
+    'LAHZA_CALLBACK_URL',
+    f"{FRONTEND_URL.rstrip('/')}/payments/lahza-callback"
+)
+
+# Email Configuration
+EMAIL_BACKEND = os.getenv('EMAIL_BACKEND', 'django.core.mail.backends.smtp.EmailBackend')
+EMAIL_HOST = os.getenv('EMAIL_HOST', 'smtp.gmail.com')
+EMAIL_PORT = int(os.getenv('EMAIL_PORT', '587'))
+EMAIL_USE_TLS = os.getenv('EMAIL_USE_TLS', 'True').lower() == 'true'
+EMAIL_USE_SSL = os.getenv('EMAIL_USE_SSL', 'False').lower() == 'true'
+EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER', 'info@fxglobals.co')
+# IMPORTANT: For Gmail, you MUST use an App Password, not your regular password
+# 1. Enable 2-Factor Authentication: https://myaccount.google.com/security
+# 2. Generate App Password: https://myaccount.google.com/apppasswords
+# 3. Use the 16-character App Password here (or set EMAIL_HOST_PASSWORD environment variable)
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD', 'spjc izvo nggd zfeh')
+DEFAULT_FROM_EMAIL = os.getenv('DEFAULT_FROM_EMAIL', 'info@fxglobals.co')
+SERVER_EMAIL = os.getenv('SERVER_EMAIL', 'info@fxglobals.co')

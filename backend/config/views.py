@@ -4,7 +4,20 @@ from videos.serializers import VideoPublicSerializer
 from pathlib import Path
 from django.conf import settings
 import urllib.parse
-from contacts.models import LandingPage
+from contacts.models import LandingPage, Payment, BlackFridaySettings
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import AllowAny
+from rest_framework.response import Response
+from rest_framework import status
+from django.views.decorators.csrf import csrf_exempt
+from django.core.mail import send_mail
+from django.template.loader import render_to_string
+from django.utils.html import strip_tags
+from django.utils import timezone
+import logging
+from .lahza_service import initialize_transaction, verify_transaction, LahzaAPIError
+
+logger = logging.getLogger(__name__)
 
 
 def landing_page(request, short_code=None, force_template=None):
@@ -198,3 +211,475 @@ def elite_program(request):
         landing_page_obj.short_code = desired_code
         landing_page_obj.save()
     return render(request, 'elite.html', {'landing_code': landing_page_obj.short_code})
+
+
+def black_friday(request):
+    """Render Black Friday landing page."""
+    return render(request, 'black_friday.html')
+
+
+@api_view(['GET'])
+@permission_classes([AllowAny])
+def get_black_friday_end_date(request):
+    """Get the Black Friday sale end date from database."""
+    try:
+        settings = BlackFridaySettings.get_active_settings()
+        # Ensure the datetime is timezone-aware
+        end_date = settings.end_date
+        # Django models with USE_TZ=True store timezone-aware datetimes, but check anyway
+        if timezone.is_naive(end_date):
+            end_date = timezone.make_aware(end_date)
+        
+        # Return end date as ISO format timestamp (in milliseconds for JavaScript)
+        # Use timestamp() which handles timezone conversion correctly
+        end_date_timestamp = int(end_date.timestamp() * 1000)
+        
+        return Response({
+            'success': True,
+            'end_date': end_date.isoformat(),
+            'end_date_timestamp': end_date_timestamp,
+            'is_active': settings.is_active,
+        })
+    except Exception as e:
+        logger.error(f"[Black Friday] Error getting end date: {str(e)}", exc_info=True)
+        # Return default (midnight tomorrow) if error
+        from datetime import timedelta
+        tomorrow = timezone.now() + timedelta(days=1)
+        tomorrow = tomorrow.replace(hour=0, minute=0, second=0, microsecond=0)
+        end_date_timestamp = int(tomorrow.timestamp() * 1000)
+        
+        return Response({
+            'success': True,
+            'end_date': tomorrow.isoformat(),
+            'end_date_timestamp': end_date_timestamp,
+            'is_active': True,
+        })
+
+
+def lahza_checkout(request):
+    """Render standalone Lahza checkout page."""
+    return render(request, 'lahza_checkout.html')
+
+
+def privacy_policy(request):
+    """Render Privacy Policy page."""
+    return render(request, 'privacy_policy.html')
+
+
+def terms_of_service(request):
+    """Render Terms of Service page."""
+    return render(request, 'terms_of_service.html')
+
+
+@csrf_exempt
+@api_view(['POST'])
+@permission_classes([AllowAny])
+def initialize_lahza_payment(request):
+    """Initialize a Lahza payment transaction for Black Friday."""
+    try:
+        data = request.data
+        email = data.get('email')
+        amount = float(data.get('amount', 0))
+        first_name = data.get('firstName', '')
+        last_name = data.get('lastName', '')
+        mobile = data.get('mobile', '')
+        # Support legacy fullName field for backward compatibility
+        full_name = data.get('fullName', '')
+        offer_type = data.get('offerType', 'bundle')
+        source = data.get('source', 'black_friday')
+        offer_name = data.get('offerName', '')
+        
+        if not email or not amount:
+            return Response({
+                'success': False,
+                'error': 'Email and amount are required'
+            }, status=status.HTTP_400_BAD_REQUEST)
+        
+        # If firstName/lastName not provided, try to split fullName (backward compatibility)
+        if not first_name and not last_name and full_name:
+            name_parts = full_name.split(' ', 1)
+            first_name = name_parts[0] if name_parts else ''
+            last_name = name_parts[1] if len(name_parts) > 1 else ''
+        
+        # Use full_name for customer_name if first_name and last_name are empty
+        customer_name = f"{first_name} {last_name}".strip() if (first_name or last_name) else full_name
+        
+        # Convert amount to minor units (cents for USD)
+        amount_minor = int(amount * 100)
+        
+        # Generate reference
+        import uuid
+        prefix = 'CK' if source == 'checkout' else 'BF'
+        reference = f"{prefix}-{uuid.uuid4().hex[:12].upper()}"
+        
+        # Build callback URL based on source
+        if source == 'checkout':
+            base_url = request.build_absolute_uri('/checkout/')
+        else:
+            base_url = request.build_absolute_uri('/black-friday/')
+        callback_url = f"{base_url}?reference={reference}"
+        
+        # Initialize transaction with Lahza
+        transaction_data = initialize_transaction(
+            email=email,
+            amount_minor=amount_minor,
+            currency='USD',
+            reference=reference,
+            first_name=first_name,
+            last_name=last_name,
+            mobile=mobile if mobile else None,
+            metadata={
+                'offer_type': offer_type,
+                'source': source,
+                'offer_name': offer_name,
+            },
+            callback_url=callback_url,
+        )
+        
+        # Create payment record in database
+        payment = Payment.objects.create(
+            reference=reference,
+            customer_name=customer_name,
+            customer_email=email,
+            amount=amount,
+            currency='USD',
+            offer_type=offer_type,
+            offer_name=offer_name,
+            source=source,
+            status='pending',
+            metadata={
+                'offer_type': offer_type,
+                'source': source,
+                'offer_name': offer_name,
+                'mobile': mobile if mobile else None,
+            }
+        )
+        
+        logger.info(f"[Payment] Created payment record: {payment.reference}")
+        
+        return Response({
+            'success': True,
+            'reference': transaction_data.get('reference'),
+            'authorization_url': transaction_data.get('authorization_url'),
+            'access_code': transaction_data.get('access_code'),
+        })
+        
+    except LahzaAPIError as e:
+        logger.error(f"[Lahza] Payment initialization error: {str(e)}")
+        return Response({
+            'success': False,
+            'error': str(e)
+        }, status=status.HTTP_400_BAD_REQUEST)
+    except Exception as e:
+        logger.exception("[Lahza] Unexpected error during payment initialization")
+        return Response({
+            'success': False,
+            'error': 'An error occurred while initializing payment'
+        }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+@csrf_exempt
+@api_view(['GET', 'POST'])
+@permission_classes([AllowAny])
+def verify_lahza_payment(request):
+    """Verify a Lahza payment transaction."""
+    try:
+        # Get reference from query params or request data
+        reference = request.GET.get('reference') or request.data.get('reference')
+        
+        if not reference:
+            return Response({
+                'success': False,
+                'error': 'Payment reference is required'
+            }, status=status.HTTP_400_BAD_REQUEST)
+        
+        # Get or create payment record
+        try:
+            payment = Payment.objects.get(reference=reference)
+        except Payment.DoesNotExist:
+            # If payment doesn't exist, create it (might happen if verification is called before initialization)
+            logger.warning(f"[Payment] Payment record not found for reference: {reference}, creating new record")
+            try:
+                payment = Payment.objects.create(
+                    reference=reference,
+                    customer_name='Unknown',
+                    customer_email='unknown@example.com',
+                    amount=0,
+                    currency='USD',
+                    status='pending'
+                )
+            except Exception as e:
+                logger.error(f"[Payment] Error creating payment record: {str(e)}")
+                return Response({
+                    'success': False,
+                    'error': f'Error creating payment record: {str(e)}'
+                }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        
+        # Verify transaction with Lahza
+        try:
+            transaction_data = verify_transaction(reference)
+        except Exception as e:
+            logger.error(f"[Lahza] Error verifying transaction: {str(e)}")
+            payment.mark_as_failed(f'Verification error: {str(e)}')
+            raise
+        
+        # Check transaction status
+        transaction_status = transaction_data.get('status', '').lower()
+        
+        # Update payment record with Lahza response (ensure it's JSON serializable)
+        try:
+            import json
+            # Convert to dict if it's not already, and ensure it's JSON serializable
+            if isinstance(transaction_data, dict):
+                # Test JSON serialization
+                json.dumps(transaction_data)
+                payment.lahza_response = transaction_data
+            else:
+                payment.lahza_response = {'data': str(transaction_data)}
+        except (TypeError, ValueError) as e:
+            logger.warning(f"[Payment] Error serializing transaction_data: {str(e)}")
+            payment.lahza_response = {'error': 'Could not serialize transaction data', 'raw': str(transaction_data)}
+        
+        if transaction_status == 'success':
+            # Update payment details from transaction data if available
+            try:
+                if 'amount' in transaction_data:
+                    # Amount might be in cents or dollars, check the value
+                    amount_value = transaction_data.get('amount', 0)
+                    if isinstance(amount_value, (int, float)):
+                        if amount_value > 1000:  # Likely in cents
+                            payment.amount = amount_value / 100
+                        else:
+                            payment.amount = amount_value
+                
+                if 'currency' in transaction_data:
+                    currency_value = transaction_data.get('currency', 'USD')
+                    if currency_value:
+                        payment.currency = str(currency_value)[:3]  # Ensure max 3 chars
+                
+                if 'customer' in transaction_data:
+                    customer_data = transaction_data.get('customer', {})
+                    if isinstance(customer_data, dict):
+                        if 'email' in customer_data:
+                            payment.customer_email = customer_data.get('email', payment.customer_email)
+                        if 'name' in customer_data:
+                            payment.customer_name = customer_data.get('name', payment.customer_name)
+            except Exception as e:
+                logger.warning(f"[Payment] Error updating payment details: {str(e)}", exc_info=True)
+            
+            # Mark payment as successful (this saves the payment)
+            try:
+                payment.mark_as_success(transaction_data)
+            except Exception as e:
+                logger.error(f"[Payment] Error marking payment as success: {str(e)}", exc_info=True)
+                # Try to save manually
+                payment.status = 'success'
+                from django.utils import timezone
+                if not payment.paid_at:
+                    payment.paid_at = timezone.now()
+                payment.save()
+            
+            logger.info(f"[Payment] Payment verified successfully: {reference}")
+            
+            # Send receipt email
+            try:
+                send_payment_receipt_email(payment)
+                logger.info(f"[Payment] Receipt email sent to {payment.customer_email}")
+            except Exception as e:
+                logger.error(f"[Payment] Error sending receipt email: {str(e)}", exc_info=True)
+                # Don't fail the payment verification if email fails
+            
+            return Response({
+                'success': True,
+                'message': 'Payment verified successfully',
+                'transaction_id': transaction_data.get('id') or payment.transaction_id,
+                'reference': reference,
+                'amount': float(payment.amount),
+                'currency': payment.currency,
+                'email': payment.customer_email,
+            })
+        else:
+            # Mark payment as failed
+            payment.mark_as_failed(f'Payment status: {transaction_status}')
+            
+            logger.warning(f"[Payment] Payment verification failed: {reference}, status: {transaction_status}")
+            
+            return Response({
+                'success': False,
+                'error': f'Payment status: {transaction_status}',
+                'transaction_status': transaction_status,
+            }, status=status.HTTP_400_BAD_REQUEST)
+        
+    except LahzaAPIError as e:
+        logger.error(f"[Lahza] Payment verification error: {str(e)}")
+        
+        # Try to update payment record if it exists
+        try:
+            reference = request.GET.get('reference') or request.data.get('reference')
+            if reference:
+                payment = Payment.objects.get(reference=reference)
+                payment.mark_as_failed(str(e))
+        except (Payment.DoesNotExist, Exception):
+            pass
+        
+        return Response({
+            'success': False,
+            'error': str(e)
+        }, status=status.HTTP_400_BAD_REQUEST)
+    except Exception as e:
+        error_message = str(e)
+        logger.exception(f"[Lahza] Unexpected error during payment verification: {error_message}")
+        
+        # Try to update payment record if it exists
+        try:
+            reference = request.GET.get('reference') or request.data.get('reference')
+            if reference:
+                try:
+                    payment = Payment.objects.get(reference=reference)
+                    payment.mark_as_failed(f'Unexpected error: {error_message}')
+                except Payment.DoesNotExist:
+                    pass
+        except Exception as update_error:
+            logger.warning(f"[Payment] Error updating payment record: {str(update_error)}")
+        
+        # Return more detailed error in development, generic in production
+        error_detail = error_message if settings.DEBUG else 'An error occurred while verifying payment'
+        return Response({
+            'success': False,
+            'error': error_detail
+        }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+def send_payment_receipt_email(payment):
+    """Send payment receipt email to customer"""
+    try:
+        subject = f'Payment Receipt - Order {payment.reference}'
+        
+        # Render HTML email template
+        html_message = render_to_string('emails/payment_receipt.html', {
+            'payment': payment,
+        })
+        
+        # Create plain text version
+        plain_message = strip_tags(html_message)
+        
+        # Send email
+        send_mail(
+            subject=subject,
+            message=plain_message,
+            from_email=settings.DEFAULT_FROM_EMAIL,
+            recipient_list=[payment.customer_email],
+            html_message=html_message,
+            fail_silently=False,
+        )
+        
+        logger.info(f"[Email] Receipt sent successfully to {payment.customer_email} for payment {payment.reference}")
+        
+    except Exception as e:
+        logger.error(f"[Email] Error sending receipt email: {str(e)}", exc_info=True)
+        raise
+
+
+@csrf_exempt
+@api_view(['POST', 'GET'])
+@permission_classes([AllowAny])
+def test_email(request):
+    """Test email sending functionality"""
+    try:
+        # Get test email from request or use default
+        test_email_address = request.data.get('email') or request.GET.get('email') or 'test@example.com'
+        
+        # Create a test payment object for the template
+        from contacts.models import Payment
+        from django.utils import timezone
+        from decimal import Decimal
+        
+        # Try to get the most recent payment, or create a mock one
+        try:
+            test_payment = Payment.objects.filter(status='success').order_by('-paid_at').first()
+            if not test_payment:
+                # Create a mock payment for testing
+                test_payment = Payment(
+                    reference='TEST-1234567890',
+                    transaction_id='TEST-TXN-123',
+                    customer_name='Test Customer',
+                    customer_email=test_email_address,
+                    amount=Decimal('300.00'),
+                    currency='USD',
+                    offer_type='bundle',
+                    offer_name='Live Trading + VIP Signals Bundle',
+                    status='success',
+                    source='checkout',
+                    paid_at=timezone.now(),
+                )
+        except Exception:
+            # Create a mock payment for testing
+            test_payment = Payment(
+                reference='TEST-1234567890',
+                transaction_id='TEST-TXN-123',
+                customer_name='Test Customer',
+                customer_email=test_email_address,
+                amount=Decimal('300.00'),
+                currency='USD',
+                offer_type='bundle',
+                offer_name='Live Trading + VIP Signals Bundle',
+                status='success',
+                source='checkout',
+                paid_at=timezone.now(),
+            )
+        
+        # Send test email
+        subject = 'Test Email - FX Global Payment Receipt'
+        
+        # Render HTML email template
+        html_message = render_to_string('emails/payment_receipt.html', {
+            'payment': test_payment,
+        })
+        
+        # Create plain text version
+        plain_message = strip_tags(html_message)
+        
+        # Send email
+        try:
+            send_mail(
+                subject=subject,
+                message=plain_message,
+                from_email=settings.DEFAULT_FROM_EMAIL,
+                recipient_list=[test_email_address],
+                html_message=html_message,
+                fail_silently=False,
+            )
+        except Exception as email_error:
+            error_msg = str(email_error)
+            # Provide helpful error messages
+            if 'BadCredentials' in error_msg or 'Username and Password not accepted' in error_msg:
+                raise Exception(
+                    "Gmail authentication failed. Please:\n"
+                    "1. Enable 2-Factor Authentication on your Google account\n"
+                    "2. Generate an App Password at: https://myaccount.google.com/apppasswords\n"
+                    "3. Use the App Password (16 characters) as EMAIL_HOST_PASSWORD environment variable\n"
+                    f"Current EMAIL_HOST_USER: {settings.EMAIL_HOST_USER}"
+                )
+            elif 'Connection refused' in error_msg or 'Connection timed out' in error_msg:
+                raise Exception(
+                    f"Cannot connect to email server ({settings.EMAIL_HOST}:{settings.EMAIL_PORT}). "
+                    "Check your network connection and email server settings."
+                )
+            else:
+                raise
+        
+        logger.info(f"[Email] Test email sent successfully to {test_email_address}")
+        
+        return Response({
+            'success': True,
+            'message': f'Test email sent successfully to {test_email_address}',
+            'from_email': settings.DEFAULT_FROM_EMAIL,
+        })
+        
+    except Exception as e:
+        logger.error(f"[Email] Error sending test email: {str(e)}", exc_info=True)
+        return Response({
+            'success': False,
+            'error': str(e),
+            'message': 'Failed to send test email. Check email configuration in settings.',
+        }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

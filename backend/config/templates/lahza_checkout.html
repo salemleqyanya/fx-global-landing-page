@@ -1,0 +1,449 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en" id="html-root">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Secure Checkout - FX Global</title>
+    <link rel="stylesheet" href="{% static 'black_friday/styles.css' %}">
+    <style>
+        /* Popup Modal Styles */
+        .lahza-popup-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(8px);
+            z-index: 10000;
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        .lahza-popup-overlay.active {
+            display: flex;
+        }
+        
+        .lahza-popup-container {
+            position: relative;
+            width: 90%;
+            max-width: 900px;
+            max-height: 90vh;
+            background: linear-gradient(135deg, #1a0d2e 0%, #2d1b3d 100%);
+            border-radius: 16px;
+            border: 2px solid rgba(233, 30, 140, 0.3);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            animation: slideUp 0.3s ease;
+        }
+        
+        .lahza-popup-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 24px;
+            border-bottom: 1px solid rgba(233, 30, 140, 0.2);
+            background: rgba(105, 67, 167, 0.2);
+        }
+        
+        .lahza-popup-title {
+            color: var(--white);
+            font-size: 20px;
+            font-weight: 600;
+            margin: 0;
+        }
+        
+        .lahza-popup-close {
+            background: transparent;
+            border: none;
+            color: var(--white);
+            font-size: 28px;
+            cursor: pointer;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+        
+        .lahza-popup-close:hover {
+            background: rgba(233, 30, 140, 0.2);
+            transform: rotate(90deg);
+        }
+        
+        .lahza-popup-content {
+            flex: 1;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        #lahza-checkout-iframe {
+            width: 100%;
+            height: 80vh;
+            min-height: 600px;
+            border: none;
+            background: transparent;
+            display: block;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @keyframes slideUp {
+            from {
+                transform: translateY(50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .lahza-popup-container {
+                width: 95%;
+                max-height: 95vh;
+            }
+            
+            #lahza-checkout-iframe {
+                height: 75vh;
+                min-height: 500px;
+            }
+            
+            .lahza-popup-title {
+                font-size: 18px;
+            }
+        }
+        
+        .btn-open-popup {
+            width: 100%;
+            padding: 16px 24px;
+            background: linear-gradient(135deg, var(--primary-purple), var(--primary-pink));
+            color: var(--white);
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+        }
+        
+        .btn-open-popup:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(233, 30, 140, 0.4);
+        }
+        
+        .btn-open-popup:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+    </style>
+</head>
+<body>
+    <!-- Language Toggle Button -->
+    <button id="language-toggle" class="language-toggle" aria-label="Toggle language">
+        <svg class="globe-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="2" y1="12" x2="22" y2="12"></line>
+            <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+        </svg>
+        <span class="language-text">العربية</span>
+    </button>
+
+    <!-- Payment Page -->
+    <div id="payment-page" class="page active">
+        <div class="payment-container">
+            <div class="payment-grid">
+                <!-- Order Summary -->
+                <div class="order-summary-card">
+                    <div class="card-header">
+                        <h2 class="card-title" data-en="Order Summary" data-ar="ملخص الطلب">Order Summary</h2>
+                        <p class="card-description" data-en="Review your selection before payment" data-ar="راجع اختيارك قبل الدفع">Review your selection before payment</p>
+                    </div>
+                    <div class="card-content">
+                        <div class="order-item">
+                            <h3 id="selected-offer-name" class="order-name"></h3>
+                            <div id="selected-offer-badge" class="order-badge"></div>
+                        </div>
+                        <div class="order-breakdown">
+                            <div class="breakdown-row">
+                                <span data-en="Original Price" data-ar="السعر الأصلي">Original Price</span>
+                                <span id="original-price" class="line-through">$0</span>
+                            </div>
+                            <div class="breakdown-row discount-row">
+                                <span data-en="Discount" data-ar="الخصم">Discount</span>
+                                <span id="discount-amount" class="discount-text">-$0</span>
+                            </div>
+                            <div class="breakdown-row total-row">
+                                <span data-en="Total Due Today" data-ar="المجموع">Total Due Today</span>
+                                <span id="total-price" class="total-price">$0</span>
+                            </div>
+                            <div class="savings-alert">
+                                <p>💰 <span data-en="You Save" data-ar="توفر">You Save</span> $<span id="savings-amount">0</span>!</p>
+                            </div>
+                        </div>
+                        <div class="trust-features">
+                            <div class="trust-feature">
+                                <span class="feature-icon">🛡️</span>
+                                <span data-en="256-bit Secure Encryption" data-ar="تشفير آمن 256-بت">256-bit Secure Encryption</span>
+                            </div>
+                            <div class="trust-feature">
+                                <span class="feature-icon">📧</span>
+                                <span data-en="Instant Email Receipt" data-ar="إيصال فوري عبر البريد الإلكتروني">Instant Email Receipt</span>
+                            </div>
+                            <div class="trust-feature">
+                                <span class="feature-icon">⚡</span>
+                                <span data-en="Instant Account Activation" data-ar="تفعيل فوري للحساب">Instant Account Activation</span>
+                            </div>
+                        </div>
+                        <div class="payment-methods">
+                            <p class="methods-label" data-en="Secure Payment via Lahza" data-ar="الدفع الآمن عبر Lahza">Secure Payment via Lahza</p>
+                            <div class="methods-badges">
+                                <span>💳 Credit Cards</span>
+                                <span>💳 Debit Cards</span>
+                                <span>📱 Mobile Payments</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Payment Form -->
+                <div class="payment-form-card">
+                    <div class="card-header">
+                        <h2 class="card-title">
+                            <span class="card-icon">💳</span>
+                            <span data-en="Payment Details" data-ar="تفاصيل الدفع">Payment Details</span>
+                        </h2>
+                        <p class="card-description" data-en="Enter your information to proceed to secure payment" data-ar="أدخل معلوماتك للمتابعة إلى الدفع الآمن">Enter your information to proceed to secure payment</p>
+                    </div>
+                    <div class="card-content">
+                        <!-- Form-based Checkout -->
+                        <div id="form-checkout" class="form-checkout-container" style="display: block;">
+                            <button type="button" id="payment-auto-fill" class="btn-auto-fill" data-en="⚡ Auto-fill for Testing" data-ar="⚡ تعبئة تلقائية للاختبار">⚡ Auto-fill for Testing</button>
+                            
+                            <form id="payment-form" class="payment-form">
+                                <div class="form-group">
+                                    <label for="payment-first-name" data-en="First Name" data-ar="الاسم الأول">First Name</label>
+                                    <input type="text" id="payment-first-name" name="firstName" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="payment-last-name" data-en="Last Name" data-ar="اسم العائلة">Last Name</label>
+                                    <input type="text" id="payment-last-name" name="lastName" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="payment-mobile" data-en="Mobile Number" data-ar="رقم الجوال">Mobile Number</label>
+                                    <input type="tel" id="payment-mobile" name="mobile" required>
+                                    <p class="form-hint" data-en="Please include country code (e.g., +962)" data-ar="يرجى تضمين رمز الدولة (مثل +962)">Please include country code (e.g., +962)</p>
+                                </div>
+                                <div class="form-group">
+                                    <label for="payment-email" data-en="Email Address" data-ar="البريد الإلكتروني">Email Address</label>
+                                    <input type="email" id="payment-email" name="email" required>
+                                    <p class="form-hint" data-en="Email required for account creation" data-ar="البريد الإلكتروني مطلوب لإنشاء الحساب">Email required for account creation</p>
+                                </div>
+                                <button type="submit" id="pay-button" class="btn-pay" disabled>
+                                    <span class="lock-icon">🔒</span>
+                                    <span data-en="Proceed to Secure Payment" data-ar="المتابعة إلى الدفع الآمن">Proceed to Secure Payment</span>
+                                    $<span id="pay-amount">0</span>
+                                </button>
+                                <div class="security-note">
+                                    <span class="security-icon">🔒</span>
+                                    <p data-en="You will be redirected to Lahza secure payment gateway to complete your transaction" data-ar="سيتم توجيهك إلى بوابة الدفع الآمنة Lahza لإتمام معاملتك">You will be redirected to Lahza secure payment gateway to complete your transaction</p>
+                                </div>
+                            </form>
+                        </div>
+                        
+                        <p class="terms-note" style="margin-top: 20px;">
+                            <span data-en="By proceeding, you agree to our" data-ar="بالمتابعة، أنت توافق على">By proceeding, you agree to our</span>
+                            <a href="/terms-of-service/" style="color: #E91E8C; text-decoration: underline;" data-en="Terms of Service" data-ar="شروط الخدمة">Terms of Service</a>
+                            <span data-en="and" data-ar="و">and</span>
+                            <a href="/privacy-policy/" style="color: #E91E8C; text-decoration: underline;" data-en="Privacy Policy" data-ar="سياسة الخصوصية">Privacy Policy</a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success Page -->
+    <div id="success-page" class="page">
+        <div class="success-container">
+            <div class="success-content">
+                <!-- Success Header -->
+                <div class="success-header">
+                    <div class="success-icon-wrapper">
+                        <div class="success-icon">✓</div>
+                    </div>
+                    <div class="success-badge" data-en="✓ PAYMENT CONFIRMED" data-ar="✓ تم تأكيد الدفع">✓ PAYMENT CONFIRMED</div>
+                    <h1 class="success-title" data-en="Payment Successful!" data-ar="تم الدفع بنجاح!">Payment Successful!</h1>
+                    <p class="success-subtitle" data-en="Welcome to FX Global!" data-ar="مرحباً بك في FX Global!">Welcome to FX Global!</p>
+                    <div class="order-info">
+                        <div class="order-id-badge">
+                            <span data-en="Order ID" data-ar="رقم الطلب">Order ID</span>: <span id="display-order-id"></span>
+                        </div>
+                        <p class="order-email" id="display-email"></p>
+                    </div>
+                    <div class="success-stats">
+                        <div class="success-stat">
+                            <div class="stat-emoji">💰</div>
+                            <div class="stat-value" id="saved-amount">$0</div>
+                            <div class="stat-label" data-en="Saved" data-ar="موفر">Saved</div>
+                        </div>
+                        <div class="success-stat">
+                            <div class="stat-emoji">⚡</div>
+                            <div class="stat-value" data-en="Instant" data-ar="فوري">Instant</div>
+                            <div class="stat-label" data-en="Access" data-ar="الوصول">Access</div>
+                        </div>
+                        <div class="success-stat">
+                            <div class="stat-emoji">🎁</div>
+                            <div class="stat-value" data-en="Bonus" data-ar="مكافأة">Bonus</div>
+                            <div class="stat-label" data-en="Included" data-ar="مضمن">Included</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Email Confirmation - Hidden since emails are not sent -->
+                <!-- <div class="email-card" style="display: none;">
+                    <div class="email-icon">📧</div>
+                    <div class="email-content">
+                        <h3 data-en="Receipt Sent To Your Email" data-ar="تم إرسال الإيصال إلى بريدك">Receipt Sent To Your Email</h3>
+                        <p data-en="Check your inbox for order confirmation and login details" data-ar="تحقق من بريدك الوارد للحصول على تأكيد الطلب وتفاصيل تسجيل الدخول">Check your inbox for order confirmation and login details</p>
+                    </div>
+                </div> -->
+
+                <!-- Getting Started -->
+                <div class="instructions-card">
+                    <div class="card-header">
+                        <h2 class="card-title" data-en="Getting Started" data-ar="البدء">Getting Started</h2>
+                        <p class="card-description" data-en="Follow these simple steps to get started" data-ar="اتبع هذه الخطوات البسيطة للبدء">Follow these simple steps to get started</p>
+                    </div>
+                    <div class="instructions-content">
+                        <div class="instruction-step">
+                            <div class="step-number">1</div>
+                            <div class="step-content">
+                                <h4 data-en="Access Your Dashboard" data-ar="الوصول إلى لوحة التحكم">Access Your Dashboard</h4>
+                                <p data-en="Your account has been activated. Contact support if you need login credentials." data-ar="تم تفعيل حسابك. اتصل بالدعم إذا كنت بحاجة إلى بيانات اعتماد تسجيل الدخول.">Your account has been activated. Contact support if you need login credentials.</p>
+                            </div>
+                        </div>
+                        <div class="instruction-step">
+                            <div class="step-number">2</div>
+                            <div class="step-content">
+                                <h4 data-en="Login To Your Dashboard" data-ar="قم بتسجيل الدخول إلى لوحة التحكم">Login To Your Dashboard</h4>
+                                <p data-en="Access your dashboard using your account credentials." data-ar="قم بالوصول إلى لوحة التحكم الخاصة بك باستخدام بيانات اعتماد حسابك.">Access your dashboard using your account credentials.</p>
+                                <div class="dashboard-url">
+                                    <span data-en="Dashboard URL" data-ar="رابط لوحة التحكم">Dashboard URL</span>: <span class="url-text">https://dashboard.fxglobals.com</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Declined Payment Page -->
+    <div id="declined-page" class="page">
+        <div class="success-container">
+            <div class="success-content">
+                <!-- Declined Header -->
+                <div class="success-header">
+                    <div class="success-icon-wrapper" style="background: rgba(239, 68, 68, 0.1); border-color: rgba(239, 68, 68, 0.3);">
+                        <div class="success-icon" style="color: #ef4444; border-color: #ef4444;">✕</div>
+                    </div>
+                    <div class="success-badge" style="background: rgba(239, 68, 68, 0.2); color: #fca5a5; border-color: rgba(239, 68, 68, 0.3);" data-en="✕ PAYMENT DECLINED" data-ar="✕ تم رفض الدفع">✕ PAYMENT DECLINED</div>
+                    <h1 class="success-title" style="color: #fca5a5;" data-en="Payment Declined" data-ar="تم رفض الدفع">Payment Declined</h1>
+                    <p class="success-subtitle" data-en="We couldn't process your payment" data-ar="لم نتمكن من معالجة دفعتك">We couldn't process your payment</p>
+                    <div class="order-info">
+                        <div class="order-id-badge" style="background: rgba(239, 68, 68, 0.1); border-color: rgba(239, 68, 68, 0.3); color: #fca5a5;">
+                            <span data-en="Reference" data-ar="المرجع">Reference</span>: <span id="declined-reference"></span>
+                        </div>
+                        <p class="order-email" id="declined-error-message" style="color: #fca5a5; margin-top: 10px;"></p>
+                    </div>
+                </div>
+
+                <!-- Help Card -->
+                <div class="instructions-card">
+                    <div class="card-header">
+                        <h2 class="card-title" data-en="What Happened?" data-ar="ماذا حدث؟">What Happened?</h2>
+                        <p class="card-description" data-en="Your payment was declined. Here are some common reasons:" data-ar="تم رفض دفعتك. فيما يلي بعض الأسباب الشائعة:">Your payment was declined. Here are some common reasons:</p>
+                    </div>
+                    <div class="instructions-content">
+                        <div class="instruction-step">
+                            <div class="step-number" style="background: rgba(239, 68, 68, 0.2); color: #fca5a5;">1</div>
+                            <div class="step-content">
+                                <h4 data-en="Insufficient Funds" data-ar="رصيد غير كافٍ">Insufficient Funds</h4>
+                                <p data-en="Your card may not have enough funds to complete the transaction." data-ar="قد لا يحتوي بطاقتك على رصيد كافٍ لإتمام المعاملة.">Your card may not have enough funds to complete the transaction.</p>
+                            </div>
+                        </div>
+                        <div class="instruction-step">
+                            <div class="step-number" style="background: rgba(239, 68, 68, 0.2); color: #fca5a5;">2</div>
+                            <div class="step-content">
+                                <h4 data-en="Card Declined" data-ar="تم رفض البطاقة">Card Declined</h4>
+                                <p data-en="Your bank or card issuer may have declined the transaction for security reasons." data-ar="قد يكون البنك أو مصدر البطاقة قد رفض المعاملة لأسباب أمنية.">Your bank or card issuer may have declined the transaction for security reasons.</p>
+                            </div>
+                        </div>
+                        <div class="instruction-step">
+                            <div class="step-number" style="background: rgba(239, 68, 68, 0.2); color: #fca5a5;">3</div>
+                            <div class="step-content">
+                                <h4 data-en="Incorrect Details" data-ar="تفاصيل غير صحيحة">Incorrect Details</h4>
+                                <p data-en="Please verify your card details, expiry date, and CVV code are correct." data-ar="يرجى التحقق من صحة تفاصيل بطاقتك وتاريخ انتهاء الصلاحية ورمز CVV.">Please verify your card details, expiry date, and CVV code are correct.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div style="margin-top: 30px; display: flex; gap: 15px; justify-content: center; flex-wrap: wrap;">
+                    <button onclick="window.location.href='/checkout/'" class="btn-pay" style="background: linear-gradient(135deg, var(--primary-purple), var(--primary-pink)); min-width: 200px;">
+                        <span data-en="Try Again" data-ar="حاول مرة أخرى">Try Again</span>
+                    </button>
+                    <button onclick="window.location.href='/black-friday/'" class="btn-pay" style="background: rgba(105, 67, 167, 0.3); border: 1px solid var(--primary-purple); min-width: 200px;">
+                        <span data-en="Back to Offers" data-ar="العودة إلى العروض">Back to Offers</span>
+                    </button>
+                </div>
+
+                <!-- Support Contact -->
+                <div style="margin-top: 30px; text-align: center; padding: 20px; background: rgba(105, 67, 167, 0.1); border-radius: 12px; border: 1px solid rgba(105, 67, 167, 0.3);">
+                    <p style="color: var(--white); margin-bottom: 10px;" data-en="Need Help?" data-ar="تحتاج مساعدة؟">Need Help?</p>
+                    <p style="color: var(--gray-400); font-size: 14px;" data-en="Contact our support team for assistance" data-ar="اتصل بفريق الدعم للحصول على المساعدة">Contact our support team for assistance</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Lahza Checkout Popup Modal -->
+    <div id="lahza-popup-overlay" class="lahza-popup-overlay">
+        <div class="lahza-popup-container">
+            <div class="lahza-popup-header">
+                <h3 class="lahza-popup-title" data-en="Secure Payment - Lahza" data-ar="الدفع الآمن - Lahza">Secure Payment - Lahza</h3>
+                <button type="button" class="lahza-popup-close" id="lahza-popup-close" aria-label="Close">
+                    ×
+                </button>
+            </div>
+            <div class="lahza-popup-content">
+                <iframe 
+                    id="lahza-checkout-iframe" 
+                    src="" 
+                    allow="payment"
+                    sandbox="allow-forms allow-scripts allow-same-origin allow-popups allow-top-navigation"
+                    title="Lahza Secure Checkout">
+                </iframe>
+            </div>
+        </div>
+    </div>
+
+    <script src="{% static 'black_friday/lahza_checkout.js' %}"></script>
+</body>
+</html>
+

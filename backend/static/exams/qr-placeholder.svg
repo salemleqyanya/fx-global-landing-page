@@ -1,0 +1,20 @@
+<svg width="320" height="320" viewBox="0 0 320 320" fill="none" xmlns="http://www.w3.org/2000/svg">
+<rect width="320" height="320" rx="26" fill="url(#paint0_linear_1_1)"/>
+<rect x="32" y="32" width="256" height="256" rx="18" stroke="white" stroke-opacity="0.2" stroke-width="4" stroke-dasharray="14 14" fill="rgba(0,0,0,0.2)"/>
+<path d="M120 120H146V146H120V120Z" fill="white"/>
+<path d="M174 120H200V146H174V120Z" fill="white" fill-opacity="0.6"/>
+<path d="M120 174H146V200H120V174Z" fill="white" fill-opacity="0.6"/>
+<path d="M174 174H200V200H174V174Z" fill="white"/>
+<rect x="84" y="84" width="56" height="56" rx="6" stroke="white" stroke-opacity="0.6" stroke-width="6"/>
+<rect x="180" y="84" width="56" height="56" rx="6" stroke="white" stroke-opacity="0.35" stroke-width="6"/>
+<rect x="180" y="180" width="56" height="56" rx="6" stroke="white" stroke-opacity="0.35" stroke-width="6"/>
+<rect x="84" y="180" width="56" height="56" rx="6" stroke="white" stroke-opacity="0.35" stroke-width="6"/>
+<text x="50%" y="290" text-anchor="middle" fill="white" fill-opacity="0.7" font-size="18" font-family="Tajawal, sans-serif">QR Placeholder</text>
+<defs>
+<linearGradient id="paint0_linear_1_1" x1="30" y1="12" x2="300" y2="320" gradientUnits="userSpaceOnUse">
+<stop stop-color="#5015D0"/>
+<stop offset="1" stop-color="#0B031A"/>
+</linearGradient>
+</defs>
+</svg>
+

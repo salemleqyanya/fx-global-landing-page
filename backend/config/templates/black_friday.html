@@ -1,0 +1,476 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en" id="html-root">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Black Friday Landing Page</title>
+    <link rel="stylesheet" href="{% static 'black_friday/styles.css' %}">
+</head>
+<body>
+    <!-- Language Toggle Button -->
+    <button id="language-toggle" class="language-toggle" aria-label="Toggle language">
+        <svg class="globe-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="2" y1="12" x2="22" y2="12"></line>
+            <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+        </svg>
+        <span class="language-text">العربية</span>
+    </button>
+
+    <!-- Landing Page -->
+    <div id="landing-page" class="page active">
+        <!-- Hero Section -->
+        <div class="hero-section">
+            <div class="hero-content">
+                <div class="hero-discount-banner" data-en="UP TO 55% SALE" data-ar="خصم حتى 55%">UP TO 55% SALE</div>
+                <h1 class="hero-title">
+                    <span class="hero-word hero-word-gradient" data-en="BLACK" data-ar="الجمعة">BLACK</span>
+                    <span class="hero-word hero-word-white" data-en="FRIDAY" data-ar="السوداء">FRIDAY</span>
+                </h1>
+                
+                <!-- Countdown Timer -->
+                <div class="countdown-container">
+                    <div class="countdown-item">
+                        <div class="countdown-value" id="hours">23</div>
+                        <div class="countdown-label" data-en="HRS" data-ar="ساعة">HRS</div>
+                    </div>
+                    <div class="countdown-separator">:</div>
+                    <div class="countdown-item">
+                        <div class="countdown-value" id="minutes">46</div>
+                        <div class="countdown-label" data-en="MIN" data-ar="دقيقة">MIN</div>
+                    </div>
+                    <div class="countdown-separator">:</div>
+                    <div class="countdown-item">
+                        <div class="countdown-value" id="seconds">06</div>
+                        <div class="countdown-label" data-en="SEC" data-ar="ثانية">SEC</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Offers Section -->
+        <div class="offers-section">
+            <div class="offers-grid">
+                <!-- Bundle Offer -->
+                <div class="offer-card" data-offer="bundle">
+                    <div class="offer-badge offer-badge-popular" data-en="MOST POPULAR" data-ar="الأكثر شعبية">MOST POPULAR</div>
+                    <div class="offer-header">
+                        <h3 class="offer-title" data-en="Live Trading + VIP Signals Bundle" data-ar="حزمة التداول المباشر + إشارت VIP">Live Trading + VIP Signals Bundle</h3>
+                        <p class="offer-description" data-en="Live Trading Sessions + Daily VIP Signals" data-ar="جلات تداول مباشر + إشارات VIP يومية">Live Trading Sessions + Daily VIP Signals</p>
+                    </div>
+                    <div class="offer-content">
+                        <div class="offer-pricing">
+                            <div class="price-row">
+                                <span class="price-current">$136</span>
+                                <span class="price-original">$300</span>
+                            </div>
+                            <div class="discount-badge-small" data-en="55% OFF" data-ar="خصم 55%">55% OFF</div>
+                        </div>
+                        
+                        <ul class="offer-features">
+                            <li><span class="check-icon">✓</span><span data-en="Daily Live Trading Sessions (Mon-Fri)" data-ar="جلسات تداول مباشر يومياً (الإثنين-الجمعة)">Daily Live Trading Sessions (Mon-Fri)</span></li>
+                            <li><span class="check-icon">✓</span><span data-en="3:00 PM Sessions Before US Market Opens" data-ar="جلسات الساعة 3:00 مساءً قبل افتتاح السوق الأمريكي">3:00 PM Sessions Before US Market Opens</span></li>
+                            <li><span class="check-icon">✓</span><span data-en="5000+ Pips Made in Last 2 Months" data-ar="5000+ نقطة محققة في آخر شهرين">5000+ Pips Made in Last 2 Months</span></li>
+                            <li><span class="check-icon">✓</span><span data-en="2-5 Daily VIP Signals" data-ar="2-5 إشارات VIP يومياً">2-5 Daily VIP Signals</span></li>
+                            <li><span class="check-icon">✓</span><span data-en="Strict Rules To Ensure Profitability" data-ar="قواعد صارمة لضمان الربحية">Strict Rules To Ensure Profitability</span></li>
+                            <li><span class="check-icon">✓</span><span data-en="Expert Professional Traders" data-ar="خبراء تداول محترفون">Expert Professional Traders</span></li>
+                        </ul>
+
+                        <div class="offer-alert" data-en="⚡ Only 27 left at this price! ⚡" data-ar="⚡ 27 فقط متبقية بهذا السعر! ⚡">⚡ Only 27 left at this price! ⚡</div>
+                    </div>
+                    <div class="offer-footer">
+                        <p class="proceed-text" data-en="👇 Press here to proceed to safe payment method 👇" data-ar="👇 اضغط هنا للانتقال إلى طريقة الدفع الآمنة 👇">👇 Press here to proceed to safe payment method 👇</p>
+                        <button class="btn-primary" data-en="START MAKING MONEY NOW" data-ar="ابدأ كسب المال الآن">START MAKING MONEY NOW</button>
+                    </div>
+                </div>
+
+                <!-- Annual Offer -->
+                <div class="offer-card" data-offer="yearly">
+                    <div class="offer-badge offer-badge-value" data-en="BEST VALUE" data-ar="أفضل قيمة">BEST VALUE</div>
+                    <div class="offer-header">
+                        <h3 class="offer-title" data-en="Annual VIP Membership" data-ar="العضوية السنوية VIP">Annual VIP Membership</h3>
+                        <p class="offer-description" data-en="Complete Training + Exclusive Community + Annual Access" data-ar="تدريب كامل + مجتمع حصري + وصول سنوي">Complete Training + Exclusive Community + Annual Access</p>
+                    </div>
+                    <div class="offer-content">
+                        <div class="offer-pricing">
+                            <div class="price-row">
+                                <span class="price-current">$300</span>
+                                <span class="price-original">$500</span>
+                            </div>
+                            <div class="discount-badge-small" data-en="40% OFF" data-ar="خصم 40%">40% OFF</div>
+                        </div>
+                        
+                        <ul class="offer-features">
+                            <li><span class="check-icon">✓</span><span data-en="2 Months Intensive Training" data-ar="شهرين من التدريب المكثف">2 Months Intensive Training</span></li>
+                            <li><span class="check-icon">✓</span><span data-en="Dedicated 24/7 Support" data-ar="دعم 24/7 مخصص">Dedicated 24/7 Support</span></li>
+                            <li><span class="check-icon">✓</span><span data-en="Exclusive Traders Community" data-ar="مجتمع حصري من المتداولين">Exclusive Traders Community</span></li>
+                            <li><span class="check-icon">✓</span><span data-en="3000+ Successfully Trained Traders" data-ar="+3000 متداول تم تدريبهم بنجاح">3000+ Successfully Trained Traders</span></li>
+                            <li><span class="check-icon">✓</span><span data-en="1-Year Live Trading Access" data-ar="وصول سنوي للتدال المباشر">1-Year Live Trading Access</span></li>
+                            <li><span class="check-icon">✓</span><span data-en="Advanced Educational Resources & Tools" data-ar="موارد وأدوات تعليمية متقدمة">Advanced Educational Resources & Tools</span></li>
+                        </ul>
+
+                        <div class="offer-alert" data-en="🚀 Includes 2 Months Intensive Training 🚀" data-ar="🚀 يشمل شهرين من التدريب المكثف 🚀">🚀 Includes 2 Months Intensive Training 🚀</div>
+                    </div>
+                    <div class="offer-footer">
+                        <p class="proceed-text" data-en="👇 Press here to proceed to safe payment method 👇" data-ar="👇 اضغط هنا للانتقال إلى طريقة الدفع الآمنة 👇">👇 Press here to proceed to safe payment method 👇</p>
+                        <button class="btn-primary" data-en="LAST CHANCE - GET 40% OFF" data-ar="الفرصة الأخيرة - خصم 40%">LAST CHANCE - GET 40% OFF</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Timer Banner -->
+        <div class="timer-banner">
+            <p data-en="🔥 Sale ends at midnight • Limited time only" data-ar="🔥 ينتهي التخفيض في نتصف الليل • عرض فترة محدودة فقط">🔥 Sale ends at midnight • Limited time only</p>
+        </div>
+
+        <!-- Social Proof Stats -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon">✓</div>
+                <div class="stat-text" data-en="Instant Access" data-ar="وصول فوري">وصول فوري</div>
+                <div class="stat-value">5,847+</div>
+                <div class="stat-label" data-en="Active Traders" data-ar="متداول نشط">متداول نشط</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">✓</div>
+                <div class="stat-text" data-en="30-Day Money-Back Guarantee" data-ar="ضمان استرداد المال لمدة 30 يوماً">ضمان استرداد المال لمدة 30 يوماً</div>
+                <div class="stat-value">4.9/5</div>
+                <div class="stat-label" data-en="Average Rating" data-ar="تقييم متوسط">تقييم متوسط</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">🔒</div>
+                <div class="stat-text" data-en="Secure 256-bit Payment" data-ar="دفع آمن 256-بت">دفع آمن 256-بت</div>
+                <div class="stat-value">5000+</div>
+                <div class="stat-label" data-en="Pips Made" data-ar="نقطة محققة">نقطة محققة</div>
+            </div>
+        </div>
+
+        <!-- Testimonials -->
+        <div class="testimonials-section">
+            <h2 class="section-title" data-en="What Traders Are Saying" data-ar="ماذا يقول المتداولون">What Traders Are Saying</h2>
+            <div class="testimonials-grid">
+                <div class="testimonial-card">
+                    <div class="testimonial-stars">⭐⭐⭐⭐⭐</div>
+                    <p class="testimonial-text" data-en="Live trading sessions completely changed my life. I learned directly from experts and made 2000 pips in my first month!" data-ar="جلسات التداول المباشر غيرت حياتي تماماً. تعلمت من الخبراء مباشرة وحققت 2000 نقطة في أول شهر!">"Live trading sessions completely changed my life. I learned directly from experts and made 2000 pips in my first month!"</p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">M</div>
+                        <div>
+                            <div class="author-name">Michael R.</div>
+                            <div class="author-role" data-en="Professional Trader" data-ar="متداول محترف">Professional Trader</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <div class="testimonial-stars">⭐⭐⭐⭐⭐</div>
+                    <p class="testimonial-text" data-en="VIP signals are incredibly accurate. I receive 2-5 signals daily and the strict rules helped me stay disciplined." data-ar="إشارات VIP دقيقة للغاية. أتلقى 2-5 إشارات يومياً والقواعد الصارمة ساعدتني في الحفاظ على الانضباط.">"VIP signals are incredibly accurate. I receive 2-5 signals daily and the strict rules helped me stay disciplined."</p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">S</div>
+                        <div>
+                            <div class="author-name">Sarah K.</div>
+                            <div class="author-role" data-en="Day Trader" data-ar="متداول يومي">Day Trader</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <div class="testimonial-stars">⭐⭐⭐⭐⭐</div>
+                    <p class="testimonial-text" data-en="The community and support are amazing. I joined annual membership and got 2 months of training - now I'm a confident trader!" data-ar="المجتمع والدعم رائعان. انضممت للعضوية السنوية وتم تدريبي لمدة شهرين - الآن أنا متداول واثق!">"The community and support are amazing. I joined annual membership and got 2 months of training - now I'm a confident trader!"</p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">J</div>
+                        <div>
+                            <div class="author-name">James T.</div>
+                            <div class="author-role" data-en="Investment Analyst" data-ar="محلل استثمار">Investment Analyst</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Contact Form -->
+        <div class="contact-section">
+            <div class="urgency-banner" data-en="⚡ Last 12 customers got an EXTRA 10% OFF by contacting us!" data-ar="⚡ آخر 12 عميل حصلوا على خصم 10% إضافي عند التواصل معنا!">⚡ Last 12 customers got an EXTRA 10% OFF by contacting us!</div>
+            
+            <div class="contact-card">
+                <div class="contact-header">
+                    <h2 class="contact-title" data-en="🔥 EXCLUSIVE! Speak With An Expert & Get Extra Discount!" data-ar="🔥 عرض خاص! تحدث مع خبير واحصل على خصم حصري إضافي!">🔥 EXCLUSIVE! Speak With An Expert & Get Extra Discount!</h2>
+                    <p class="contact-subtitle" data-en="⏰ Don't miss out! Fill the form now and get FREE consultation + SECRET extra discount for limited time only!" data-ar="⏰ لا تفوت هذا العرض! املأ النموذج الآن واحصل على استشارة مجانية + خصم سري إضافي لفترة محدودة فقط!">⏰ Don't miss out! Fill the form now and get FREE consultation + SECRET extra discount for limited time only!</p>
+                </div>
+                <div class="contact-content">
+                    <div id="form-success" class="form-success" style="display: none;">
+                        <h3 data-en="Form Submitted Successfully!" data-ar="تم الإرسال بنجاح!">Form Submitted Successfully!</h3>
+                        <p data-en="Thank you! Our expert will contact you soon." data-ar="شكراً لك! سيتواصل معك خبيرن قريباً.">Thank you! Our expert will contact you soon.</p>
+                    </div>
+                    <form id="contact-form" class="contact-form">
+                        <button type="button" id="auto-fill-btn" class="btn-auto-fill" data-en="⚡ Quick Test Auto-Fill ⚡" data-ar="⚡ ملء تلقائي للاختبار السريع ⚡">⚡ Quick Test Auto-Fill ⚡</button>
+                        
+                        <div class="form-group">
+                            <label for="contact-name" data-en="Your Name" data-ar="اسمك">Your Name</label>
+                            <input type="text" id="contact-name" name="name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="contact-phone" data-en="Phone Number" data-ar="رقم الهاتف">Phone Number</label>
+                            <input type="tel" id="contact-phone" name="phone" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="contact-city" data-en="City" data-ar="المدينة">City</label>
+                            <input type="text" id="contact-city" name="city" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="contact-email" data-en="Email Address" data-ar="البريد الإلكتروني">Email Address</label>
+                            <input type="email" id="contact-email" name="email" required>
+                        </div>
+                        <button type="submit" class="btn-submit" data-en="Submit Now" data-ar="أرسل الآن">Submit Now</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- WhatsApp Button -->
+        <a href="#" id="whatsapp-btn" class="whatsapp-button" aria-label="Contact us on WhatsApp">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.890-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/>
+            </svg>
+        </a>
+    </div>
+
+    <!-- Payment Page -->
+    <div id="payment-page" class="page">
+        <div class="payment-container">
+            <button id="back-to-offers" class="btn-back">
+                <span class="back-icon">←</span>
+                <span data-en="Back to Offers" data-ar="العودة إلى العروض">Back to Offers</span>
+            </button>
+
+            <div class="payment-grid">
+                <!-- Order Summary -->
+                <div class="order-summary-card">
+                    <div class="card-header">
+                        <h2 class="card-title" data-en="Order Summary" data-ar="ملخص الطلب">Order Summary</h2>
+                        <p class="card-description" data-en="Review your selection before payment" data-ar="راجع اختيارك قبل الدفع">Review your selection before payment</p>
+                    </div>
+                    <div class="card-content">
+                        <div class="order-item">
+                            <h3 id="selected-offer-name" class="order-name"></h3>
+                            <div id="selected-offer-badge" class="order-badge"></div>
+                        </div>
+                        <div class="order-breakdown">
+                            <div class="breakdown-row">
+                                <span data-en="Original Price" data-ar="السعر الأصلي">Original Price</span>
+                                <span id="original-price" class="line-through">$0</span>
+                            </div>
+                            <div class="breakdown-row discount-row">
+                                <span data-en="Black Friday Discount" data-ar="خصم الجمعة السوداء">Black Friday Discount</span>
+                                <span id="discount-amount" class="discount-text">-$0</span>
+                            </div>
+                            <div class="breakdown-row total-row">
+                                <span data-en="Total Due Today" data-ar="المجموع">Total Due Today</span>
+                                <span id="total-price" class="total-price">$0</span>
+                            </div>
+                            <div class="savings-alert">
+                                <p>💰 <span data-en="You Save" data-ar="توفر">You Save</span> $<span id="savings-amount">0</span>!</p>
+                            </div>
+                        </div>
+                        <div class="trust-features">
+                            <div class="trust-feature">
+                                <span class="feature-icon">🛡️</span>
+                                <span data-en="256-bit Secure Encryption" data-ar="تشفير آمن 256-بت">256-bit Secure Encryption</span>
+                            </div>
+                            <div class="trust-feature">
+                                <span class="feature-icon">📧</span>
+                                <span data-en="Instant Email Receipt" data-ar="إيصال فوري عبر البريد الإلكتروني">Instant Email Receipt</span>
+                            </div>
+                            <div class="trust-feature">
+                                <span class="feature-icon">⚡</span>
+                                <span data-en="Instant Account Activation" data-ar="تفعيل فوري للحساب">Instant Account Activation</span>
+                            </div>
+                        </div>
+                        <div class="payment-methods">
+                            <p class="methods-label" data-en="Secure Payment via Lahza" data-ar="الدفع الآمن عبر Lahza">Secure Payment via Lahza</p>
+                            <div class="methods-badges">
+                                <span>💳 Credit Cards</span>
+                                <span>💳 Debit Cards</span>
+                                <span>📱 Mobile Payments</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Payment Form -->
+                <div class="payment-form-card">
+                    <div class="card-header">
+                        <h2 class="card-title">
+                            <span class="card-icon">💳</span>
+                            <span data-en="Payment Details" data-ar="تفاصيل الدفع">Payment Details</span>
+                        </h2>
+                        <p class="card-description" data-en="Enter your information to proceed to secure payment" data-ar="أدخل معلوماتك للمتابعة إلى الدفع الآمن">Enter your information to proceed to secure payment</p>
+                    </div>
+                    <div class="card-content">
+                        <button type="button" id="payment-auto-fill" class="btn-auto-fill" data-en="⚡ Auto-fill for Testing" data-ar="⚡ تعبئة تلقائية للاختبار">⚡ Auto-fill for Testing</button>
+                        
+                        <form id="payment-form" class="payment-form">
+                            <div class="form-group">
+                                <label for="payment-first-name" data-en="First Name" data-ar="الاسم الأول">First Name</label>
+                                <input type="text" id="payment-first-name" name="firstName" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="payment-last-name" data-en="Last Name" data-ar="اسم العائلة">Last Name</label>
+                                <input type="text" id="payment-last-name" name="lastName" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="payment-mobile" data-en="Mobile Number" data-ar="رقم الجوال">Mobile Number</label>
+                                <input type="tel" id="payment-mobile" name="mobile" required>
+                                <p class="form-hint" data-en="Please include country code (e.g., +962)" data-ar="يرجى تضمين رمز الدولة (مثل +962)">Please include country code (e.g., +962)</p>
+                            </div>
+                            <div class="form-group">
+                                <label for="payment-email" data-en="Email Address" data-ar="البريد الإلكتروني">Email Address</label>
+                                <input type="email" id="payment-email" name="email" required>
+                                <p class="form-hint" data-en="We'll send your receipt and login details to this email" data-ar="سنرسل الإيصال وتفاصيل تسجيل الدخول إلى هذا البريد">We'll send your receipt and login details to this email</p>
+                            </div>
+                            <button type="submit" id="pay-button" class="btn-pay" disabled>
+                                <span class="lock-icon">🔒</span>
+                                <span data-en="Proceed to Secure Payment" data-ar="المتابعة إلى الدفع الآمن">Proceed to Secure Payment</span>
+                                $<span id="pay-amount">0</span>
+                            </button>
+                            <div class="security-note">
+                                <span class="security-icon">🔒</span>
+                                <p data-en="You will be redirected to Lahza secure payment gateway to complete your transaction" data-ar="سيتم توجيهك إلى بوابة الدفع الآمنة Lahza لإتمام معاملتك">You will be redirected to Lahza secure payment gateway to complete your transaction</p>
+                            </div>
+                            <p class="terms-note">
+                                <span data-en="By proceeding, you agree to our" data-ar="بالمتابعة، أنت توافق على">By proceeding, you agree to our</span>
+                                <a href="/terms-of-service/" data-en="Terms of Service" data-ar="شروط الخدمة">Terms of Service</a>
+                                <span data-en="and" data-ar="و">and</span>
+                                <a href="/privacy-policy/" data-en="Privacy Policy" data-ar="سياسة الخصوصية">Privacy Policy</a>
+                            </p>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success Page -->
+    <div id="success-page" class="page">
+        <div class="success-container">
+            <div class="success-content">
+                <!-- Success Header -->
+                <div class="success-header">
+                    <div class="success-icon-wrapper">
+                        <div class="success-icon">✓</div>
+                    </div>
+                    <div class="success-badge" data-en="✓ PAYMENT CONFIRMED" data-ar="✓ تم تأكيد الدفع">✓ PAYMENT CONFIRMED</div>
+                    <h1 class="success-title" data-en="Payment Successful!" data-ar="تم الدفع بنجاح!">Payment Successful!</h1>
+                    <p class="success-subtitle" data-en="Welcome to FX Global!" data-ar="مرحباً بك في FX Global!">Welcome to FX Global!</p>
+                    <div class="order-info">
+                        <div class="order-id-badge">
+                            <span data-en="Order ID" data-ar="رقم الطلب">Order ID</span>: <span id="display-order-id"></span>
+                        </div>
+                        <p class="order-email" id="display-email"></p>
+                    </div>
+                    <div class="success-stats">
+                        <div class="success-stat">
+                            <div class="stat-emoji">💰</div>
+                            <div class="stat-value" id="saved-amount">$0</div>
+                            <div class="stat-label" data-en="Saved" data-ar="موفر">Saved</div>
+                        </div>
+                        <div class="success-stat">
+                            <div class="stat-emoji">⚡</div>
+                            <div class="stat-value" data-en="Instant" data-ar="فوري">Instant</div>
+                            <div class="stat-label" data-en="Access" data-ar="الوصول">Access</div>
+                        </div>
+                        <div class="success-stat">
+                            <div class="stat-emoji">🎁</div>
+                            <div class="stat-value" data-en="Bonus" data-ar="مكافأة">Bonus</div>
+                            <div class="stat-label" data-en="Included" data-ar="مضمن">Included</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Email Confirmation -->
+                <div class="email-card">
+                    <div class="email-icon">📧</div>
+                    <div class="email-content">
+                        <h3 data-en="Receipt Sent To Your Email" data-ar="تم إرسال الإيصال إلى بريدك">Receipt Sent To Your Email</h3>
+                        <p data-en="Check your inbox for order confirmation and login details" data-ar="تحقق من بريدك الوارد للحصول على تأكيد الطلب وتفاصيل تسجيل الدخول">Check your inbox for order confirmation and login details</p>
+                    </div>
+                </div>
+
+                <!-- Getting Started -->
+                <div class="instructions-card">
+                    <div class="card-header">
+                        <h2 class="card-title" data-en="Getting Started With" data-ar="البدء مع">Getting Started With</h2>
+                        <p class="card-description" data-en="Follow these simple steps to get started" data-ar="اتبع هذه الخطوات البسيطة للبدء">Follow these simple steps to get started</p>
+                    </div>
+                    <div class="instructions-content">
+                        <div class="instruction-step">
+                            <div class="step-number">1</div>
+                            <div class="step-content">
+                                <h4 data-en="Check Your Email" data-ar="تحقق من بريدك الإلكتروني">Check Your Email</h4>
+                                <p data-en="Open the receipt and welcome email we just sent you. It contains your login credentials." data-ar="افتح الإيصال والبريد الترحيبي الذي أرسلناه لك للتو. يحتوي على بيانات اعتماد تسجيل الدخول الخاصة بك.">Open the receipt and welcome email we just sent you. It contains your login credentials.</p>
+                                <button class="btn-step" data-en="Open Email App" data-ar="افتح البريد">Open Email App</button>
+                            </div>
+                        </div>
+                        <div class="instruction-step">
+                            <div class="step-number">2</div>
+                            <div class="step-content">
+                                <h4 data-en="Login To Your Dashboard" data-ar="قم بتسجيل الدخول إلى لوحة التحكم">Login To Your Dashboard</h4>
+                                <p data-en="Use the credentials in your email to access your dashboard." data-ar="استخدم بيانات الاعتماد الموجودة في بريدك الإلكتروني للوصول إلى لوحة التحكم الخاصة بك.">Use the credentials in your email to access your dashboard.</p>
+                                <div class="dashboard-url">
+                                    <span data-en="Dashboard URL" data-ar="رابط لوحة التحكم">Dashboard URL</span>: <span class="url-text">https://dashboard.fxglobals.com</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="instruction-step">
+                            <div class="step-number">3</div>
+                            <div class="step-content">
+                                <h4 data-en="Download Welcome Materials" data-ar="قم بتنزيل المواد الترحيبية">Download Welcome Materials</h4>
+                                <p data-en="Get your quick start guide and training materials." data-ar="احصل على دليل البدء السريع والمواد التدريبية.">Get your quick start guide and training materials.</p>
+                                <button class="btn-step" data-en="Download Guide" data-ar="تحميل الدليل">Download Guide</button>
+                            </div>
+                        </div>
+                        <div class="instruction-step">
+                            <div class="step-number">4</div>
+                            <div class="step-content">
+                                <h4 data-en="Join Our Community" data-ar="انضم إلى مجتمعنا">Join Our Community</h4>
+                                <p data-en="Connect with other traders and get instant support." data-ar="تواصل مع متداولين آخرين واحصل على الدعم الفوري.">Connect with other traders and get instant support.</p>
+                                <div class="community-buttons">
+                                    <button class="btn-step" data-en="Join Discord" data-ar="انضم إلى Discord">Join Discord</button>
+                                    <button class="btn-step" data-en="Join Telegram" data-ar="انضم إلى Telegram">Join Telegram</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Additional Resources -->
+                <div class="resources-grid">
+                    <div class="resource-card">
+                        <div class="resource-icon">📚</div>
+                        <div class="resource-content">
+                            <h4 data-en="Knowledge Base" data-ar="قاعدة المعرفة">Knowledge Base</h4>
+                            <p data-en="Access our complete library of guides" data-ar="وصول إلى مكتبتنا الكاملة من الأدلة">Access our complete library of guides</p>
+                            <a href="#" class="resource-link" data-en="Browse Articles →" data-ar="تصفح المقالات ←">Browse Articles →</a>
+                        </div>
+                    </div>
+                    <div class="resource-card">
+                        <div class="resource-icon">🎧</div>
+                        <div class="resource-content">
+                            <h4 data-en="24/7 Support" data-ar="دعم 24/7">24/7 Support</h4>
+                            <p data-en="Our team is ready to help" data-ar="فريقنا جاهز للمساعدة">Our team is ready to help</p>
+                            <a href="#" class="resource-link" data-en="Contact Support →" data-ar="اتصل بالدعم ←">Contact Support →</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Back to Home -->
+                <div class="back-home-section">
+                    <button id="back-to-home" class="btn-back-home" data-en="Back to Home" data-ar="العودة إلى الصفحة الرئيسية">Back to Home</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="{% static 'black_friday/script.js' %}"></script>
+</body>
+</html>
+

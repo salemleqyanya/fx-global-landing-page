@@ -6,7 +6,68 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Secure Checkout - FX Global</title>
     <link rel="stylesheet" href="{% static 'black_friday/styles.css' %}">
+    <!-- Google reCAPTCHA -->
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
     <style>
+        /* Additional Checkout Page Specific Styles */
+        body {
+            background: #000000;
+        }
+        
+        #payment-page.page.active {
+            display: block;
+        }
+        
+        .payment-container {
+            position: relative;
+        }
+        
+        /* Enhanced card animations */
+        @keyframes cardFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .order-summary-card {
+            animation: cardFadeIn 0.6s ease-out;
+        }
+        
+        .payment-form-card {
+            animation: cardFadeIn 0.6s ease-out 0.2s both;
+        }
+        
+        /* Improved form focus states */
+        .form-group input:focus-visible {
+            outline: 2px solid var(--primary-pink);
+            outline-offset: 2px;
+        }
+        
+        /* Better checkbox styling */
+        .checkbox-label input[type="checkbox"]:checked {
+            background-color: var(--primary-pink);
+            border-color: var(--primary-pink);
+        }
+        
+        /* Enhanced payment button states */
+        .btn-pay .spinner {
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
         /* Popup Modal Styles */
         .lahza-popup-overlay {
             display: none;
@@ -149,6 +210,65 @@
             cursor: not-allowed;
             transform: none;
         }
+        
+        /* Additional Checkout Page Specific Styles */
+        body {
+            background: #000000;
+        }
+        
+        #payment-page.page.active {
+            display: block;
+        }
+        
+        .payment-container {
+            position: relative;
+        }
+        
+        /* Enhanced card animations */
+        @keyframes cardFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .order-summary-card {
+            animation: cardFadeIn 0.6s ease-out;
+        }
+        
+        .payment-form-card {
+            animation: cardFadeIn 0.6s ease-out 0.2s both;
+        }
+        
+        /* Improved form focus states */
+        .form-group input:focus-visible {
+            outline: 2px solid var(--primary-pink);
+            outline-offset: 2px;
+        }
+        
+        /* Better checkbox styling */
+        .checkbox-label input[type="checkbox"]:checked {
+            background-color: var(--primary-pink);
+            border-color: var(--primary-pink);
+        }
+        
+        /* Enhanced payment button states */
+        .btn-pay .spinner {
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
     </style>
 </head>
 <body>
@@ -164,56 +284,84 @@
 
     <!-- Payment Page -->
     <div id="payment-page" class="page active">
+        <div class="checkout-hero-section">
+            <div class="checkout-hero-content">
+                <a href="/black-friday/" class="back-button" data-en="← Back to Offers" data-ar="← العودة إلى العروض">← Back to Offers</a>
+                <h1 class="checkout-hero-title" data-en="Secure Checkout" data-ar="الدفع الآمن">Secure Checkout</h1>
+                <p class="checkout-hero-subtitle" data-en="Complete your purchase in just a few steps" data-ar="أكمل عملية الشراء في خطوات بسيطة">Complete your purchase in just a few steps</p>
+            </div>
+        </div>
+        
         <div class="payment-container">
             <div class="payment-grid">
                 <!-- Order Summary -->
                 <div class="order-summary-card">
                     <div class="card-header">
-                        <h2 class="card-title" data-en="Order Summary" data-ar="ملخص الطلب">Order Summary</h2>
-                        <p class="card-description" data-en="Review your selection before payment" data-ar="راجع اختيارك قبل الدفع">Review your selection before payment</p>
+                        <div class="card-header-icon">📦</div>
+                        <div>
+                            <h2 class="card-title" data-en="Order Summary" data-ar="ملخص الطلب">Order Summary</h2>
+                            <p class="card-description" data-en="Review your selection before payment" data-ar="راجع اختيارك قبل الدفع">Review your selection before payment</p>
+                        </div>
                     </div>
                     <div class="card-content">
                         <div class="order-item">
-                            <h3 id="selected-offer-name" class="order-name"></h3>
-                            <div id="selected-offer-badge" class="order-badge"></div>
+                            <div class="order-item-header">
+                                <h3 id="selected-offer-name" class="order-name"></h3>
+                                <div id="selected-offer-badge" class="order-badge"></div>
+                            </div>
                         </div>
+                        
                         <div class="order-breakdown">
                             <div class="breakdown-row">
-                                <span data-en="Original Price" data-ar="السعر الأصلي">Original Price</span>
+                                <span class="breakdown-label" data-en="Original Price" data-ar="السعر الأصلي">Original Price</span>
                                 <span id="original-price" class="line-through">$0</span>
                             </div>
                             <div class="breakdown-row discount-row">
-                                <span data-en="Discount" data-ar="الخصم">Discount</span>
+                                <span class="breakdown-label" data-en="Discount" data-ar="الخصم">Discount</span>
                                 <span id="discount-amount" class="discount-text">-$0</span>
                             </div>
+                            <div class="breakdown-divider"></div>
                             <div class="breakdown-row total-row">
-                                <span data-en="Total Due Today" data-ar="المجموع">Total Due Today</span>
+                                <span class="breakdown-label" data-en="Total Due Today" data-ar="المجموع">Total Due Today</span>
                                 <span id="total-price" class="total-price">$0</span>
                             </div>
-                            <div class="savings-alert">
-                                <p>💰 <span data-en="You Save" data-ar="توفر">You Save</span> $<span id="savings-amount">0</span>!</p>
+                        </div>
+                        
+                        <div class="savings-alert">
+                            <div class="savings-icon">💰</div>
+                            <div class="savings-content">
+                                <p class="savings-text" data-en="You Save" data-ar="توفر">You Save</p>
+                                <p class="savings-amount">$<span id="savings-amount">0</span></p>
                             </div>
                         </div>
+                        
                         <div class="trust-features">
                             <div class="trust-feature">
-                                <span class="feature-icon">🛡️</span>
+                                <div class="trust-icon-wrapper">
+                                    <span class="feature-icon">🛡️</span>
+                                </div>
                                 <span data-en="256-bit Secure Encryption" data-ar="تشفير آمن 256-بت">256-bit Secure Encryption</span>
                             </div>
                             <div class="trust-feature">
-                                <span class="feature-icon">📧</span>
+                                <div class="trust-icon-wrapper">
+                                    <span class="feature-icon">📧</span>
+                                </div>
                                 <span data-en="Instant Email Receipt" data-ar="إيصال فوري عبر البريد الإلكتروني">Instant Email Receipt</span>
                             </div>
                             <div class="trust-feature">
-                                <span class="feature-icon">⚡</span>
+                                <div class="trust-icon-wrapper">
+                                    <span class="feature-icon">⚡</span>
+                                </div>
                                 <span data-en="Instant Account Activation" data-ar="تفعيل فوري للحساب">Instant Account Activation</span>
                             </div>
                         </div>
+                        
                         <div class="payment-methods">
                             <p class="methods-label" data-en="Secure Payment via Lahza" data-ar="الدفع الآمن عبر Lahza">Secure Payment via Lahza</p>
                             <div class="methods-badges">
-                                <span>💳 Credit Cards</span>
-                                <span>💳 Debit Cards</span>
-                                <span>📱 Mobile Payments</span>
+                                <span class="method-badge">💳 Credit Cards</span>
+                                <span class="method-badge">💳 Debit Cards</span>
+                                <span class="method-badge">📱 Mobile Payments</span>
                             </div>
                         </div>
                     </div>
@@ -222,11 +370,11 @@
                 <!-- Payment Form -->
                 <div class="payment-form-card">
                     <div class="card-header">
-                        <h2 class="card-title">
-                            <span class="card-icon">💳</span>
-                            <span data-en="Payment Details" data-ar="تفاصيل الدفع">Payment Details</span>
-                        </h2>
-                        <p class="card-description" data-en="Enter your information to proceed to secure payment" data-ar="أدخل معلوماتك للمتابعة إلى الدفع الآمن">Enter your information to proceed to secure payment</p>
+                        <div class="card-header-icon">💳</div>
+                        <div>
+                            <h2 class="card-title" data-en="Payment Details" data-ar="تفاصيل الدفع">Payment Details</h2>
+                            <p class="card-description" data-en="Enter your information to proceed to secure payment" data-ar="أدخل معلوماتك للمتابعة إلى الدفع الآمن">Enter your information to proceed to secure payment</p>
+                        </div>
                     </div>
                     <div class="card-content">
                         <!-- Form-based Checkout -->
@@ -252,6 +400,24 @@
                                     <input type="email" id="payment-email" name="email" required>
                                     <p class="form-hint" data-en="Email required for account creation" data-ar="البريد الإلكتروني مطلوب لإنشاء الحساب">Email required for account creation</p>
                                 </div>
+                                
+                                <!-- Google reCAPTCHA -->
+                                <div class="form-group">
+                                    <div class="g-recaptcha" data-sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI" data-callback="recaptchaCallback"></div>
+                                    <p class="form-hint" data-en="Please complete the reCAPTCHA verification" data-ar="يرجى إكمال التحقق من reCAPTCHA">Please complete the reCAPTCHA verification</p>
+                                </div>
+                                
+                                <!-- Policy Acceptance Checkbox -->
+                                <div class="form-group checkbox-group">
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" id="accept-policies" name="acceptPolicies" required>
+                                        <span data-en="I have read and agree to the" data-ar="لقد قرأت وأوافق على">I have read and agree to the</span>
+                                        <a href="/privacy-policy/" target="_blank" data-en="Privacy Policy" data-ar="سياسة الخصوصية">Privacy Policy</a>
+                                        <span data-en="and" data-ar="و">and</span>
+                                        <a href="/return-exchange-policy/" target="_blank" data-en="Return and Exchange Policy" data-ar="سياسة الإرجاع والاستبدال">Return and Exchange Policy</a>
+                                    </label>
+                                </div>
+                                
                                 <button type="submit" id="pay-button" class="btn-pay" disabled>
                                     <span class="lock-icon">🔒</span>
                                     <span data-en="Proceed to Secure Payment" data-ar="المتابعة إلى الدفع الآمن">Proceed to Secure Payment</span>
@@ -273,6 +439,64 @@
                     </div>
                 </div>
             </div>
+            
+            <!-- Footer on Checkout Page -->
+            <footer class="site-footer">
+                <div class="footer-container">
+                    <div class="footer-content">
+                        <div class="footer-section">
+                            <h3 class="footer-title" data-en="FX Global Academy" data-ar="أكاديمية FX Global">FX Global Academy</h3>
+                            <p class="footer-description" data-en="Leading Trading Education Platform" data-ar="منصة التعليم التجاري الرائدة">Leading Trading Education Platform</p>
+                        </div>
+                        
+                        <div class="footer-section">
+                            <h4 class="footer-heading" data-en="Contact Information" data-ar="معلومات الاتصال">Contact Information</h4>
+                            <div class="footer-contact">
+                                <p><strong data-en="Email:" data-ar="البريد الإلكتروني:">Email:</strong> <a href="mailto:support@fxglobals.com">support@fxglobals.com</a></p>
+                                <p><strong data-en="Phone:" data-ar="الهاتف:">Phone:</strong> <a href="tel:+972593700806">+972 59 370 0806</a></p>
+                                <p><strong data-en="Address:" data-ar="العنوان:">Address:</strong> <span data-en="Palestine, Ramallah" data-ar="فلسطين، رام الله">Palestine, Ramallah</span></p>
+                                <p><strong data-en="Website:" data-ar="الموقع الإلكتروني:">Website:</strong> <a href="https://info.fxglobals.co" target="_blank">info.fxglobals.co</a></p>
+                            </div>
+                        </div>
+                        
+                        <div class="footer-section">
+                            <h4 class="footer-heading" data-en="Legal" data-ar="قانوني">Legal</h4>
+                            <div class="footer-links">
+                                <a href="/privacy-policy/" data-en="Privacy Policy" data-ar="سياسة الخصوصية">Privacy Policy</a>
+                                <a href="/terms-of-service/" data-en="Terms of Service" data-ar="شروط الخدمة">Terms of Service</a>
+                                <a href="/return-exchange-policy/" data-en="Return & Exchange Policy" data-ar="سياسة الإرجاع والاستبدال">Return & Exchange Policy</a>
+                            </div>
+                        </div>
+                        
+                        <div class="footer-section">
+                            <h4 class="footer-heading" data-en="Accepted Payment Methods" data-ar="طرق الدفع المقبولة">Accepted Payment Methods</h4>
+                            <div class="payment-logos">
+                                <div class="payment-logo visa-logo" title="Visa">
+                                    <svg viewBox="0 0 141.732 141.732" xmlns="http://www.w3.org/2000/svg">
+                                        <rect width="141.732" height="141.732" fill="#1A1F71" rx="8"/>
+                                        <text x="70.866" y="85" font-family="Arial, sans-serif" font-size="48" font-weight="bold" fill="white" text-anchor="middle" letter-spacing="2">VISA</text>
+                                    </svg>
+                                </div>
+                                <div class="payment-logo mastercard-logo" title="Mastercard">
+                                    <svg viewBox="0 0 141.732 141.732" xmlns="http://www.w3.org/2000/svg">
+                                        <rect width="141.732" height="141.732" fill="#EB001B" rx="8"/>
+                                        <circle cx="50" cy="70.866" r="30" fill="#F79E1B" opacity="0.9"/>
+                                        <circle cx="91.732" cy="70.866" r="30" fill="#FF5F00" opacity="0.9"/>
+                                        <text x="70.866" y="115" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="white" text-anchor="middle">Mastercard</text>
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="footer-bottom">
+                        <p data-en="© 2025 FX Global Academy. All rights reserved." data-ar="© 2025 أكاديمية FX Global. جميع الحقوق محفوظة.">© 2025 FX Global Academy. All rights reserved.</p>
+                        <p class="footer-lahza-link">
+                            <a href="https://docs.lahza.io/guide/go-live-checklist" target="_blank" data-en="Lahza Payment Integration" data-ar="تكامل دفع Lahza">Lahza Payment Integration</a>
+                        </p>
+                    </div>
+                </div>
+            </footer>
         </div>
     </div>
 

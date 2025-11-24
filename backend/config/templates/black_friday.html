@@ -6,6 +6,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Black Friday Landing Page</title>
     <link rel="stylesheet" href="{% static 'black_friday/styles.css' %}">
+    <!-- Google reCAPTCHA -->
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-5QT2HV5PW2"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-5QT2HV5PW2');
+    </script>
 </head>
 <body>
     <!-- Language Toggle Button -->
@@ -20,13 +30,90 @@
 
     <!-- Landing Page -->
     <div id="landing-page" class="page active">
+        <!-- Pre-Black Friday Timer Banner - Full Page -->
+        <div class="pre-bf-timer-banner pre-bf-full-page">
+            <!-- Logo -->
+            <div class="pre-bf-logo-container">
+                {% comment %} Add your logo file to backend/static/new_assets/ and update the filename below {% endcomment %}
+                <img src="{% static 'new_assets/fx-global-logo.png' %}" alt="FX Global" class="pre-bf-logo-img" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                <div class="pre-bf-logo fallback-logo">FX GLOBAL</div>
+            </div>
+            
+            <div class="pre-bf-timer-content">
+                <div class="pre-bf-countdown-container">
+                    <div class="pre-bf-countdown-item">
+                        <div class="pre-bf-countdown-value" id="pre-bf-days">00</div>
+                        <div class="pre-bf-countdown-label" data-en="DAYS" data-ar="يوم">DAYS</div>
+                    </div>
+                    <div class="pre-bf-countdown-separator">:</div>
+                    <div class="pre-bf-countdown-item">
+                        <div class="pre-bf-countdown-value" id="pre-bf-hours">00</div>
+                        <div class="pre-bf-countdown-label" data-en="HRS" data-ar="ساعة">HRS</div>
+                    </div>
+                    <div class="pre-bf-countdown-separator">:</div>
+                    <div class="pre-bf-countdown-item">
+                        <div class="pre-bf-countdown-value" id="pre-bf-minutes">00</div>
+                        <div class="pre-bf-countdown-label" data-en="MIN" data-ar="دقيقة">MIN</div>
+                    </div>
+                    <div class="pre-bf-countdown-separator">:</div>
+                    <div class="pre-bf-countdown-item">
+                        <div class="pre-bf-countdown-value" id="pre-bf-seconds">00</div>
+                        <div class="pre-bf-countdown-label" data-en="SEC" data-ar="ثانية">SEC</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Contact Form Section -->
+            <div class="pre-bf-contact-section">
+                <div class="pre-bf-secret-title">
+                    <h2 class="pre-bf-secret-heading" data-en="A Big Secret Will Be Revealed" data-ar="سر كبير راح ينكشف">سر كبير راح ينكشف</h2>
+                </div>
+                <div class="pre-bf-contact-card">
+                    <h2 class="pre-bf-contact-title" data-en="Register Your Information to Be Among the First People to Know About the Secret 🤫" data-ar="سجل معلوماتك عشان تكون اول الناس الي راح تعرف عن السر 🤫">سجل معلوماتك عشان تكون اول الناس الي راح تعرف عن السر 🤫</h2>
+                    
+                    <div id="pre-bf-form-success" class="pre-bf-form-success" style="display: none;">
+                        <h3 data-en="Thank You!" data-ar="شكراً لك!">Thank You!</h3>
+                    </div>
+                    
+                    <form id="pre-bf-contact-form" class="pre-bf-contact-form">
+                        <div class="pre-bf-form-group">
+                            <label for="pre-bf-name" data-en="Name" data-ar="الاسم">Name</label>
+                            <input type="text" id="pre-bf-name" name="name" required>
+                        </div>
+                        
+                        <div class="pre-bf-form-group">
+                            <label for="pre-bf-mobile" data-en="Mobile Number" data-ar="رقم الجوال">Mobile Number</label>
+                            <input type="tel" id="pre-bf-mobile" name="mobile" required>
+                        </div>
+                        
+                        <div class="pre-bf-form-group">
+                            <label for="pre-bf-city" data-en="City" data-ar="المدينة">City</label>
+                            <input type="text" id="pre-bf-city" name="city" required>
+                        </div>
+                        
+                        <div class="pre-bf-form-group">
+                            <label for="pre-bf-email" data-en="Email" data-ar="البريد الإلكتروني">Email</label>
+                            <input type="email" id="pre-bf-email" name="email" required>
+                        </div>
+                        
+                        <div class="pre-bf-form-group">
+                            <label for="pre-bf-message" data-en="Message" data-ar="الرسالة">Message</label>
+                            <textarea id="pre-bf-message" name="message" rows="4" required></textarea>
+                        </div>
+                        
+                        <button type="submit" class="pre-bf-submit-btn" data-en="Submit" data-ar="إرسال">Submit</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
         <!-- Hero Section -->
         <div class="hero-section">
             <div class="hero-content">
                 <div class="hero-discount-banner" data-en="UP TO 55% SALE" data-ar="خصم حتى 55%">UP TO 55% SALE</div>
                 <h1 class="hero-title">
-                    <span class="hero-word hero-word-gradient" data-en="BLACK" data-ar="الجمعة">BLACK</span>
-                    <span class="hero-word hero-word-white" data-en="FRIDAY" data-ar="السوداء">FRIDAY</span>
+                    <span class="hero-word hero-word-gradient">BLACK</span>
+                    <span class="hero-word hero-word-white">FRIDAY</span>
                 </h1>
                 
                 <!-- Countdown Timer -->
@@ -56,8 +143,8 @@
                 <div class="offer-card" data-offer="bundle">
                     <div class="offer-badge offer-badge-popular" data-en="MOST POPULAR" data-ar="الأكثر شعبية">MOST POPULAR</div>
                     <div class="offer-header">
-                        <h3 class="offer-title" data-en="Live Trading + VIP Signals Bundle" data-ar="حزمة التداول المباشر + إشارت VIP">Live Trading + VIP Signals Bundle</h3>
-                        <p class="offer-description" data-en="Live Trading Sessions + Daily VIP Signals" data-ar="جلات تداول مباشر + إشارات VIP يومية">Live Trading Sessions + Daily VIP Signals</p>
+                        <h3 class="offer-title" data-en="Design Package + VIP Tips" data-ar="حزمة التصميم + نصائح VIP">Design Package + VIP Tips</h3>
+                        <p class="offer-description" data-en="Sessions" data-ar="جلسات">Sessions</p>
                     </div>
                     <div class="offer-content">
                         <div class="offer-pricing">
@@ -73,11 +160,11 @@
                             <li><span class="check-icon">✓</span><span data-en="3:00 PM Sessions Before US Market Opens" data-ar="جلسات الساعة 3:00 مساءً قبل افتتاح السوق الأمريكي">3:00 PM Sessions Before US Market Opens</span></li>
                             <li><span class="check-icon">✓</span><span data-en="5000+ Pips Made in Last 2 Months" data-ar="5000+ نقطة محققة في آخر شهرين">5000+ Pips Made in Last 2 Months</span></li>
                             <li><span class="check-icon">✓</span><span data-en="2-5 Daily VIP Signals" data-ar="2-5 إشارات VIP يومياً">2-5 Daily VIP Signals</span></li>
-                            <li><span class="check-icon">✓</span><span data-en="Strict Rules To Ensure Profitability" data-ar="قواعد صارمة لضمان الربحية">Strict Rules To Ensure Profitability</span></li>
-                            <li><span class="check-icon">✓</span><span data-en="Expert Professional Traders" data-ar="خبراء تداول محترفون">Expert Professional Traders</span></li>
+                            <li><span class="check-icon">✓</span><span data-en="Requirements and Profits" data-ar="المتطلبات والأرباح">Requirements and Profits</span></li>
+                            <li><span class="check-icon">✓</span><span data-en="Specialized Experts" data-ar="خبراء متخصصون">Specialized Experts</span></li>
                         </ul>
 
-                        <div class="offer-alert" data-en="⚡ Only 27 left at this price! ⚡" data-ar="⚡ 27 فقط متبقية بهذا السعر! ⚡">⚡ Only 27 left at this price! ⚡</div>
+                        <div class="offer-alert" data-en="⚡ Only 27 seats remaining for this offer! ⚡" data-ar="⚡ 27 مقعد فقط متبقي لهذا العرض! ⚡">⚡ Only 27 seats remaining for this offer! ⚡</div>
                     </div>
                     <div class="offer-footer">
                         <p class="proceed-text" data-en="👇 Press here to proceed to safe payment method 👇" data-ar="👇 اضغط هنا للانتقال إلى طريقة الدفع الآمنة 👇">👇 Press here to proceed to safe payment method 👇</p>
@@ -105,16 +192,78 @@
                             <li><span class="check-icon">✓</span><span data-en="2 Months Intensive Training" data-ar="شهرين من التدريب المكثف">2 Months Intensive Training</span></li>
                             <li><span class="check-icon">✓</span><span data-en="Dedicated 24/7 Support" data-ar="دعم 24/7 مخصص">Dedicated 24/7 Support</span></li>
                             <li><span class="check-icon">✓</span><span data-en="Exclusive Traders Community" data-ar="مجتمع حصري من المتداولين">Exclusive Traders Community</span></li>
-                            <li><span class="check-icon">✓</span><span data-en="3000+ Successfully Trained Traders" data-ar="+3000 متداول تم تدريبهم بنجاح">3000+ Successfully Trained Traders</span></li>
-                            <li><span class="check-icon">✓</span><span data-en="1-Year Live Trading Access" data-ar="وصول سنوي للتدال المباشر">1-Year Live Trading Access</span></li>
+                            <li><span class="check-icon">✓</span><span data-en="+3000 successful trading graduates" data-ar="+3000 خريج تداول ناجح">+3000 successful trading graduates</span></li>
+                            <li><span class="check-icon">✓</span><span data-en="Daily Live Trading (annual access fee for daily trading)" data-ar="التداول المباشر اليومي (رسوم الوصول السنوية للتداول اليومي)">Daily Live Trading (annual access fee for daily trading)</span></li>
                             <li><span class="check-icon">✓</span><span data-en="Advanced Educational Resources & Tools" data-ar="موارد وأدوات تعليمية متقدمة">Advanced Educational Resources & Tools</span></li>
                         </ul>
 
-                        <div class="offer-alert" data-en="🚀 Includes 2 Months Intensive Training 🚀" data-ar="🚀 يشمل شهرين من التدريب المكثف 🚀">🚀 Includes 2 Months Intensive Training 🚀</div>
+                        <div class="offer-alert" data-en="🚀 (12 seats remaining for this offer) Includes Belgium, provided by the Kuwaiti Printing Company 🚀" data-ar="🚀 (12 مقعد متبقي لهذا العرض) يشمل بلجيكا، مقدمة من شركة الكويت للطباعة 🚀">🚀 (12 seats remaining for this offer) Includes Belgium, provided by the Kuwaiti Printing Company 🚀</div>
                     </div>
                     <div class="offer-footer">
                         <p class="proceed-text" data-en="👇 Press here to proceed to safe payment method 👇" data-ar="👇 اضغط هنا للانتقال إلى طريقة الدفع الآمنة 👇">👇 Press here to proceed to safe payment method 👇</p>
                         <button class="btn-primary" data-en="LAST CHANCE - GET 40% OFF" data-ar="الفرصة الأخيرة - خصم 40%">LAST CHANCE - GET 40% OFF</button>
+                    </div>
+                </div>
+
+                <!-- Recommendations Offer -->
+                <div class="offer-card" data-offer="recommendations">
+                    <div class="offer-badge offer-badge-popular" data-en="SPECIAL OFFER" data-ar="عرض خاص">SPECIAL OFFER</div>
+                    <div class="offer-header">
+                        <h3 class="offer-title" data-en="Recommendations Offer" data-ar="عرض التوصيات">Recommendations Offer</h3>
+                        <p class="offer-description" data-en="Daily Accurate Forex Recommendations" data-ar="توصيات يومية دقيقة على الفوركس">Daily Accurate Forex Recommendations</p>
+                    </div>
+                    <div class="offer-content">
+                        <div class="offer-pricing">
+                            <div class="price-row">
+                                <span class="price-current">$75</span>
+                                <span class="price-original">$150</span>
+                            </div>
+                            <div class="discount-badge-small" data-en="50% OFF" data-ar="خصم 50%">50% OFF</div>
+                        </div>
+                        
+                        <ul class="offer-features">
+                            <li><span class="check-icon">✓</span><span data-en="Daily accurate Forex recommendations" data-ar="توصيات يومية دقيقة على الفوركس">Daily accurate Forex recommendations</span></li>
+                            <li><span class="check-icon">✓</span><span data-en="Clear entry and exit points" data-ar="نقاط دخول وخروج واضحة">Clear entry and exit points</span></li>
+                            <li><span class="check-icon">✓</span><span data-en="Risk management for each trade" data-ar="إدارة مخاطر لكل صفقة">Risk management for each trade</span></li>
+                            <li><span class="check-icon">✓</span><span data-en="Real-time market monitoring" data-ar="متابعة السوق لحظة بلحظة">Real-time market monitoring</span></li>
+                            <li><span class="check-icon">✓</span><span data-en="Quick updates during news time" data-ar="تحديثات سريعة وقت الأخبار">Quick updates during news time</span></li>
+                            <li><span class="check-icon">✓</span><span data-en="Direct support via Telegram" data-ar="دعم مباشر عبر تيليجرام">Direct support via Telegram</span></li>
+                        </ul>
+                    </div>
+                    <div class="offer-footer">
+                        <p class="proceed-text" data-en="👇 Press here to proceed to safe payment method 👇" data-ar="👇 اضغط هنا للانتقال إلى طريقة الدفع الآمنة 👇">👇 Press here to proceed to safe payment method 👇</p>
+                        <button class="btn-primary" data-en="GET RECOMMENDATIONS NOW" data-ar="احصل على التوصيات الآن">GET RECOMMENDATIONS NOW</button>
+                    </div>
+                </div>
+
+                <!-- Live Streaming Offer -->
+                <div class="offer-card" data-offer="livestream">
+                    <div class="offer-badge offer-badge-value" data-en="LIVE STREAMING" data-ar="بث مباشر">LIVE STREAMING</div>
+                    <div class="offer-header">
+                        <h3 class="offer-title" data-en="Live Streaming Offer" data-ar="عرض البث المباشر">Live Streaming Offer</h3>
+                        <p class="offer-description" data-en="Daily Live Trading Stream" data-ar="بث مباشر يومي للتداول">Daily Live Trading Stream</p>
+                    </div>
+                    <div class="offer-content">
+                        <div class="offer-pricing">
+                            <div class="price-row">
+                                <span class="price-current">$75</span>
+                                <span class="price-original">$150</span>
+                            </div>
+                            <div class="discount-badge-small" data-en="50% OFF" data-ar="خصم 50%">50% OFF</div>
+                        </div>
+                        
+                        <ul class="offer-features">
+                            <li><span class="check-icon">✓</span><span data-en="Daily live trading stream" data-ar="بث مباشر يومي للتداول">Daily live trading stream</span></li>
+                            <li><span class="check-icon">✓</span><span data-en="Live market analysis before entry" data-ar="تحليل السوق لايف قبل الدخول">Live market analysis before entry</span></li>
+                            <li><span class="check-icon">✓</span><span data-en="Explanation of real strategies on charts" data-ar="شرح استراتيجيات حقيقية على الشارت">Explanation of real strategies on charts</span></li>
+                            <li><span class="check-icon">✓</span><span data-en="Live Q&A" data-ar="أسئلة وأجوبة مباشرة">Live Q&A</span></li>
+                            <li><span class="check-icon">✓</span><span data-en="Practical training on trade management" data-ar="تدريب عملي على إدارة الصفقات">Practical training on trade management</span></li>
+                            <li><span class="check-icon">✓</span><span data-en="Session recording for later viewing" data-ar="تسجيل الجلسة للمشاهدة لاحقاً">Session recording for later viewing</span></li>
+                        </ul>
+                    </div>
+                    <div class="offer-footer">
+                        <p class="proceed-text" data-en="👇 Press here to proceed to safe payment method 👇" data-ar="👇 اضغط هنا للانتقال إلى طريقة الدفع الآمنة 👇">👇 Press here to proceed to safe payment method 👇</p>
+                        <button class="btn-primary" data-en="JOIN LIVE STREAM NOW" data-ar="انضم للبث المباشر الآن">JOIN LIVE STREAM NOW</button>
                     </div>
                 </div>
             </div>
@@ -122,7 +271,7 @@
 
         <!-- Timer Banner -->
         <div class="timer-banner">
-            <p data-en="🔥 Sale ends at midnight • Limited time only" data-ar="🔥 ينتهي التخفيض في نتصف الليل • عرض فترة محدودة فقط">🔥 Sale ends at midnight • Limited time only</p>
+            <p data-en="🔥 Discount ends at midnight • Limited Offer" data-ar="🔥 ينتهي الخصم عند منتصف الليل • عرض محدود">🔥 Discount ends at midnight • Limited Offer</p>
         </div>
 
         <!-- Social Proof Stats -->
@@ -189,7 +338,7 @@
 
         <!-- Contact Form -->
         <div class="contact-section">
-            <div class="urgency-banner" data-en="⚡ Last 12 customers got an EXTRA 10% OFF by contacting us!" data-ar="⚡ آخر 12 عميل حصلوا على خصم 10% إضافي عند التواصل معنا!">⚡ Last 12 customers got an EXTRA 10% OFF by contacting us!</div>
+            <div class="urgency-banner" data-en="⚡ Special Offer: Get an additional exclusive discount!!" data-ar="⚡ عرض خاص: احصل على خصم حصري إضافي!!">⚡ Special Offer: Get an additional exclusive discount!!</div>
             
             <div class="contact-card">
                 <div class="contact-header">
@@ -202,8 +351,6 @@
                         <p data-en="Thank you! Our expert will contact you soon." data-ar="شكراً لك! سيتواصل معك خبيرن قريباً.">Thank you! Our expert will contact you soon.</p>
                     </div>
                     <form id="contact-form" class="contact-form">
-                        <button type="button" id="auto-fill-btn" class="btn-auto-fill" data-en="⚡ Quick Test Auto-Fill ⚡" data-ar="⚡ ملء تلقائي للاختبار السريع ⚡">⚡ Quick Test Auto-Fill ⚡</button>
-                        
                         <div class="form-group">
                             <label for="contact-name" data-en="Your Name" data-ar="اسمك">Your Name</label>
                             <input type="text" id="contact-name" name="name" required>
@@ -219,6 +366,10 @@
                         <div class="form-group">
                             <label for="contact-email" data-en="Email Address" data-ar="البريد الإلكتروني">Email Address</label>
                             <input type="email" id="contact-email" name="email" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="contact-message" data-en="Message" data-ar="الرسالة">Message</label>
+                            <textarea id="contact-message" name="message" rows="4" placeholder="" required></textarea>
                         </div>
                         <button type="submit" class="btn-submit" data-en="Submit Now" data-ar="أرسل الآن">Submit Now</button>
                     </form>
@@ -292,6 +443,42 @@
                                 <span>💳 Debit Cards</span>
                                 <span>📱 Mobile Payments</span>
                             </div>
+                            <div class="payment-logos" style="margin-top: 1rem;">
+                                <div class="payment-logo visa-logo" title="Visa">
+                                    <svg viewBox="0 0 141.732 141.732" xmlns="http://www.w3.org/2000/svg">
+                                        <rect width="141.732" height="141.732" fill="#1A1F71" rx="8"/>
+                                        <text x="70.866" y="85" font-family="Arial, sans-serif" font-size="48" font-weight="bold" fill="white" text-anchor="middle" letter-spacing="2">VISA</text>
+                                    </svg>
+                                </div>
+                                <div class="payment-logo mastercard-logo" title="Mastercard">
+                                    <svg viewBox="0 0 141.732 141.732" xmlns="http://www.w3.org/2000/svg">
+                                        <rect width="141.732" height="141.732" fill="#EB001B" rx="8"/>
+                                        <circle cx="50" cy="70.866" r="30" fill="#F79E1B" opacity="0.9"/>
+                                        <circle cx="91.732" cy="70.866" r="30" fill="#FF5F00" opacity="0.9"/>
+                                        <text x="70.866" y="115" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="white" text-anchor="middle">Mastercard</text>
+                                    </svg>
+                                </div>
+                                <div class="payment-logo bank-logo" title="Bank of Palestine">
+                                    <svg viewBox="0 0 141.732 141.732" xmlns="http://www.w3.org/2000/svg">
+                                        <rect width="141.732" height="141.732" fill="#006633" rx="8"/>
+                                        <text x="70.866" y="70" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="white" text-anchor="middle">Bank of</text>
+                                        <text x="70.866" y="90" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="white" text-anchor="middle">Palestine</text>
+                                    </svg>
+                                </div>
+                                <div class="payment-logo bank-logo" title="Palestine Islamic Bank">
+                                    <svg viewBox="0 0 141.732 141.732" xmlns="http://www.w3.org/2000/svg">
+                                        <rect width="141.732" height="141.732" fill="#00853F" rx="8"/>
+                                        <text x="70.866" y="70" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="white" text-anchor="middle">Palestine</text>
+                                        <text x="70.866" y="90" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="white" text-anchor="middle">Islamic Bank</text>
+                                    </svg>
+                                </div>
+                                <div class="payment-logo bank-logo" title="Arab Bank">
+                                    <svg viewBox="0 0 141.732 141.732" xmlns="http://www.w3.org/2000/svg">
+                                        <rect width="141.732" height="141.732" fill="#C8102E" rx="8"/>
+                                        <text x="70.866" y="85" font-family="Arial, sans-serif" font-size="20" font-weight="bold" fill="white" text-anchor="middle">Arab Bank</text>
+                                    </svg>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -327,6 +514,24 @@
                                 <input type="email" id="payment-email" name="email" required>
                                 <p class="form-hint" data-en="We'll send your receipt and login details to this email" data-ar="سنرسل الإيصال وتفاصيل تسجيل الدخول إلى هذا البريد">We'll send your receipt and login details to this email</p>
                             </div>
+                            
+                            <!-- Google reCAPTCHA -->
+                            <div class="form-group">
+                                <div class="g-recaptcha" data-sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI" data-callback="recaptchaCallback"></div>
+                                <p class="form-hint" data-en="Please complete the reCAPTCHA verification" data-ar="يرجى إكمال التحقق من reCAPTCHA">Please complete the reCAPTCHA verification</p>
+                            </div>
+                            
+                            <!-- Policy Acceptance Checkbox -->
+                            <div class="form-group checkbox-group">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="accept-policies" name="acceptPolicies" required>
+                                    <span data-en="I have read and agree to the" data-ar="لقد قرأت وأوافق على">I have read and agree to the</span>
+                                    <a href="/privacy-policy/" target="_blank" data-en="Privacy Policy" data-ar="سياسة الخصوصية">Privacy Policy</a>
+                                    <span data-en="and" data-ar="و">and</span>
+                                    <a href="/return-exchange-policy/" target="_blank" data-en="Return and Exchange Policy" data-ar="سياسة الإرجاع والاستبدال">Return and Exchange Policy</a>
+                                </label>
+                            </div>
+                            
                             <button type="submit" id="pay-button" class="btn-pay" disabled>
                                 <span class="lock-icon">🔒</span>
                                 <span data-en="Proceed to Secure Payment" data-ar="المتابعة إلى الدفع الآمن">Proceed to Secure Payment</span>
@@ -347,6 +552,85 @@
                 </div>
             </div>
         </div>
+        
+        <!-- Footer on Payment Page -->
+        <footer class="site-footer">
+            <div class="footer-container">
+                <div class="footer-content">
+                    <div class="footer-section">
+                        <h3 class="footer-title" data-en="FX Global Academy" data-ar="أكاديمية FX Global">FX Global Academy</h3>
+                        <p class="footer-description" data-en="Leading Trading Education Platform" data-ar="منصة التعليم التجاري الرائدة">Leading Trading Education Platform</p>
+                    </div>
+                    
+                    <div class="footer-section">
+                        <h4 class="footer-heading" data-en="Contact Information" data-ar="معلومات الاتصال">Contact Information</h4>
+                        <div class="footer-contact">
+                            <p><strong data-en="Email:" data-ar="البريد الإلكتروني:">Email:</strong> <a href="mailto:support@fxglobals.com">support@fxglobals.com</a></p>
+                            <p><strong data-en="Phone:" data-ar="الهاتف:">Phone:</strong> <a href="tel:+972593700806">+972 59 370 0806</a></p>
+                            <p><strong data-en="Address:" data-ar="العنوان:">Address:</strong> <span data-en="Palestine, Ramallah" data-ar="فلسطين، رام الله">Palestine, Ramallah</span></p>
+                            <p><strong data-en="Website:" data-ar="الموقع الإلكتروني:">Website:</strong> <a href="https://info.fxglobals.co" target="_blank">info.fxglobals.co</a></p>
+                        </div>
+                    </div>
+                    
+                    <div class="footer-section">
+                        <h4 class="footer-heading" data-en="Legal" data-ar="قانوني">Legal</h4>
+                        <div class="footer-links">
+                            <a href="/privacy-policy/" data-en="Privacy Policy" data-ar="سياسة الخصوصية">Privacy Policy</a>
+                            <a href="/terms-of-service/" data-en="Terms of Service" data-ar="شروط الخدمة">Terms of Service</a>
+                            <a href="/return-exchange-policy/" data-en="Return & Exchange Policy" data-ar="سياسة الإرجاع والاستبدال">Return & Exchange Policy</a>
+                        </div>
+                    </div>
+                    
+                    <div class="footer-section">
+                        <h4 class="footer-heading" data-en="Accepted Payment Methods" data-ar="طرق الدفع المقبولة">Accepted Payment Methods</h4>
+                        <div class="payment-logos">
+                            <div class="payment-logo visa-logo" title="Visa">
+                                <svg viewBox="0 0 141.732 141.732" xmlns="http://www.w3.org/2000/svg">
+                                    <rect width="141.732" height="141.732" fill="#1A1F71" rx="8"/>
+                                    <text x="70.866" y="85" font-family="Arial, sans-serif" font-size="48" font-weight="bold" fill="white" text-anchor="middle" letter-spacing="2">VISA</text>
+                                </svg>
+                            </div>
+                            <div class="payment-logo mastercard-logo" title="Mastercard">
+                                <svg viewBox="0 0 141.732 141.732" xmlns="http://www.w3.org/2000/svg">
+                                    <rect width="141.732" height="141.732" fill="#EB001B" rx="8"/>
+                                    <circle cx="50" cy="70.866" r="30" fill="#F79E1B" opacity="0.9"/>
+                                    <circle cx="91.732" cy="70.866" r="30" fill="#FF5F00" opacity="0.9"/>
+                                    <text x="70.866" y="115" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="white" text-anchor="middle">Mastercard</text>
+                                </svg>
+                            </div>
+                            <!-- Palestinian Banks -->
+                            <div class="payment-logo bank-logo" title="Bank of Palestine">
+                                <svg viewBox="0 0 141.732 141.732" xmlns="http://www.w3.org/2000/svg">
+                                    <rect width="141.732" height="141.732" fill="#006633" rx="8"/>
+                                    <text x="70.866" y="70" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="white" text-anchor="middle">Bank of</text>
+                                    <text x="70.866" y="90" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="white" text-anchor="middle">Palestine</text>
+                                </svg>
+                            </div>
+                            <div class="payment-logo bank-logo" title="Palestine Islamic Bank">
+                                <svg viewBox="0 0 141.732 141.732" xmlns="http://www.w3.org/2000/svg">
+                                    <rect width="141.732" height="141.732" fill="#00853F" rx="8"/>
+                                    <text x="70.866" y="70" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="white" text-anchor="middle">Palestine</text>
+                                    <text x="70.866" y="90" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="white" text-anchor="middle">Islamic Bank</text>
+                                </svg>
+                            </div>
+                            <div class="payment-logo bank-logo" title="Arab Bank">
+                                <svg viewBox="0 0 141.732 141.732" xmlns="http://www.w3.org/2000/svg">
+                                    <rect width="141.732" height="141.732" fill="#C8102E" rx="8"/>
+                                    <text x="70.866" y="85" font-family="Arial, sans-serif" font-size="20" font-weight="bold" fill="white" text-anchor="middle">Arab Bank</text>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="footer-bottom">
+                    <p data-en="© 2025 FX Global Academy. All rights reserved." data-ar="© 2025 أكاديمية FX Global. جميع الحقوق محفوظة.">© 2025 FX Global Academy. All rights reserved.</p>
+                    <p class="footer-lahza-link">
+                        <a href="https://docs.lahza.io/guide/go-live-checklist" target="_blank" data-en="Lahza Payment Integration" data-ar="تكامل دفع Lahza">Lahza Payment Integration</a>
+                    </p>
+                </div>
+            </div>
+        </footer>
     </div>
 
     <!-- Success Page -->
@@ -423,9 +707,9 @@
                         <div class="instruction-step">
                             <div class="step-number">3</div>
                             <div class="step-content">
-                                <h4 data-en="Download Welcome Materials" data-ar="قم بتنزيل المواد الترحيبية">Download Welcome Materials</h4>
-                                <p data-en="Get your quick start guide and training materials." data-ar="احصل على دليل البدء السريع والمواد التدريبية.">Get your quick start guide and training materials.</p>
-                                <button class="btn-step" data-en="Download Guide" data-ar="تحميل الدليل">Download Guide</button>
+                                <h4 data-en="Download Instructions & Welcome Materials" data-ar="قم بتنزيل التعليمات والمواد الترحيبية">Download Instructions & Welcome Materials</h4>
+                                <p data-en="Get your quick start guide, training materials, and detailed instructions that were sent to your email." data-ar="احصل على دليل البدء السريع والمواد التدريبية والتعليمات التفصيلية التي تم إرسالها إلى بريدك الإلكتروني.">Get your quick start guide, training materials, and detailed instructions that were sent to your email.</p>
+                                <a href="/media/instructions/welcome-guide.pdf" download class="btn-step" data-en="📥 Download Instructions" data-ar="📥 تحميل التعليمات">📥 Download Instructions</a>
                             </div>
                         </div>
                         <div class="instruction-step">
@@ -434,7 +718,7 @@
                                 <h4 data-en="Join Our Community" data-ar="انضم إلى مجتمعنا">Join Our Community</h4>
                                 <p data-en="Connect with other traders and get instant support." data-ar="تواصل مع متداولين آخرين واحصل على الدعم الفوري.">Connect with other traders and get instant support.</p>
                                 <div class="community-buttons">
-                                    <button class="btn-step" data-en="Join Discord" data-ar="انضم إلى Discord">Join Discord</button>
+                                    <button id="discord-button" class="btn-step discord-btn" data-en="Join Discord" data-ar="انضم إلى Discord" style="display: none;">Join Discord</button>
                                     <button class="btn-step" data-en="Join Telegram" data-ar="انضم إلى Telegram">Join Telegram</button>
                                 </div>
                             </div>
@@ -464,11 +748,90 @@
 
                 <!-- Back to Home -->
                 <div class="back-home-section">
-                    <button id="back-to-home" class="btn-back-home" data-en="Back to Home" data-ar="العودة إلى الصفحة الرئيسية">Back to Home</button>
+                    <button id="back-to-home" class="btn-back-home" data-en="← Back to Offers" data-ar="← العودة إلى العروض">← Back to Offers</button>
                 </div>
             </div>
         </div>
     </div>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+        <div class="footer-container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3 class="footer-title" data-en="FX Global Academy" data-ar="أكاديمية FX Global">FX Global Academy</h3>
+                    <p class="footer-description" data-en="Leading Trading Education Platform" data-ar="منصة التعليم التجاري الرائدة">Leading Trading Education Platform</p>
+                </div>
+                
+                <div class="footer-section">
+                    <h4 class="footer-heading" data-en="Contact Information" data-ar="معلومات الاتصال">Contact Information</h4>
+                    <div class="footer-contact">
+                        <p><strong data-en="Email:" data-ar="البريد الإلكتروني:">Email:</strong> <a href="mailto:support@fxglobals.com">support@fxglobals.com</a></p>
+                        <p><strong data-en="Phone:" data-ar="الهاتف:">Phone:</strong> <a href="tel:+972593700806">+972 59 370 0806</a></p>
+                        <p><strong data-en="Address:" data-ar="العنوان:">Address:</strong> <span data-en="Palestine, Ramallah" data-ar="فلسطين، رام الله">Palestine, Ramallah</span></p>
+                        <p><strong data-en="Website:" data-ar="الموقع الإلكتروني:">Website:</strong> <a href="https://info.fxglobals.co" target="_blank">info.fxglobals.co</a></p>
+                    </div>
+                </div>
+                
+                <div class="footer-section">
+                    <h4 class="footer-heading" data-en="Legal" data-ar="قانوني">Legal</h4>
+                    <div class="footer-links">
+                        <a href="/privacy-policy/" data-en="Privacy Policy" data-ar="سياسة الخصوصية">Privacy Policy</a>
+                        <a href="/terms-of-service/" data-en="Terms of Service" data-ar="شروط الخدمة">Terms of Service</a>
+                        <a href="/return-exchange-policy/" data-en="Return & Exchange Policy" data-ar="سياسة الإرجاع والاستبدال">Return & Exchange Policy</a>
+                    </div>
+                </div>
+                
+                    <div class="footer-section">
+                        <h4 class="footer-heading" data-en="Accepted Payment Methods" data-ar="طرق الدفع المقبولة">Accepted Payment Methods</h4>
+                        <div class="payment-logos">
+                            <div class="payment-logo visa-logo" title="Visa">
+                                <svg viewBox="0 0 141.732 141.732" xmlns="http://www.w3.org/2000/svg">
+                                    <rect width="141.732" height="141.732" fill="#1A1F71" rx="8"/>
+                                    <text x="70.866" y="85" font-family="Arial, sans-serif" font-size="48" font-weight="bold" fill="white" text-anchor="middle" letter-spacing="2">VISA</text>
+                                </svg>
+                            </div>
+                            <div class="payment-logo mastercard-logo" title="Mastercard">
+                                <svg viewBox="0 0 141.732 141.732" xmlns="http://www.w3.org/2000/svg">
+                                    <rect width="141.732" height="141.732" fill="#EB001B" rx="8"/>
+                                    <circle cx="50" cy="70.866" r="30" fill="#F79E1B" opacity="0.9"/>
+                                    <circle cx="91.732" cy="70.866" r="30" fill="#FF5F00" opacity="0.9"/>
+                                    <text x="70.866" y="115" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="white" text-anchor="middle">Mastercard</text>
+                                </svg>
+                            </div>
+                            <!-- Palestinian Banks -->
+                            <div class="payment-logo bank-logo" title="Bank of Palestine">
+                                <svg viewBox="0 0 141.732 141.732" xmlns="http://www.w3.org/2000/svg">
+                                    <rect width="141.732" height="141.732" fill="#006633" rx="8"/>
+                                    <text x="70.866" y="70" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="white" text-anchor="middle">Bank of</text>
+                                    <text x="70.866" y="90" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="white" text-anchor="middle">Palestine</text>
+                                </svg>
+                            </div>
+                            <div class="payment-logo bank-logo" title="Palestine Islamic Bank">
+                                <svg viewBox="0 0 141.732 141.732" xmlns="http://www.w3.org/2000/svg">
+                                    <rect width="141.732" height="141.732" fill="#00853F" rx="8"/>
+                                    <text x="70.866" y="70" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="white" text-anchor="middle">Palestine</text>
+                                    <text x="70.866" y="90" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="white" text-anchor="middle">Islamic Bank</text>
+                                </svg>
+                            </div>
+                            <div class="payment-logo bank-logo" title="Arab Bank">
+                                <svg viewBox="0 0 141.732 141.732" xmlns="http://www.w3.org/2000/svg">
+                                    <rect width="141.732" height="141.732" fill="#C8102E" rx="8"/>
+                                    <text x="70.866" y="85" font-family="Arial, sans-serif" font-size="20" font-weight="bold" fill="white" text-anchor="middle">Arab Bank</text>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p data-en="© 2025 FX Global Academy. All rights reserved." data-ar="© 2025 أكاديمية FX Global. جميع الحقوق محفوظة.">© 2025 FX Global Academy. All rights reserved.</p>
+                <p class="footer-lahza-link">
+                    <a href="https://docs.lahza.io/guide/go-live-checklist" target="_blank" data-en="Lahza Payment Integration" data-ar="تكامل دفع Lahza">Lahza Payment Integration</a>
+                </p>
+            </div>
+        </div>
+    </footer>
 
     <script src="{% static 'black_friday/script.js' %}"></script>
 </body>

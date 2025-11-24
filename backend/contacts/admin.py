@@ -3,7 +3,64 @@ from django.http import HttpResponse
 from django.utils import timezone
 import csv
 
-from .models import CustomerContact, Payment, BlackFridaySettings
+from .models import CustomerContact, Payment, BlackFridaySettings, BlackFridayContact, LandingPage
+
+
+@admin.register(LandingPage)
+class LandingPageAdmin(admin.ModelAdmin):
+    list_display = ['name', 'short_code', 'template', 'is_active', 'created_at']
+    list_filter = ['is_active', 'template', 'created_at']
+    search_fields = ['name', 'short_code', 'description']
+    readonly_fields = ['uuid', 'short_code', 'created_at']
+    date_hierarchy = 'created_at'
+    actions = ['export_landing_pages_csv']
+    
+    fieldsets = (
+        ('Page Information', {
+            'fields': ('name', 'short_code', 'uuid', 'template', 'is_active')
+        }),
+        ('Description', {
+            'fields': ('description',)
+        }),
+        ('Timestamps', {
+            'fields': ('created_at',)
+        }),
+    )
+    
+    def export_landing_pages_csv(self, request, queryset):
+        """Export selected landing pages to CSV file."""
+        timestamp = timezone.now().strftime('%Y%m%d_%H%M%S')
+        filename = f'landing_pages_{timestamp}.csv'
+        
+        response = HttpResponse(content_type='text/csv')
+        response['Content-Disposition'] = f'attachment; filename="{filename}"'
+        
+        writer = csv.writer(response)
+        headers = [
+            'Name',
+            'Short Code',
+            'UUID',
+            'Template',
+            'Is Active',
+            'Description',
+            'Created At',
+        ]
+        writer.writerow(headers)
+        
+        for page in queryset:
+            writer.writerow([
+                page.name,
+                page.short_code,
+                str(page.uuid),
+                page.get_template_display(),
+                'Yes' if page.is_active else 'No',
+                page.description.replace('\n', ' ').strip() if page.description else '',
+                timezone.localtime(page.created_at).strftime('%Y-%m-%d %H:%M:%S') if page.created_at else '',
+            ])
+        
+        return response
+    
+    export_landing_pages_csv.short_description = "Export to CSV"
 
 
 @admin.register(CustomerContact)
@@ -72,9 +129,9 @@ class CustomerContactAdmin(admin.ModelAdmin):
 
 @admin.register(Payment)
 class PaymentAdmin(admin.ModelAdmin):
-    list_display = ['reference', 'customer_name', 'customer_email', 'amount', 'currency', 'status', 'source', 'offer_type', 'created_at', 'paid_at']
+    list_display = ['reference', 'customer_name', 'customer_email', 'first_name', 'last_name', 'mobile', 'amount', 'currency', 'status', 'source', 'offer_type', 'created_at', 'paid_at']
     list_filter = ['status', 'source', 'currency', 'created_at', 'paid_at']
-    search_fields = ['reference', 'transaction_id', 'customer_name', 'customer_email', 'offer_type']
+    search_fields = ['reference', 'transaction_id', 'customer_name', 'customer_email', 'first_name', 'last_name', 'mobile', 'offer_type']
     readonly_fields = ['reference', 'transaction_id', 'created_at', 'updated_at', 'paid_at', 'lahza_response', 'metadata']
     date_hierarchy = 'created_at'
     actions = ['export_payments_csv', 'mark_as_success', 'mark_as_failed']
@@ -84,7 +141,7 @@ class PaymentAdmin(admin.ModelAdmin):
             'fields': ('reference', 'transaction_id', 'status', 'source')
         }),
         ('Customer Information', {
-            'fields': ('customer_name', 'customer_email')
+            'fields': ('customer_name', 'customer_email', 'first_name', 'last_name', 'mobile')
         }),
         ('Payment Details', {
             'fields': ('amount', 'currency', 'offer_type', 'offer_name')
@@ -129,6 +186,7 @@ class PaymentAdmin(admin.ModelAdmin):
         writer = csv.writer(response)
         writer.writerow([
             'Reference', 'Transaction ID', 'Customer Name', 'Customer Email', 
+            'First Name', 'Last Name', 'Mobile',
             'Amount', 'Currency', 'Status', 'Source', 'Offer Type', 'Offer Name',
             'Created At', 'Paid At'
         ])
@@ -138,6 +196,9 @@ class PaymentAdmin(admin.ModelAdmin):
                 payment.transaction_id or '',
                 payment.customer_name,
                 payment.customer_email,
+                payment.first_name or '',
+                payment.last_name or '',
+                payment.mobile or '',
                 payment.amount,
                 payment.currency,
                 payment.get_status_display(),
@@ -153,13 +214,14 @@ class PaymentAdmin(admin.ModelAdmin):
 
 @admin.register(BlackFridaySettings)
 class BlackFridaySettingsAdmin(admin.ModelAdmin):
-    list_display = ['end_date', 'is_active', 'created_at', 'updated_at']
+    list_display = ['pre_black_friday_start_date', 'end_date', 'is_active', 'created_at', 'updated_at']
     list_filter = ['is_active', 'created_at']
     readonly_fields = ['created_at', 'updated_at']
+    actions = ['export_settings_csv']
     
     fieldsets = (
         ('Settings', {
-            'fields': ('is_active', 'end_date')
+            'fields': ('is_active', 'pre_black_friday_start_date', 'end_date')
         }),
         ('Timestamps', {
             'fields': ('created_at', 'updated_at')
@@ -177,3 +239,93 @@ class BlackFridaySettingsAdmin(admin.ModelAdmin):
         if obj and obj.is_active:
             return False
         return True
+    
+    def export_settings_csv(self, request, queryset):
+        """Export selected settings to CSV file."""
+        timestamp = timezone.now().strftime('%Y%m%d_%H%M%S')
+        filename = f'black_friday_settings_{timestamp}.csv'
+        
+        response = HttpResponse(content_type='text/csv')
+        response['Content-Disposition'] = f'attachment; filename="{filename}"'
+        
+        writer = csv.writer(response)
+        headers = [
+            'Is Active',
+            'Pre-Black Friday Start Date',
+            'End Date',
+            'Created At',
+            'Updated At',
+        ]
+        writer.writerow(headers)
+        
+        for setting in queryset:
+            writer.writerow([
+                'Yes' if setting.is_active else 'No',
+                timezone.localtime(setting.pre_black_friday_start_date).strftime('%Y-%m-%d %H:%M:%S') if setting.pre_black_friday_start_date else '',
+                timezone.localtime(setting.end_date).strftime('%Y-%m-%d %H:%M:%S') if setting.end_date else '',
+                timezone.localtime(setting.created_at).strftime('%Y-%m-%d %H:%M:%S') if setting.created_at else '',
+                timezone.localtime(setting.updated_at).strftime('%Y-%m-%d %H:%M:%S') if setting.updated_at else '',
+            ])
+        
+        return response
+    
+    export_settings_csv.short_description = "Export to CSV"
+
+
+@admin.register(BlackFridayContact)
+class BlackFridayContactAdmin(admin.ModelAdmin):
+    list_display = ['name', 'email', 'phone', 'whatsapp', 'city', 'form_type', 'created_at']
+    list_filter = ['form_type', 'created_at']
+    search_fields = ['name', 'email', 'phone', 'whatsapp', 'city', 'message']
+    readonly_fields = ['created_at']
+    date_hierarchy = 'created_at'
+    actions = ['export_contacts_csv']
+    
+    fieldsets = (
+        ('Contact Information', {
+            'fields': ('name', 'email', 'phone', 'whatsapp', 'city')
+        }),
+        ('Form Details', {
+            'fields': ('form_type', 'message', 'metadata')
+        }),
+        ('Timestamps', {
+            'fields': ('created_at',)
+        }),
+    )
+    
+    def export_contacts_csv(self, request, queryset):
+        """Export selected contacts to CSV file."""
+        timestamp = timezone.now().strftime('%Y%m%d_%H%M%S')
+        filename = f'black_friday_contacts_{timestamp}.csv'
+        
+        response = HttpResponse(content_type='text/csv')
+        response['Content-Disposition'] = f'attachment; filename="{filename}"'
+        
+        writer = csv.writer(response)
+        headers = [
+            'Name',
+            'Email',
+            'Phone',
+            'WhatsApp',
+            'City',
+            'Message',
+            'Form Type',
+            'Created At',
+        ]
+        writer.writerow(headers)
+        
+        for contact in queryset:
+            writer.writerow([
+                contact.name,
+                contact.email or '',
+                contact.phone or '',
+                contact.whatsapp or '',
+                contact.city or '',
+                contact.message.replace('\n', ' ').strip() if contact.message else '',
+                contact.get_form_type_display(),
+                timezone.localtime(contact.created_at).strftime('%Y-%m-%d %H:%M:%S') if contact.created_at else '',
+            ])
+        
+        return response
+    
+    export_contacts_csv.short_description = "Export to CSV"

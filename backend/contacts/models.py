@@ -112,6 +112,9 @@ class Payment(models.Model):
     # Customer information
     customer_name = models.CharField(max_length=200, verbose_name="Customer Name")
     customer_email = models.EmailField(verbose_name="Customer Email")
+    first_name = models.CharField(max_length=100, blank=True, null=True, verbose_name="First Name")
+    last_name = models.CharField(max_length=100, blank=True, null=True, verbose_name="Last Name")
+    mobile = models.CharField(max_length=20, blank=True, null=True, verbose_name="Mobile Number")
     
     # Payment details
     amount = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Amount")
@@ -182,6 +185,11 @@ class BlackFridaySettings(models.Model):
     
     # Use singleton pattern - only one active settings object
     is_active = models.BooleanField(default=True, verbose_name="Active Settings")
+    pre_black_friday_start_date = models.DateTimeField(
+        verbose_name="Pre-Black Friday Start Date/Time",
+        help_text="Date when the pre-Black Friday timer should start counting down",
+        default=timezone.now
+    )
     end_date = models.DateTimeField(verbose_name="Sale End Date/Time")
     created_at = models.DateTimeField(default=timezone.now, verbose_name="Created At")
     updated_at = models.DateTimeField(auto_now=True, verbose_name="Updated At")
@@ -216,7 +224,62 @@ class BlackFridaySettings(models.Model):
                 # Only create default settings if NO settings exist at all
                 # Use a fixed date (midnight of next day) that won't change
                 from datetime import timedelta
-                tomorrow = timezone.now() + timedelta(days=1)
+                now = timezone.now()
+                tomorrow = now + timedelta(days=1)
                 tomorrow = tomorrow.replace(hour=0, minute=0, second=0, microsecond=0)
-                settings = cls.objects.create(end_date=tomorrow, is_active=True)
+                # Default pre-BF start date to November 26th of current year
+                pre_bf_date = now.replace(month=11, day=26, hour=0, minute=0, second=0, microsecond=0)
+                # If November 26th has already passed this year, set it to next year
+                if pre_bf_date < now:
+                    pre_bf_date = pre_bf_date.replace(year=now.year + 1)
+                settings = cls.objects.create(
+                    pre_black_friday_start_date=pre_bf_date,
+                    end_date=tomorrow,
+                    is_active=True
+                )
         return settings
+
+
+class BlackFridayContact(models.Model):
+    """Model for storing Black Friday contact form submissions"""
+    
+    FORM_TYPE_CHOICES = [
+        ('pre_bf', 'Pre-Black Friday Form'),
+        ('main_contact', 'Main Contact Form'),
+        ('other', 'Other'),
+    ]
+    
+    # Contact information
+    name = models.CharField(max_length=200, verbose_name="Name")
+    email = models.EmailField(verbose_name="Email", blank=True, null=True)
+    phone = models.CharField(max_length=20, verbose_name="Phone Number", blank=True, null=True)
+    whatsapp = models.CharField(max_length=20, verbose_name="WhatsApp Number", blank=True, null=True)
+    city = models.CharField(max_length=100, blank=True, null=True, verbose_name="City")
+    message = models.TextField(blank=True, null=True, verbose_name="Message")
+    
+    # Form metadata
+    form_type = models.CharField(
+        max_length=20,
+        choices=FORM_TYPE_CHOICES,
+        default='other',
+        verbose_name="Form Type"
+    )
+    
+    # Additional metadata
+    metadata = models.JSONField(default=dict, blank=True, verbose_name="Metadata")
+    
+    # Timestamps
+    created_at = models.DateTimeField(default=timezone.now, verbose_name="Created At")
+    
+    class Meta:
+        verbose_name = "Black Friday Contact"
+        verbose_name_plural = "Black Friday Contacts"
+        ordering = ['-created_at']
+        indexes = [
+            models.Index(fields=['form_type']),
+            models.Index(fields=['created_at']),
+            models.Index(fields=['email']),
+        ]
+    
+    def __str__(self):
+        return f"{self.name} - {self.form_type} ({self.created_at.strftime('%Y-%m-%d %H:%M')})"

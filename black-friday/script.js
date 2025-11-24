@@ -30,6 +30,7 @@ const offers = {
 document.addEventListener('DOMContentLoaded', async () => {
     initializeLanguage();
     await initializeCountdown();
+    initializePreBlackFridayTimer();
     initializeEventListeners();
     updateLanguageContent();
     initializeScrollAnimations();
@@ -146,6 +147,9 @@ function updateLanguageContent() {
 // Countdown Timer
 let countdownInterval = null;
 let timerEndTime = null;
+
+// Pre-Black Friday Timer (counts down to November 26th)
+let preBFTimerInterval = null;
 
 async function initializeCountdown() {
     // Clear any existing interval
@@ -294,6 +298,76 @@ async function initializeCountdown() {
     
     // Update every second for real-time countdown
     countdownInterval = setInterval(updateCountdown, 1000);
+}
+
+// Pre-Black Friday Timer (counts down to November 26th)
+function initializePreBlackFridayTimer() {
+    // Clear any existing interval
+    if (preBFTimerInterval) {
+        clearInterval(preBFTimerInterval);
+        preBFTimerInterval = null;
+    }
+    
+    // Get current year and set target date to November 26th
+    const now = new Date();
+    const currentYear = now.getFullYear();
+    let targetDate = new Date(currentYear, 10, 26, 0, 0, 0, 0); // November is month 10 (0-indexed)
+    
+    // If November 26th has already passed this year, set it for next year
+    if (targetDate < now) {
+        targetDate = new Date(currentYear + 1, 10, 26, 0, 0, 0, 0);
+    }
+    
+    const targetTimestamp = targetDate.getTime();
+    
+    function updatePreBFTimer() {
+        const now = Date.now();
+        const timeLeft = targetTimestamp - now;
+        
+        const daysEl = document.getElementById('pre-bf-days');
+        const hoursEl = document.getElementById('pre-bf-hours');
+        const minutesEl = document.getElementById('pre-bf-minutes');
+        const secondsEl = document.getElementById('pre-bf-seconds');
+        
+        if (!daysEl || !hoursEl || !minutesEl || !secondsEl) {
+            return;
+        }
+        
+        if (timeLeft <= 0) {
+            // Timer has expired - hide the banner or show a message
+            daysEl.textContent = '00';
+            hoursEl.textContent = '00';
+            minutesEl.textContent = '00';
+            secondsEl.textContent = '00';
+            
+            const banner = document.querySelector('.pre-bf-timer-banner');
+            if (banner) {
+                banner.style.display = 'none';
+            }
+            
+            if (preBFTimerInterval) {
+                clearInterval(preBFTimerInterval);
+                preBFTimerInterval = null;
+            }
+            return;
+        }
+        
+        const days = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
+        
+        daysEl.textContent = String(days).padStart(2, '0');
+        hoursEl.textContent = String(hours).padStart(2, '0');
+        minutesEl.textContent = String(minutes).padStart(2, '0');
+        secondsEl.textContent = String(seconds).padStart(2, '0');
+    }
+    
+    // Update immediately
+    updatePreBFTimer();
+    
+    // Update every second
+    preBFTimerInterval = setInterval(updatePreBFTimer, 1000);
 }
 
 // Scroll Animations

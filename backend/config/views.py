@@ -230,28 +230,107 @@ def get_black_friday_end_date(request):
         if timezone.is_naive(end_date):
             end_date = timezone.make_aware(end_date)
         
+        # Get start date (pre-BF start date is when BF actually starts)
+        start_date = settings.pre_black_friday_start_date
+        if timezone.is_naive(start_date):
+            start_date = timezone.make_aware(start_date)
+        
         # Return end date as ISO format timestamp (in milliseconds for JavaScript)
         # Use timestamp() which handles timezone conversion correctly
         end_date_timestamp = int(end_date.timestamp() * 1000)
+        start_date_timestamp = int(start_date.timestamp() * 1000)
+        
+        # Format dates for display (Palestine timezone - GMT+2)
+        from datetime import datetime
+        try:
+            import pytz
+            palestine_tz = pytz.timezone('Asia/Gaza')  # Palestine timezone
+        except ImportError:
+            # Fallback if pytz is not installed - use UTC offset
+            from datetime import timedelta
+            palestine_tz = timezone.get_fixed_timezone(120)  # GMT+2
+        
+        # Convert to Palestine timezone for display
+        start_date_palestine = start_date.astimezone(palestine_tz)
+        end_date_palestine = end_date.astimezone(palestine_tz)
         
         return Response({
             'success': True,
             'end_date': end_date.isoformat(),
             'end_date_timestamp': end_date_timestamp,
+            'start_date': start_date.isoformat(),
+            'start_date_timestamp': start_date_timestamp,
+            'start_date_display': start_date_palestine.strftime('%B %d, %Y at %I:%M %p'),
+            'end_date_display': end_date_palestine.strftime('%B %d, %Y at %I:%M %p'),
+            'timezone': 'Palestine Time (GMT+2)',
             'is_active': settings.is_active,
         })
     except Exception as e:
         logger.error(f"[Black Friday] Error getting end date: {str(e)}", exc_info=True)
         # Return default (midnight tomorrow) if error
         from datetime import timedelta
-        tomorrow = timezone.now() + timedelta(days=1)
+        try:
+            import pytz
+            palestine_tz = pytz.timezone('Asia/Gaza')
+        except ImportError:
+            palestine_tz = timezone.get_fixed_timezone(120)  # GMT+2
+        now = timezone.now()
+        tomorrow = now + timedelta(days=1)
         tomorrow = tomorrow.replace(hour=0, minute=0, second=0, microsecond=0)
+        if timezone.is_naive(tomorrow):
+            tomorrow = timezone.make_aware(tomorrow)
         end_date_timestamp = int(tomorrow.timestamp() * 1000)
+        tomorrow_palestine = tomorrow.astimezone(palestine_tz)
         
         return Response({
             'success': True,
             'end_date': tomorrow.isoformat(),
             'end_date_timestamp': end_date_timestamp,
+            'start_date': tomorrow.isoformat(),
+            'start_date_timestamp': end_date_timestamp,
+            'start_date_display': tomorrow_palestine.strftime('%B %d, %Y at %I:%M %p'),
+            'end_date_display': tomorrow_palestine.strftime('%B %d, %Y at %I:%M %p'),
+            'timezone': 'Palestine Time (GMT+2)',
+            'is_active': True,
+        })
+
+
+@api_view(['GET'])
+@permission_classes([AllowAny])
+def get_pre_black_friday_date(request):
+    """Get the Pre-Black Friday start date from database."""
+    try:
+        settings = BlackFridaySettings.get_active_settings()
+        # Ensure the datetime is timezone-aware
+        pre_bf_date = settings.pre_black_friday_start_date
+        if timezone.is_naive(pre_bf_date):
+            pre_bf_date = timezone.make_aware(pre_bf_date)
+        
+        # Return date as ISO format timestamp (in milliseconds for JavaScript)
+        pre_bf_timestamp = int(pre_bf_date.timestamp() * 1000)
+        
+        return Response({
+            'success': True,
+            'pre_black_friday_start_date': pre_bf_date.isoformat(),
+            'pre_black_friday_start_timestamp': pre_bf_timestamp,
+            'is_active': settings.is_active,
+        })
+    except Exception as e:
+        logger.error(f"[Black Friday] Error getting pre-BF date: {str(e)}", exc_info=True)
+        # Return default (November 26th of current year) if error
+        from datetime import timedelta
+        now = timezone.now()
+        pre_bf_date = now.replace(month=11, day=26, hour=0, minute=0, second=0, microsecond=0)
+        if pre_bf_date < now:
+            pre_bf_date = pre_bf_date.replace(year=now.year + 1)
+        if timezone.is_naive(pre_bf_date):
+            pre_bf_date = timezone.make_aware(pre_bf_date)
+        pre_bf_timestamp = int(pre_bf_date.timestamp() * 1000)
+        
+        return Response({
+            'success': True,
+            'pre_black_friday_start_date': pre_bf_date.isoformat(),
+            'pre_black_friday_start_timestamp': pre_bf_timestamp,
             'is_active': True,
         })
 
@@ -269,6 +348,11 @@ def privacy_policy(request):
 def terms_of_service(request):
     """Render Terms of Service page."""
     return render(request, 'terms_of_service.html')
+
+
+def return_exchange_policy(request):
+    """Render Return and Exchange Policy page."""
+    return render(request, 'return_exchange_policy.html')
 
 
 @csrf_exempt
@@ -336,11 +420,17 @@ def initialize_lahza_payment(request):
             callback_url=callback_url,
         )
         
-        # Create payment record in database
+        # Get recaptcha token if provided
+        recaptcha_token = data.get('recaptchaToken', '')
+        
+        # Create payment record in database with all form data
         payment = Payment.objects.create(
             reference=reference,
             customer_name=customer_name,
             customer_email=email,
+            first_name=first_name if first_name else None,
+            last_name=last_name if last_name else None,
+            mobile=mobile if mobile else None,
             amount=amount,
             currency='USD',
             offer_type=offer_type,
@@ -352,6 +442,13 @@ def initialize_lahza_payment(request):
                 'source': source,
                 'offer_name': offer_name,
                 'mobile': mobile if mobile else None,
+                'recaptcha_token': recaptcha_token if recaptcha_token else None,
+                'form_data': {
+                    'firstName': first_name,
+                    'lastName': last_name,
+                    'mobile': mobile,
+                    'email': email,
+                }
             }
         )
         
@@ -400,10 +497,20 @@ def verify_lahza_payment(request):
             # If payment doesn't exist, create it (might happen if verification is called before initialization)
             logger.warning(f"[Payment] Payment record not found for reference: {reference}, creating new record")
             try:
+                # Try to get form data from request if available
+                first_name = request.data.get('firstName', '') if hasattr(request, 'data') else ''
+                last_name = request.data.get('lastName', '') if hasattr(request, 'data') else ''
+                email = request.data.get('email', 'unknown@example.com') if hasattr(request, 'data') else 'unknown@example.com'
+                mobile = request.data.get('mobile', '') if hasattr(request, 'data') else ''
+                customer_name = f"{first_name} {last_name}".strip() if (first_name or last_name) else 'Unknown'
+                
                 payment = Payment.objects.create(
                     reference=reference,
-                    customer_name='Unknown',
-                    customer_email='unknown@example.com',
+                    customer_name=customer_name,
+                    customer_email=email,
+                    first_name=first_name if first_name else None,
+                    last_name=last_name if last_name else None,
+                    mobile=mobile if mobile else None,
                     amount=0,
                     currency='USD',
                     status='pending'
@@ -607,7 +714,7 @@ def test_email(request):
                     amount=Decimal('300.00'),
                     currency='USD',
                     offer_type='bundle',
-                    offer_name='Live Trading + VIP Signals Bundle',
+                    offer_name='Design Package + VIP Tips',
                     status='success',
                     source='checkout',
                     paid_at=timezone.now(),

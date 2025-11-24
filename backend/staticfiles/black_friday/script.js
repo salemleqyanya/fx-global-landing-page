@@ -8,8 +8,8 @@ let userEmail = '';
 const offers = {
     bundle: {
         type: 'bundle',
-        name: 'Live Trading + VIP Signals Bundle',
-        nameAr: 'حزمة التداول المباشر + إشارت VIP',
+        name: 'Design Package + VIP Tips',
+        nameAr: 'حزمة التصميم + نصائح VIP',
         price: 136,
         originalPrice: 300,
         discount: '55% OFF',
@@ -23,13 +23,32 @@ const offers = {
         originalPrice: 500,
         discount: '40% OFF',
         discountAr: 'خصم 40%'
+    },
+    recommendations: {
+        type: 'recommendations',
+        name: 'Recommendations Offer',
+        nameAr: 'عرض التوصيات',
+        price: 75,
+        originalPrice: 150,
+        discount: '50% OFF',
+        discountAr: 'خصم 50%'
+    },
+    livestream: {
+        type: 'livestream',
+        name: 'Live Streaming Offer',
+        nameAr: 'عرض البث المباشر',
+        price: 75,
+        originalPrice: 150,
+        discount: '50% OFF',
+        discountAr: 'خصم 50%'
     }
 };
 
 // Initialize
 document.addEventListener('DOMContentLoaded', async () => {
     initializeLanguage();
-    await initializeCountdown();
+    initializePreBlackFridayTimer(); // Check if we should show pre-BF timer or BF content
+    initializePreBFContactForm(); // Initialize pre-BF contact form
     initializeEventListeners();
     updateLanguageContent();
     initializeScrollAnimations();
@@ -124,6 +143,11 @@ function toggleLanguage() {
 function updateLanguageContent() {
     const elements = document.querySelectorAll('[data-en][data-ar]');
     elements.forEach(el => {
+        // Skip hero-title words - keep "BLACK FRIDAY" in English always
+        if (el.classList.contains('hero-word')) {
+            return;
+        }
+        
         const text = currentLanguage === 'ar' ? el.getAttribute('data-ar') : el.getAttribute('data-en');
         if (el.tagName === 'INPUT' && el.type !== 'submit' && el.type !== 'button') {
             el.placeholder = text;
@@ -146,6 +170,357 @@ function updateLanguageContent() {
 // Countdown Timer
 let countdownInterval = null;
 let timerEndTime = null;
+
+// Pre-Black Friday Timer (counts down to November 26th)
+let preBFTimerInterval = null;
+
+// Pre-Black Friday Timer - shows timer until configured date, then shows Black Friday content
+async function initializePreBlackFridayTimer() {
+    // Clear any existing interval
+    if (preBFTimerInterval) {
+        clearInterval(preBFTimerInterval);
+        preBFTimerInterval = null;
+    }
+    
+    // Fetch pre-BF start date from backend
+    let targetDate = null;
+    try {
+        const response = await fetch('/api/black-friday/pre-bf-date/');
+        if (response.ok) {
+            const data = await response.json();
+            if (data.success && data.pre_black_friday_start_timestamp) {
+                targetDate = new Date(data.pre_black_friday_start_timestamp);
+                console.log('Pre-BF timer initialized with date from backend:', targetDate.toLocaleString());
+            }
+        }
+    } catch (error) {
+        console.warn('Failed to fetch pre-BF date from API:', error);
+    }
+    
+    // Fallback to default (November 26th) if API fails
+    if (!targetDate) {
+        const now = new Date();
+        const currentYear = now.getFullYear();
+        // November is month 10 (0-indexed), set to November 26th at 00:00:00
+        targetDate = new Date(currentYear, 10, 26, 0, 0, 0, 0);
+        // If November 26th has already passed this year, set it to next year
+        if (targetDate <= now) {
+            targetDate = new Date(currentYear + 1, 10, 26, 0, 0, 0, 0);
+        }
+        console.log('Using default pre-BF date (November 26th):', targetDate.toLocaleString());
+    }
+    
+    const now = new Date();
+    // Check if target date has already passed
+    const hasPassed = targetDate <= now;
+    
+    // Get references to elements
+    const preBFTimerBanner = document.querySelector('.pre-bf-timer-banner');
+    const landingPage = document.getElementById('landing-page');
+    const heroSection = document.querySelector('.hero-section');
+    const offersSection = document.querySelector('.offers-section');
+    const timerBanner = document.querySelector('.timer-banner');
+    const statsGrid = document.querySelector('.stats-grid');
+    const testimonialsSection = document.querySelector('.testimonials-section');
+    const contactSection = document.querySelector('.contact-section');
+    const footer = document.querySelector('footer');
+    
+    // If November 26th has already passed, hide pre-BF timer and show Black Friday content
+    if (hasPassed) {
+        if (preBFTimerBanner) {
+            preBFTimerBanner.style.display = 'none';
+        }
+        // Show Black Friday content
+        if (landingPage) landingPage.style.display = '';
+        if (heroSection) heroSection.style.display = '';
+        if (offersSection) offersSection.style.display = '';
+        if (timerBanner) timerBanner.style.display = '';
+        if (statsGrid) statsGrid.style.display = '';
+        if (testimonialsSection) testimonialsSection.style.display = '';
+        if (contactSection) contactSection.style.display = '';
+        if (footer) footer.style.display = '';
+        // Initialize the main Black Friday countdown timer
+        initializeCountdown();
+        console.log('Black Friday has started! Showing Black Friday content.');
+        return;
+    }
+    
+    // If November 26th hasn't passed, show pre-BF timer and hide Black Friday content
+    const targetTimestamp = targetDate.getTime();
+    
+    // Hide ALL Black Friday content - hide all children of landing-page except pre-BF timer
+    if (landingPage) {
+        const landingChildren = landingPage.children;
+        for (let i = 0; i < landingChildren.length; i++) {
+            const child = landingChildren[i];
+            if (!child.classList.contains('pre-bf-timer-banner')) {
+                child.style.display = 'none';
+            }
+        }
+    }
+    if (heroSection) heroSection.style.display = 'none';
+    if (offersSection) offersSection.style.display = 'none';
+    if (timerBanner) timerBanner.style.display = 'none';
+    if (statsGrid) statsGrid.style.display = 'none';
+    if (testimonialsSection) testimonialsSection.style.display = 'none';
+    if (contactSection) contactSection.style.display = 'none';
+    if (footer) footer.style.display = 'none';
+    
+    // Show pre-BF timer banner (full screen with black background)
+    if (preBFTimerBanner) {
+        preBFTimerBanner.style.display = 'flex';
+    }
+    
+    console.log('Pre-Black Friday Timer initialized. Target date:', targetDate.toLocaleString());
+    
+    function updatePreBFTimer() {
+        const now = Date.now();
+        const timeLeft = targetTimestamp - now;
+        
+        const daysEl = document.getElementById('pre-bf-days');
+        const hoursEl = document.getElementById('pre-bf-hours');
+        const minutesEl = document.getElementById('pre-bf-minutes');
+        const secondsEl = document.getElementById('pre-bf-seconds');
+        
+        if (!daysEl || !hoursEl || !minutesEl || !secondsEl) {
+            return;
+        }
+        
+        if (timeLeft <= 0) {
+            // Timer has expired - hide the pre-BF banner and show Black Friday content
+            daysEl.textContent = '00';
+            hoursEl.textContent = '00';
+            minutesEl.textContent = '00';
+            secondsEl.textContent = '00';
+            
+            const landingPage = document.getElementById('landing-page');
+            const footer = document.querySelector('footer');
+            
+            if (preBFTimerBanner) {
+                preBFTimerBanner.style.display = 'none';
+            }
+            
+            // Show Black Friday content - show all children of landing-page
+            if (landingPage) {
+                const landingChildren = landingPage.children;
+                for (let i = 0; i < landingChildren.length; i++) {
+                    const child = landingChildren[i];
+                    if (!child.classList.contains('pre-bf-timer-banner')) {
+                        child.style.display = '';
+                    }
+                }
+            }
+            if (heroSection) heroSection.style.display = '';
+            if (offersSection) offersSection.style.display = '';
+            if (timerBanner) timerBanner.style.display = '';
+            if (statsGrid) statsGrid.style.display = '';
+            if (testimonialsSection) testimonialsSection.style.display = '';
+            if (contactSection) contactSection.style.display = '';
+            if (footer) footer.style.display = '';
+            
+            // Initialize the main Black Friday countdown timer
+            initializeCountdown();
+            
+            if (preBFTimerInterval) {
+                clearInterval(preBFTimerInterval);
+                preBFTimerInterval = null;
+            }
+            
+            console.log('Pre-Black Friday timer expired! Black Friday content is now visible.');
+            return;
+        }
+        
+        const days = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
+        
+        daysEl.textContent = String(days).padStart(2, '0');
+        hoursEl.textContent = String(hours).padStart(2, '0');
+        minutesEl.textContent = String(minutes).padStart(2, '0');
+        secondsEl.textContent = String(seconds).padStart(2, '0');
+    }
+    
+    // Update immediately
+    updatePreBFTimer();
+    
+    // Update every second
+    preBFTimerInterval = setInterval(updatePreBFTimer, 1000);
+}
+
+// Pre-BF Contact Form Handler
+function initializePreBFContactForm() {
+    const form = document.getElementById('pre-bf-contact-form');
+    if (!form) return;
+    
+    form.addEventListener('submit', handlePreBFContactSubmit);
+}
+
+async function handlePreBFContactSubmit(e) {
+    e.preventDefault();
+    
+    const form = document.getElementById('pre-bf-contact-form');
+    if (!form) return;
+    
+    const submitButton = form.querySelector('button[type="submit"]');
+    const originalButtonText = submitButton ? submitButton.textContent : '';
+    
+    // Disable button and show loading
+    if (submitButton) {
+        submitButton.disabled = true;
+        submitButton.textContent = 'Sending...';
+    }
+    
+    // Get form data
+    const formData = {
+        name: document.getElementById('pre-bf-name').value.trim(),
+        phone: document.getElementById('pre-bf-mobile').value.trim(),
+        whatsapp: document.getElementById('pre-bf-mobile').value.trim(),
+        city: document.getElementById('pre-bf-city').value.trim(),
+        email: document.getElementById('pre-bf-email').value.trim(),
+        message: document.getElementById('pre-bf-message').value.trim(),
+    };
+    
+    // Validate required fields
+    if (!formData.name || formData.name.length < 2) {
+        alert('Please enter your name');
+        if (submitButton) {
+            submitButton.disabled = false;
+            submitButton.textContent = originalButtonText;
+        }
+        return;
+    }
+    
+    if (!formData.phone || formData.phone.length < 8) {
+        alert('Please enter a valid phone number');
+        if (submitButton) {
+            submitButton.disabled = false;
+            submitButton.textContent = originalButtonText;
+        }
+        return;
+    }
+    
+    if (!formData.email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+        alert('Please enter a valid email address');
+        if (submitButton) {
+            submitButton.disabled = false;
+            submitButton.textContent = originalButtonText;
+        }
+        return;
+    }
+    
+    // Get landing page code from URL if available
+    const urlParams = new URLSearchParams(window.location.search);
+    const code = urlParams.get('code');
+    if (code) {
+        formData.landing_code = code.toUpperCase();
+    }
+    
+    try {
+        // Get CSRF token
+        const csrftoken = getCsrfToken();
+        
+        // Save to Black Friday contact model (primary save)
+        const bfFormData = {
+            name: formData.name,
+            email: formData.email,
+            phone: formData.phone,
+            whatsapp: formData.whatsapp,
+            city: formData.city,
+            message: formData.message,
+            form_type: 'pre_bf',
+        };
+        
+        let bfSaveSuccess = false;
+        try {
+            const bfResponse = await fetch('/api/contacts/black-friday/register/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(bfFormData),
+            });
+            
+            if (bfResponse.ok) {
+                const bfData = await bfResponse.json();
+                if (bfData.success) {
+                    bfSaveSuccess = true;
+                    console.log('Successfully saved to Black Friday contact model');
+                } else {
+                    console.warn('Black Friday contact save returned success=false:', bfData);
+                }
+            } else {
+                const errorText = await bfResponse.text();
+                console.error('Failed to save to Black Friday contact model:', errorText);
+            }
+        } catch (error) {
+            console.error('Error saving to Black Friday contact model:', error);
+        }
+        
+        // Also save to regular contact model for compatibility
+        const response = await fetch('/api/contacts/register/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': csrftoken || '',
+            },
+            body: JSON.stringify(formData),
+        });
+        
+        const data = await response.json();
+        
+        // Show success if either Black Friday model or regular model save succeeded
+        if (bfSaveSuccess || (response.ok && data.success)) {
+            // Show success message
+            form.style.display = 'none';
+            const successDiv = document.getElementById('pre-bf-form-success');
+            if (successDiv) {
+                successDiv.style.display = 'block';
+            }
+            
+            // Reset form after 5 seconds
+            setTimeout(() => {
+                form.style.display = 'flex';
+                if (successDiv) {
+                    successDiv.style.display = 'none';
+                }
+                form.reset();
+                if (submitButton) {
+                    submitButton.disabled = false;
+                    submitButton.textContent = originalButtonText;
+                }
+            }, 5000);
+        } else {
+            // Show error message
+            let errorMsg = 'Error occurred';
+            if (data.message) {
+                errorMsg = data.message;
+            } else if (typeof data === 'object') {
+                const firstError = Object.values(data).find(v => Array.isArray(v) && v.length > 0);
+                if (firstError) {
+                    errorMsg = Array.isArray(firstError) ? firstError[0] : firstError;
+                } else {
+                    errorMsg = Object.values(data)[0] || errorMsg;
+                }
+            }
+            
+            alert(`Error: ${errorMsg}`);
+            
+            if (submitButton) {
+                submitButton.disabled = false;
+                submitButton.textContent = originalButtonText;
+            }
+        }
+    } catch (error) {
+        console.error('Error submitting pre-BF contact form:', error);
+        alert('An error occurred. Please try again.');
+        
+        if (submitButton) {
+            submitButton.disabled = false;
+            submitButton.textContent = originalButtonText;
+        }
+    }
+}
 
 async function initializeCountdown() {
     // Clear any existing interval
@@ -353,10 +728,11 @@ function initializeEventListeners() {
     }
     
     // Auto-fill contact form
-    const autoFillBtn = document.getElementById('auto-fill-btn');
-    if (autoFillBtn) {
-        autoFillBtn.addEventListener('click', handleAutoFillContact);
-    }
+    // Auto-fill button removed for contact form
+    // const autoFillBtn = document.getElementById('auto-fill-btn');
+    // if (autoFillBtn) {
+    //     autoFillBtn.addEventListener('click', handleAutoFillContact);
+    // }
     
     // Payment form
     const paymentForm = document.getElementById('payment-form');
@@ -393,7 +769,7 @@ function initializeEventListeners() {
     if (whatsappBtn) {
         whatsappBtn.addEventListener('click', (e) => {
             e.preventDefault();
-            const whatsappNumber = '972598386350';
+            const whatsappNumber = '972593700806';
             const message = encodeURIComponent(
                 currentLanguage === 'ar' 
                     ? 'مرحباً! أنا مهتم بعروض الجمعة السوداء لـ FX Globals.' 
@@ -404,14 +780,34 @@ function initializeEventListeners() {
     }
     
     // Payment form validation on input
-    const paymentNameInput = document.getElementById('payment-name');
+    const paymentFirstNameInput = document.getElementById('payment-first-name');
+    const paymentLastNameInput = document.getElementById('payment-last-name');
+    const paymentMobileInput = document.getElementById('payment-mobile');
     const paymentEmailInput = document.getElementById('payment-email');
+    const acceptPoliciesCheckbox = document.getElementById('accept-policies');
     
-    if (paymentNameInput) {
-        paymentNameInput.addEventListener('input', validatePaymentForm);
+    if (paymentFirstNameInput) {
+        paymentFirstNameInput.addEventListener('input', validatePaymentForm);
+    }
+    if (paymentLastNameInput) {
+        paymentLastNameInput.addEventListener('input', validatePaymentForm);
+    }
+    if (paymentMobileInput) {
+        paymentMobileInput.addEventListener('input', validatePaymentForm);
     }
     if (paymentEmailInput) {
         paymentEmailInput.addEventListener('input', validatePaymentForm);
+    }
+    if (acceptPoliciesCheckbox) {
+        acceptPoliciesCheckbox.addEventListener('change', validatePaymentForm);
+    }
+    
+    // ReCAPTCHA callback
+    if (typeof grecaptcha !== 'undefined') {
+        // Revalidate when reCAPTCHA is completed
+        window.recaptchaCallback = function() {
+            validatePaymentForm();
+        };
     }
 }
 
@@ -518,13 +914,14 @@ async function handleContactSubmit(e) {
     const nameInput = document.getElementById('contact-name');
     const phoneInput = document.getElementById('contact-phone');
     const cityInput = document.getElementById('contact-city');
-    const emailInput = document.getElementById('contact-email'); // May not be needed by API
+    const emailInput = document.getElementById('contact-email');
+    const messageInput = document.getElementById('contact-message');
     
     const formData = {
         name: nameInput ? nameInput.value.trim() : '',
         phone: phoneInput ? phoneInput.value.trim() : '',
         whatsapp: phoneInput ? phoneInput.value.trim() : '', // Use phone as whatsapp
-        message: 'Contact form submission from Black Friday page',
+        message: messageInput ? messageInput.value.trim() : 'Contact form submission from Black Friday page',
         city: cityInput ? cityInput.value.trim() : null,
     };
     
@@ -558,6 +955,44 @@ async function handleContactSubmit(e) {
         // Get CSRF token
         const csrftoken = getCsrfToken();
         
+        // Save to Black Friday contact model (primary save)
+        const bfFormData = {
+            name: formData.name,
+            email: emailInput ? emailInput.value.trim() : '',
+            phone: formData.phone,
+            whatsapp: formData.whatsapp,
+            city: formData.city,
+            message: formData.message,
+            form_type: 'main_contact',
+        };
+        
+        let bfSaveSuccess = false;
+        try {
+            const bfResponse = await fetch('/api/contacts/black-friday/register/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(bfFormData),
+            });
+            
+            if (bfResponse.ok) {
+                const bfData = await bfResponse.json();
+                if (bfData.success) {
+                    bfSaveSuccess = true;
+                    console.log('Successfully saved to Black Friday contact model');
+                } else {
+                    console.warn('Black Friday contact save returned success=false:', bfData);
+                }
+            } else {
+                const errorText = await bfResponse.text();
+                console.error('Failed to save to Black Friday contact model:', errorText);
+            }
+        } catch (error) {
+            console.error('Error saving to Black Friday contact model:', error);
+        }
+        
+        // Also save to regular contact model for compatibility
         const response = await fetch('/api/contacts/register/', {
             method: 'POST',
             headers: {
@@ -569,7 +1004,8 @@ async function handleContactSubmit(e) {
         
         const data = await response.json();
         
-        if (response.ok && data.success) {
+        // Show success if either Black Friday model or regular model save succeeded
+        if (bfSaveSuccess || (response.ok && data.success)) {
             // Show success message
             form.style.display = 'none';
             const successDiv = document.getElementById('form-success');
@@ -626,22 +1062,44 @@ async function handleContactSubmit(e) {
 
 // Payment Form Validation
 function validatePaymentForm() {
-    const nameInput = document.getElementById('payment-name');
+    const firstNameInput = document.getElementById('payment-first-name');
+    const lastNameInput = document.getElementById('payment-last-name');
+    const mobileInput = document.getElementById('payment-mobile');
     const emailInput = document.getElementById('payment-email');
+    const acceptPolicies = document.getElementById('accept-policies');
     const payButton = document.getElementById('pay-button');
     
-    if (!nameInput || !emailInput || !payButton) {
+    if (!firstNameInput || !lastNameInput || !mobileInput || !emailInput || !payButton) {
         return;
     }
     
-    const name = nameInput.value.trim();
+    const firstName = firstNameInput.value.trim();
+    const lastName = lastNameInput.value.trim();
+    const mobile = mobileInput.value.trim();
     const email = emailInput.value.trim();
     
-    // Basic validation - only name and email needed for Lahza
-    const isNameValid = name.length >= 2;
+    // Basic validation
+    const isFirstNameValid = firstName.length >= 2;
+    const isLastNameValid = lastName.length >= 2;
+    const isMobileValid = mobile.length >= 8;
     const isEmailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
     
-    const isValid = isNameValid && isEmailValid;
+    // Check policy acceptance checkbox
+    const isPoliciesAccepted = acceptPolicies ? acceptPolicies.checked : false;
+    
+    // Check reCAPTCHA (if present)
+    let isRecaptchaValid = true;
+    const recaptchaResponse = grecaptcha && grecaptcha.getResponse ? grecaptcha.getResponse() : '';
+    if (recaptchaResponse === '') {
+        // Check if reCAPTCHA widget exists
+        const recaptchaWidget = document.querySelector('.g-recaptcha');
+        if (recaptchaWidget) {
+            isRecaptchaValid = false;
+        }
+    }
+    
+    const isValid = isFirstNameValid && isLastNameValid && isMobileValid && isEmailValid && 
+                    isPoliciesAccepted && isRecaptchaValid;
     
     payButton.disabled = !isValid;
     
@@ -649,16 +1107,26 @@ function validatePaymentForm() {
 }
 
 function handleAutoFillPayment() {
-    const nameInput = document.getElementById('payment-name');
+    const firstNameInput = document.getElementById('payment-first-name');
+    const lastNameInput = document.getElementById('payment-last-name');
+    const mobileInput = document.getElementById('payment-mobile');
     const emailInput = document.getElementById('payment-email');
+    const acceptPolicies = document.getElementById('accept-policies');
     
     if (currentLanguage === 'ar') {
-        nameInput.value = 'أحمد محمد السعيد';
-        emailInput.value = 'ahmad.test@fxglobals.com';
+        if (firstNameInput) firstNameInput.value = 'أحمد';
+        if (lastNameInput) lastNameInput.value = 'محمد السعيد';
+        if (mobileInput) mobileInput.value = '+972 59 123 4567';
+        if (emailInput) emailInput.value = 'ahmad.test@fxglobals.com';
     } else {
-        nameInput.value = 'John Michael Doe';
-        emailInput.value = 'john.test@fxglobals.com';
+        if (firstNameInput) firstNameInput.value = 'John';
+        if (lastNameInput) lastNameInput.value = 'Michael Doe';
+        if (mobileInput) mobileInput.value = '+1 234 567 8900';
+        if (emailInput) emailInput.value = 'john.test@fxglobals.com';
     }
+    
+    // Auto-check policy checkbox for testing
+    if (acceptPolicies) acceptPolicies.checked = true;
     
     // Validate form after auto-fill
     setTimeout(() => validatePaymentForm(), 100);
@@ -667,9 +1135,17 @@ function handleAutoFillPayment() {
 async function handlePaymentSubmit(e) {
     e.preventDefault();
     
+    const firstNameInput = document.getElementById('payment-first-name');
+    const lastNameInput = document.getElementById('payment-last-name');
+    const mobileInput = document.getElementById('payment-mobile');
+    const emailInput = document.getElementById('payment-email');
+    const acceptPolicies = document.getElementById('accept-policies');
+    
     const formData = {
-        fullName: document.getElementById('payment-name').value.trim(),
-        email: document.getElementById('payment-email').value.trim(),
+        firstName: firstNameInput ? firstNameInput.value.trim() : '',
+        lastName: lastNameInput ? lastNameInput.value.trim() : '',
+        mobile: mobileInput ? mobileInput.value.trim() : '',
+        email: emailInput ? emailInput.value.trim() : '',
     };
     
     if (!selectedOffer) {
@@ -678,14 +1154,40 @@ async function handlePaymentSubmit(e) {
     }
     
     // Validate form data
-    if (!formData.fullName || formData.fullName.length < 2) {
-        alert(currentLanguage === 'ar' ? 'يرجى إدخال اسم صحيح' : 'Please enter a valid name');
+    if (!formData.firstName || formData.firstName.length < 2) {
+        alert(currentLanguage === 'ar' ? 'يرجى إدخال الاسم الأول صحيح' : 'Please enter a valid first name');
+        return;
+    }
+    
+    if (!formData.lastName || formData.lastName.length < 2) {
+        alert(currentLanguage === 'ar' ? 'يرجى إدخال اسم العائلة صحيح' : 'Please enter a valid last name');
+        return;
+    }
+    
+    if (!formData.mobile || formData.mobile.length < 8) {
+        alert(currentLanguage === 'ar' ? 'يرجى إدخال رقم جوال صحيح' : 'Please enter a valid mobile number');
         return;
     }
     
     if (!formData.email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
         alert(currentLanguage === 'ar' ? 'يرجى إدخال بريد إلكتروني صحيح' : 'Please enter a valid email address');
         return;
+    }
+    
+    // Validate checkbox
+    if (!acceptPolicies || !acceptPolicies.checked) {
+        alert(currentLanguage === 'ar' ? 'يرجى الموافقة على سياسة الخصوصية وسياسة الإرجاع والاستبدال' : 'Please accept the Privacy Policy and Return and Exchange Policy');
+        return;
+    }
+    
+    // Validate reCAPTCHA
+    let recaptchaToken = '';
+    if (typeof grecaptcha !== 'undefined' && grecaptcha.getResponse) {
+        recaptchaToken = grecaptcha.getResponse();
+        if (!recaptchaToken) {
+            alert(currentLanguage === 'ar' ? 'يرجى إكمال التحقق من reCAPTCHA' : 'Please complete the reCAPTCHA verification');
+            return;
+        }
     }
     
     // Disable button and show processing
@@ -707,10 +1209,13 @@ async function handlePaymentSubmit(e) {
             body: JSON.stringify({
                 email: formData.email,
                 amount: selectedOffer.price,
-                fullName: formData.fullName,
+                firstName: formData.firstName,
+                lastName: formData.lastName,
+                mobile: formData.mobile,
                 offerType: selectedOffer.type,
                 offerName: currentLanguage === 'ar' ? selectedOffer.nameAr : selectedOffer.name,
                 source: 'black_friday',
+                recaptchaToken: recaptchaToken,
             }),
         });
         
@@ -763,6 +1268,18 @@ function getCsrfToken() {
 
 function showSuccessPage() {
     showPage('success-page');
+    
+    // Show Discord button only for annual membership
+    const discordButton = document.getElementById('discord-button');
+    if (discordButton && selectedOffer && selectedOffer.type === 'yearly') {
+        discordButton.style.display = 'inline-block';
+        discordButton.addEventListener('click', function() {
+            // Discord invite link - to be configured by Abdullah Al-Nubani
+            window.open('https://discord.gg/fxglobal', '_blank');
+        });
+    } else if (discordButton) {
+        discordButton.style.display = 'none';
+    }
     updateSuccessPage();
 }
 

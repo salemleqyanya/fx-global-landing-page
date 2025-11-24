@@ -37,7 +37,7 @@ function loadOfferFromURL() {
     const offerType = urlParams.get('offer') || 'bundle';
     const price = parseFloat(urlParams.get('price')) || 136;
     const originalPrice = parseFloat(urlParams.get('originalPrice')) || 300;
-    const name = urlParams.get('name') || 'Live Trading + VIP Signals Bundle';
+    const name = urlParams.get('name') || 'Design Package + VIP Tips';
     const nameAr = urlParams.get('nameAr') || 'حزمة التداول المباشر + إشارت VIP';
     const discount = urlParams.get('discount') || '55% OFF';
     const discountAr = urlParams.get('discountAr') || 'خصم 55%';
@@ -244,6 +244,7 @@ function initializeEventListeners() {
     const paymentLastNameInput = document.getElementById('payment-last-name');
     const paymentMobileInput = document.getElementById('payment-mobile');
     const paymentEmailInput = document.getElementById('payment-email');
+    const acceptPoliciesCheckbox = document.getElementById('accept-policies');
     
     if (paymentFirstNameInput) {
         paymentFirstNameInput.addEventListener('input', validatePaymentForm);
@@ -256,6 +257,17 @@ function initializeEventListeners() {
     }
     if (paymentEmailInput) {
         paymentEmailInput.addEventListener('input', validatePaymentForm);
+    }
+    if (acceptPoliciesCheckbox) {
+        acceptPoliciesCheckbox.addEventListener('change', validatePaymentForm);
+    }
+    
+    // ReCAPTCHA callback
+    if (typeof grecaptcha !== 'undefined') {
+        // Revalidate when reCAPTCHA is completed
+        window.recaptchaCallback = function() {
+            validatePaymentForm();
+        };
     }
     
     // Listen for messages from iframe (for payment completion)
@@ -415,6 +427,7 @@ function validatePaymentForm() {
     const lastNameInput = document.getElementById('payment-last-name');
     const mobileInput = document.getElementById('payment-mobile');
     const emailInput = document.getElementById('payment-email');
+    const acceptPolicies = document.getElementById('accept-policies');
     const payButton = document.getElementById('pay-button');
     
     if (!firstNameInput || !lastNameInput || !mobileInput || !emailInput || !payButton) {
@@ -441,7 +454,22 @@ function validatePaymentForm() {
     const isMobileValid = mobileDigits.length >= 8;
     const isEmailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
     
-    const isValid = isFirstNameValid && isLastNameValid && isMobileValid && isEmailValid;
+    // Check policy acceptance checkbox
+    const isPoliciesAccepted = acceptPolicies ? acceptPolicies.checked : false;
+    
+    // Check reCAPTCHA (if present)
+    let isRecaptchaValid = true;
+    const recaptchaResponse = grecaptcha && grecaptcha.getResponse ? grecaptcha.getResponse() : '';
+    if (recaptchaResponse === '') {
+        // Check if reCAPTCHA widget exists
+        const recaptchaWidget = document.querySelector('.g-recaptcha');
+        if (recaptchaWidget) {
+            isRecaptchaValid = false;
+        }
+    }
+    
+    const isValid = isFirstNameValid && isLastNameValid && isMobileValid && isEmailValid && 
+                    isPoliciesAccepted && isRecaptchaValid;
     
     payButton.disabled = !isValid;
     
@@ -452,7 +480,7 @@ function validatePaymentForm() {
         payButton.classList.add('disabled');
     }
     
-    console.log('Form validation:', { firstName, lastName, mobile, email, isFirstNameValid, isLastNameValid, isMobileValid, isEmailValid, isValid });
+    console.log('Form validation:', { firstName, lastName, mobile, email, isFirstNameValid, isLastNameValid, isMobileValid, isEmailValid, isPoliciesAccepted, isRecaptchaValid, isValid });
     
     return isValid;
 }
@@ -462,6 +490,7 @@ function handleAutoFillPayment() {
     const lastNameInput = document.getElementById('payment-last-name');
     const mobileInput = document.getElementById('payment-mobile');
     const emailInput = document.getElementById('payment-email');
+    const acceptPolicies = document.getElementById('accept-policies');
     
     if (currentLanguage === 'ar') {
         if (firstNameInput) firstNameInput.value = 'أحمد';
@@ -474,6 +503,9 @@ function handleAutoFillPayment() {
         if (mobileInput) mobileInput.value = '+962791234567';
         if (emailInput) emailInput.value = 'john.test@fxglobals.com';
     }
+    
+    // Auto-check policy checkbox for testing
+    if (acceptPolicies) acceptPolicies.checked = true;
     
     // Validate form after auto-fill
     setTimeout(() => validatePaymentForm(), 100);
@@ -539,6 +571,24 @@ async function handlePaymentSubmit(e) {
         return;
     }
     
+    // Validate checkbox
+    const acceptPolicies = document.getElementById('accept-policies');
+    
+    if (!acceptPolicies || !acceptPolicies.checked) {
+        alert(currentLanguage === 'ar' ? 'يرجى الموافقة على سياسة الخصوصية وسياسة الإرجاع والاستبدال' : 'Please accept the Privacy Policy and Return and Exchange Policy');
+        return;
+    }
+    
+    // Validate reCAPTCHA
+    let recaptchaToken = '';
+    if (typeof grecaptcha !== 'undefined' && grecaptcha.getResponse) {
+        recaptchaToken = grecaptcha.getResponse();
+        if (!recaptchaToken) {
+            alert(currentLanguage === 'ar' ? 'يرجى إكمال التحقق من reCAPTCHA' : 'Please complete the reCAPTCHA verification');
+            return;
+        }
+    }
+    
     // Disable button and show processing
     const payButton = document.getElementById('pay-button');
     if (!payButton) {
@@ -580,6 +630,7 @@ async function handlePaymentSubmit(e) {
                 offerType: selectedOffer.type,
                 offerName: currentLanguage === 'ar' ? selectedOffer.nameAr : selectedOffer.name,
                 source: 'checkout',
+                recaptchaToken: recaptchaToken,
             }),
         });
         

@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import CustomerContact, LandingPage
+from .models import CustomerContact, LandingPage, BlackFridayContact
 
 
 class CustomerContactSerializer(serializers.ModelSerializer):
@@ -82,4 +82,25 @@ class CustomerContactCreateSerializer(serializers.ModelSerializer):
             **validated_data
         )
         return contact
+
+
+class BlackFridayContactSerializer(serializers.ModelSerializer):
+    """Serializer for Black Friday contact form submissions"""
+    
+    class Meta:
+        model = BlackFridayContact
+        fields = ['name', 'email', 'phone', 'whatsapp', 'city', 'message', 'form_type', 'metadata']
+        read_only_fields = []
+    
+    def validate_phone(self, value):
+        """Clean phone number"""
+        if value:
+            return ''.join(filter(str.isdigit, value))
+        return value
+    
+    def validate_whatsapp(self, value):
+        """Clean WhatsApp number"""
+        if value:
+            return ''.join(filter(str.isdigit, value))
+        return value
 

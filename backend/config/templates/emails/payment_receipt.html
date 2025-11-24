@@ -114,15 +114,15 @@
 
         <div class="info-section">
             <div class="info-row">
-                <span class="info-label">Order Reference:</span>
+                <span class="info-label">Order Number:</span>
                 <span class="info-value">{{ payment.reference }}</span>
             </div>
             <div class="info-row">
-                <span class="info-label">Transaction ID:</span>
-                <span class="info-value">{{ payment.transaction_id|default:"N/A" }}</span>
+                <span class="info-label">Transaction Number:</span>
+                <span class="info-value">{{ payment.transaction_id|default:payment.reference }}</span>
             </div>
             <div class="info-row">
-                <span class="info-label">Date:</span>
+                <span class="info-label">Transaction Date:</span>
                 <span class="info-value">{{ payment.paid_at|date:"F d, Y H:i" }}</span>
             </div>
         </div>
@@ -144,13 +144,47 @@
                 <span class="info-value">{{ payment.offer_name|default:payment.offer_type|default:"Premium Membership" }}</span>
             </div>
             <div class="info-row">
+                <span class="info-label">Store Name:</span>
+                <span class="info-value">FX Global Academy</span>
+            </div>
+            <div class="info-row">
                 <span class="info-label">Payment Method:</span>
                 <span class="info-value">Lahza Payment Gateway</span>
             </div>
+            {% if payment.lahza_response.card_type %}
+            <div class="info-row">
+                <span class="info-label">Card Type:</span>
+                <span class="info-value">{{ payment.lahza_response.card_type|upper }}</span>
+            </div>
+            {% endif %}
+            {% if payment.lahza_response.last4 %}
+            <div class="info-row">
+                <span class="info-label">Card Last 4 Digits:</span>
+                <span class="info-value">****{{ payment.lahza_response.last4 }}</span>
+            </div>
+            {% elif payment.lahza_response.card and payment.lahza_response.card.last4 %}
+            <div class="info-row">
+                <span class="info-label">Card Last 4 Digits:</span>
+                <span class="info-value">****{{ payment.lahza_response.card.last4 }}</span>
+            </div>
+            {% endif %}
         </div>
 
         <div class="amount">
             {{ payment.currency }} {{ payment.amount|floatformat:2 }}
+        </div>
+        
+        <div class="info-section">
+            <div class="info-row">
+                <span class="info-label">Amount Details:</span>
+                <span class="info-value">{{ payment.currency }} {{ payment.amount|floatformat:2 }}</span>
+            </div>
+            {% if payment.offer_name %}
+            <div class="info-row">
+                <span class="info-label">Order Details:</span>
+                <span class="info-value">{{ payment.offer_name }}</span>
+            </div>
+            {% endif %}
         </div>
 
         <div class="note">

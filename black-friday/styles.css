@@ -78,6 +78,159 @@ html {
     }
 }
 
+/* Pre-Black Friday Timer Banner */
+.pre-bf-timer-banner {
+    background: linear-gradient(135deg, var(--primary-purple) 0%, var(--primary-pink) 100%);
+    background-size: 200% 200%;
+    color: var(--white);
+    padding: 1.5rem 1rem;
+    text-align: center;
+    box-shadow: 0 4px 20px rgba(107, 70, 193, 0.4);
+    animation: gradientShift 3s ease infinite, fadeInDown 0.8s ease-out;
+    position: relative;
+    overflow: hidden;
+    z-index: 5;
+}
+
+.pre-bf-timer-banner::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+    animation: shimmer 3s infinite;
+}
+
+.pre-bf-timer-content {
+    max-width: 80rem;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    position: relative;
+    z-index: 1;
+}
+
+.pre-bf-timer-text {
+    font-size: 1rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    margin: 0;
+}
+
+@media (min-width: 640px) {
+    .pre-bf-timer-text {
+        font-size: 1.125rem;
+    }
+}
+
+@media (min-width: 768px) {
+    .pre-bf-timer-text {
+        font-size: 1.25rem;
+    }
+}
+
+.pre-bf-countdown-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+}
+
+@media (min-width: 640px) {
+    .pre-bf-countdown-container {
+        gap: 1rem;
+    }
+}
+
+@media (min-width: 768px) {
+    .pre-bf-countdown-container {
+        gap: 1.5rem;
+    }
+}
+
+.pre-bf-countdown-item {
+    text-align: center;
+}
+
+.pre-bf-countdown-value {
+    font-size: 1.5rem;
+    font-weight: 900;
+    color: var(--white);
+    font-family: sans-serif;
+    min-width: 2.5rem;
+}
+
+@media (min-width: 640px) {
+    .pre-bf-countdown-value {
+        font-size: 2rem;
+        min-width: 3rem;
+    }
+}
+
+@media (min-width: 768px) {
+    .pre-bf-countdown-value {
+        font-size: 2.5rem;
+        min-width: 3.5rem;
+    }
+}
+
+@media (min-width: 1024px) {
+    .pre-bf-countdown-value {
+        font-size: 3rem;
+        min-width: 4rem;
+    }
+}
+
+.pre-bf-countdown-label {
+    font-size: 0.625rem;
+    color: rgba(255, 255, 255, 0.9);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-top: 0.25rem;
+    font-weight: 600;
+}
+
+@media (min-width: 640px) {
+    .pre-bf-countdown-label {
+        font-size: 0.75rem;
+    }
+}
+
+@media (min-width: 768px) {
+    .pre-bf-countdown-label {
+        font-size: 0.875rem;
+    }
+}
+
+.pre-bf-countdown-separator {
+    font-size: 1rem;
+    color: rgba(255, 255, 255, 0.6);
+    font-weight: 700;
+}
+
+@media (min-width: 640px) {
+    .pre-bf-countdown-separator {
+        font-size: 1.5rem;
+    }
+}
+
+@media (min-width: 768px) {
+    .pre-bf-countdown-separator {
+        font-size: 2rem;
+    }
+}
+
+@media (min-width: 1024px) {
+    .pre-bf-countdown-separator {
+        font-size: 2.5rem;
+    }
+}
+
 /* Language Toggle */
 .language-toggle {
     position: fixed;

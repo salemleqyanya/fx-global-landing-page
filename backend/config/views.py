@@ -15,6 +15,7 @@ from django.template.loader import render_to_string
 from django.utils.html import strip_tags
 from django.utils import timezone
 import logging
+import requests
 from .lahza_service import initialize_transaction, verify_transaction, LahzaAPIError
 
 logger = logging.getLogger(__name__)
@@ -422,6 +423,39 @@ def initialize_lahza_payment(request):
         
         # Get recaptcha token if provided
         recaptcha_token = data.get('recaptchaToken', '')
+        
+        # Verify reCAPTCHA token if provided
+        if recaptcha_token:
+            try:
+                verify_url = 'https://www.google.com/recaptcha/api/siteverify'
+                verify_data = {
+                    'secret': settings.RECAPTCHA_SECRET_KEY,
+                    'response': recaptcha_token
+                }
+                verify_response = requests.post(verify_url, data=verify_data, timeout=5)
+                verify_result = verify_response.json()
+                
+                if not verify_result.get('success'):
+                    logger.warning(f"[reCAPTCHA] Verification failed for payment: {verify_result}")
+                    return Response({
+                        'success': False,
+                        'error': 'reCAPTCHA verification failed. Please try again.'
+                    }, status=status.HTTP_400_BAD_REQUEST)
+                
+                logger.info(f"[reCAPTCHA] Verification successful for payment")
+            except requests.RequestException as e:
+                logger.error(f"[reCAPTCHA] Error verifying token: {str(e)}")
+                # Don't fail payment if reCAPTCHA verification has network issues
+                # But log it for monitoring
+            except Exception as e:
+                logger.error(f"[reCAPTCHA] Unexpected error during verification: {str(e)}")
+        else:
+            # reCAPTCHA token is required for payment
+            logger.warning("[reCAPTCHA] No token provided for payment")
+            return Response({
+                'success': False,
+                'error': 'reCAPTCHA verification is required'
+            }, status=status.HTTP_400_BAD_REQUEST)
         
         # Create payment record in database with all form data
         payment = Payment.objects.create(

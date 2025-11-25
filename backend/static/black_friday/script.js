@@ -417,10 +417,7 @@ async function handlePreBFContactSubmit(e) {
     }
     
     try {
-        // Get CSRF token
-        const csrftoken = getCsrfToken();
-        
-        // Save to Black Friday contact model (primary save)
+        // Save to Black Friday contact model
         const bfFormData = {
             name: formData.name,
             email: formData.email,
@@ -431,46 +428,17 @@ async function handlePreBFContactSubmit(e) {
             form_type: 'pre_bf',
         };
         
-        let bfSaveSuccess = false;
-        try {
-            const bfResponse = await fetch('/api/contacts/black-friday/register/', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(bfFormData),
-            });
-            
-            if (bfResponse.ok) {
-                const bfData = await bfResponse.json();
-                if (bfData.success) {
-                    bfSaveSuccess = true;
-                    console.log('Successfully saved to Black Friday contact model');
-                } else {
-                    console.warn('Black Friday contact save returned success=false:', bfData);
-                }
-            } else {
-                const errorText = await bfResponse.text();
-                console.error('Failed to save to Black Friday contact model:', errorText);
-            }
-        } catch (error) {
-            console.error('Error saving to Black Friday contact model:', error);
-        }
-        
-        // Also save to regular contact model for compatibility
-        const response = await fetch('/api/contacts/register/', {
+        const bfResponse = await fetch('/api/contacts/black-friday/register/', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'X-CSRFToken': csrftoken || '',
             },
-            body: JSON.stringify(formData),
+            body: JSON.stringify(bfFormData),
         });
         
-        const data = await response.json();
+        const bfData = await bfResponse.json();
         
-        // Show success if either Black Friday model or regular model save succeeded
-        if (bfSaveSuccess || (response.ok && data.success)) {
+        if (bfResponse.ok && bfData.success) {
             // Show success message
             form.style.display = 'none';
             const successDiv = document.getElementById('pre-bf-form-success');
@@ -493,14 +461,14 @@ async function handlePreBFContactSubmit(e) {
         } else {
             // Show error message
             let errorMsg = 'Error occurred';
-            if (data.message) {
-                errorMsg = data.message;
-            } else if (typeof data === 'object') {
-                const firstError = Object.values(data).find(v => Array.isArray(v) && v.length > 0);
+            if (bfData.message) {
+                errorMsg = bfData.message;
+            } else if (typeof bfData === 'object') {
+                const firstError = Object.values(bfData).find(v => Array.isArray(v) && v.length > 0);
                 if (firstError) {
                     errorMsg = Array.isArray(firstError) ? firstError[0] : firstError;
                 } else {
-                    errorMsg = Object.values(data)[0] || errorMsg;
+                    errorMsg = Object.values(bfData)[0] || errorMsg;
                 }
             }
             
@@ -802,13 +770,17 @@ function initializeEventListeners() {
         acceptPoliciesCheckbox.addEventListener('change', validatePaymentForm);
     }
     
-    // ReCAPTCHA callback
-    if (typeof grecaptcha !== 'undefined') {
-        // Revalidate when reCAPTCHA is completed
-        window.recaptchaCallback = function() {
-            validatePaymentForm();
-        };
-    }
+    // ReCAPTCHA callback - must be defined globally before reCAPTCHA loads
+    window.recaptchaCallback = function() {
+        // Revalidate form when reCAPTCHA is completed
+        validatePaymentForm();
+    };
+    
+    // Also handle reCAPTCHA expiration
+    window.recaptchaExpiredCallback = function() {
+        // Revalidate form when reCAPTCHA expires
+        validatePaymentForm();
+    };
 }
 
 // Offer Selection
@@ -848,6 +820,31 @@ function showPaymentPage() {
     const paymentForm = document.getElementById('payment-form');
     if (paymentForm) {
         paymentForm.reset();
+        
+        // Reset reCAPTCHA if it exists
+        // Wait a bit for reCAPTCHA to load if it hasn't already
+        setTimeout(() => {
+            const recaptchaWidget = document.querySelector('.g-recaptcha');
+            if (recaptchaWidget && typeof grecaptcha !== 'undefined') {
+                try {
+                    // Find the widget ID by checking the widget container
+                    const widgetIdAttr = recaptchaWidget.getAttribute('data-widget-id');
+                    if (widgetIdAttr) {
+                        grecaptcha.reset(parseInt(widgetIdAttr));
+                    } else {
+                        // If no widget ID, try to get it from the iframe
+                        const iframe = recaptchaWidget.querySelector('iframe');
+                        if (iframe && grecaptcha.reset) {
+                            // Try resetting without ID (works for single widget)
+                            grecaptcha.reset();
+                        }
+                    }
+                } catch (e) {
+                    console.warn('Could not reset reCAPTCHA:', e);
+                }
+            }
+        }, 500);
+        
         const payButton = document.getElementById('pay-button');
         if (payButton) {
             payButton.disabled = true;
@@ -952,10 +949,7 @@ async function handleContactSubmit(e) {
     }
     
     try {
-        // Get CSRF token
-        const csrftoken = getCsrfToken();
-        
-        // Save to Black Friday contact model (primary save)
+        // Save to Black Friday contact model
         const bfFormData = {
             name: formData.name,
             email: emailInput ? emailInput.value.trim() : '',
@@ -966,46 +960,17 @@ async function handleContactSubmit(e) {
             form_type: 'main_contact',
         };
         
-        let bfSaveSuccess = false;
-        try {
-            const bfResponse = await fetch('/api/contacts/black-friday/register/', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(bfFormData),
-            });
-            
-            if (bfResponse.ok) {
-                const bfData = await bfResponse.json();
-                if (bfData.success) {
-                    bfSaveSuccess = true;
-                    console.log('Successfully saved to Black Friday contact model');
-                } else {
-                    console.warn('Black Friday contact save returned success=false:', bfData);
-                }
-            } else {
-                const errorText = await bfResponse.text();
-                console.error('Failed to save to Black Friday contact model:', errorText);
-            }
-        } catch (error) {
-            console.error('Error saving to Black Friday contact model:', error);
-        }
-        
-        // Also save to regular contact model for compatibility
-        const response = await fetch('/api/contacts/register/', {
+        const bfResponse = await fetch('/api/contacts/black-friday/register/', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'X-CSRFToken': csrftoken || '',
             },
-            body: JSON.stringify(formData),
+            body: JSON.stringify(bfFormData),
         });
         
-        const data = await response.json();
+        const bfData = await bfResponse.json();
         
-        // Show success if either Black Friday model or regular model save succeeded
-        if (bfSaveSuccess || (response.ok && data.success)) {
+        if (bfResponse.ok && bfData.success) {
             // Show success message
             form.style.display = 'none';
             const successDiv = document.getElementById('form-success');
@@ -1028,15 +993,15 @@ async function handleContactSubmit(e) {
         } else {
             // Show error message
             let errorMsg = 'Error occurred';
-            if (data.message) {
-                errorMsg = data.message;
-            } else if (typeof data === 'object') {
+            if (bfData.message) {
+                errorMsg = bfData.message;
+            } else if (typeof bfData === 'object') {
                 // Get first error message from validation errors
-                const firstError = Object.values(data).find(v => Array.isArray(v) && v.length > 0);
+                const firstError = Object.values(bfData).find(v => Array.isArray(v) && v.length > 0);
                 if (firstError) {
                     errorMsg = Array.isArray(firstError) ? firstError[0] : firstError;
                 } else {
-                    errorMsg = Object.values(data)[0] || errorMsg;
+                    errorMsg = Object.values(bfData)[0] || errorMsg;
                 }
             }
             
@@ -1089,11 +1054,14 @@ function validatePaymentForm() {
     
     // Check reCAPTCHA (if present)
     let isRecaptchaValid = true;
-    const recaptchaResponse = grecaptcha && grecaptcha.getResponse ? grecaptcha.getResponse() : '';
-    if (recaptchaResponse === '') {
-        // Check if reCAPTCHA widget exists
-        const recaptchaWidget = document.querySelector('.g-recaptcha');
-        if (recaptchaWidget) {
+    const recaptchaWidget = document.querySelector('.g-recaptcha');
+    if (recaptchaWidget) {
+        // reCAPTCHA widget exists, so it must be completed
+        if (typeof grecaptcha !== 'undefined' && grecaptcha.getResponse) {
+            const recaptchaResponse = grecaptcha.getResponse();
+            isRecaptchaValid = recaptchaResponse !== '';
+        } else {
+            // grecaptcha not loaded yet, assume invalid
             isRecaptchaValid = false;
         }
     }
@@ -1181,11 +1149,19 @@ async function handlePaymentSubmit(e) {
     }
     
     // Validate reCAPTCHA
+    const recaptchaWidget = document.querySelector('.g-recaptcha');
     let recaptchaToken = '';
-    if (typeof grecaptcha !== 'undefined' && grecaptcha.getResponse) {
-        recaptchaToken = grecaptcha.getResponse();
-        if (!recaptchaToken) {
-            alert(currentLanguage === 'ar' ? 'يرجى إكمال التحقق من reCAPTCHA' : 'Please complete the reCAPTCHA verification');
+    if (recaptchaWidget) {
+        // reCAPTCHA widget exists, so it must be completed
+        if (typeof grecaptcha !== 'undefined' && grecaptcha.getResponse) {
+            recaptchaToken = grecaptcha.getResponse();
+            if (!recaptchaToken) {
+                alert(currentLanguage === 'ar' ? 'يرجى إكمال التحقق من reCAPTCHA' : 'Please complete the reCAPTCHA verification');
+                return;
+            }
+        } else {
+            // reCAPTCHA widget exists but grecaptcha API not loaded
+            alert(currentLanguage === 'ar' ? 'جارٍ تحميل reCAPTCHA. يرجى المحاولة مرة أخرى.' : 'reCAPTCHA is loading. Please try again.');
             return;
         }
     }

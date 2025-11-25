@@ -201,3 +201,7 @@ EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER', 'info@fxglobals.co')
 EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD', 'spjc izvo nggd zfeh')
 DEFAULT_FROM_EMAIL = os.getenv('DEFAULT_FROM_EMAIL', 'info@fxglobals.co')
 SERVER_EMAIL = os.getenv('SERVER_EMAIL', 'info@fxglobals.co')
+
+# reCAPTCHA Settings
+RECAPTCHA_SITE_KEY = os.getenv('RECAPTCHA_SITE_KEY', '6Lf3vxcsAAAAAI03JSOmUJ67-DbZLh43CvnM6SAs')
+RECAPTCHA_SECRET_KEY = os.getenv('RECAPTCHA_SECRET_KEY', '6Lf3vxcsAAAAAArHmGwwTpnr5A6_ANF1JTsSZabX')

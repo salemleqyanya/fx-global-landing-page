@@ -332,6 +332,11 @@ class BlackFridaySettings(models.Model):
         default=timezone.now
     )
     end_date = models.DateTimeField(verbose_name="Sale End Date/Time")
+    show_pay_button = models.BooleanField(
+        default=True, 
+        verbose_name="Show Pay Button",
+        help_text="When unchecked, the pay button will be hidden and a contact form button will be shown instead"
+    )
     created_at = models.DateTimeField(default=timezone.now, verbose_name="Created At")
     updated_at = models.DateTimeField(auto_now=True, verbose_name="Updated At")
     

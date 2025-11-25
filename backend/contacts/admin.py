@@ -400,14 +400,14 @@ class PaymentAdmin(admin.ModelAdmin):
 
 @admin.register(BlackFridaySettings)
 class BlackFridaySettingsAdmin(admin.ModelAdmin):
-    list_display = ['pre_black_friday_start_date', 'end_date', 'is_active', 'created_at', 'updated_at']
-    list_filter = ['is_active', 'created_at']
+    list_display = ['pre_black_friday_start_date', 'end_date', 'show_pay_button', 'is_active', 'created_at', 'updated_at']
+    list_filter = ['is_active', 'show_pay_button', 'created_at']
     readonly_fields = ['created_at', 'updated_at']
     actions = ['export_settings_csv']
     
     fieldsets = (
         ('Settings', {
-            'fields': ('is_active', 'pre_black_friday_start_date', 'end_date')
+            'fields': ('is_active', 'pre_black_friday_start_date', 'end_date', 'show_pay_button')
         }),
         ('Timestamps', {
             'fields': ('created_at', 'updated_at')
@@ -439,6 +439,7 @@ class BlackFridaySettingsAdmin(admin.ModelAdmin):
             'Is Active',
             'Pre-Black Friday Start Date',
             'End Date',
+            'Show Pay Button',
             'Created At',
             'Updated At',
         ]
@@ -449,6 +450,7 @@ class BlackFridaySettingsAdmin(admin.ModelAdmin):
                 'Yes' if setting.is_active else 'No',
                 timezone.localtime(setting.pre_black_friday_start_date).strftime('%Y-%m-%d %H:%M:%S') if setting.pre_black_friday_start_date else '',
                 timezone.localtime(setting.end_date).strftime('%Y-%m-%d %H:%M:%S') if setting.end_date else '',
+                'Yes' if setting.show_pay_button else 'No',
                 timezone.localtime(setting.created_at).strftime('%Y-%m-%d %H:%M:%S') if setting.created_at else '',
                 timezone.localtime(setting.updated_at).strftime('%Y-%m-%d %H:%M:%S') if setting.updated_at else '',
             ])

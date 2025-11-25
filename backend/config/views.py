@@ -248,7 +248,11 @@ def elite_program(request):
 
 def black_friday(request):
     """Render Black Friday landing page."""
-    return render(request, 'black_friday.html')
+    settings = BlackFridaySettings.get_active_settings()
+    context = {
+        'show_pay_button': settings.show_pay_button if settings else True,
+    }
+    return render(request, 'black_friday.html', context)
 
 
 @api_view(['GET'])

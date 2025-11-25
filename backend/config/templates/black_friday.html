@@ -170,8 +170,12 @@
                         <div class="offer-alert" data-en="⚡ Only 27 seats remaining for this offer! ⚡" data-ar="⚡ 27 مقعد فقط متبقي لهذا العرض! ⚡">⚡ Only 27 seats remaining for this offer! ⚡</div>
                     </div>
                     <div class="offer-footer">
+                        {% if show_pay_button %}
                         <p class="proceed-text" data-en="👇 Press here to proceed to safe payment method 👇" data-ar="👇 اضغط هنا للانتقال إلى طريقة الدفع الآمنة 👇">👇 Press here to proceed to safe payment method 👇</p>
                         <button class="btn-primary" data-en="To subscribe, click here" data-ar="للاشتراك، اضغط هنا">To subscribe, click here</button>
+                        {% else %}
+                        <button class="btn-primary" onclick="document.querySelector('.contact-section').scrollIntoView({ behavior: 'smooth', block: 'start' });" data-en="Contact Us" data-ar="تواصل معنا">Contact Us</button>
+                        {% endif %}
                     </div>
                 </div>
 
@@ -203,8 +207,12 @@
                         <div class="offer-alert" data-en="🚀 Only 17 Seats Remaining for this Offer 🚀" data-ar="🚀 17 مقعد فقط متبقي لهذا العرض 🚀">🚀 Only 17 Seats Remaining for this Offer 🚀</div>
                     </div>
                     <div class="offer-footer">
+                        {% if show_pay_button %}
                         <p class="proceed-text" data-en="👇 Press here to proceed to safe payment method 👇" data-ar="👇 اضغط هنا للانتقال إلى طريقة الدفع الآمنة 👇">👇 Press here to proceed to safe payment method 👇</p>
                         <button class="btn-primary" data-en="LAST CHANCE - GET 30% OFF" data-ar="الفرصة الأخيرة - خصم 30%">LAST CHANCE - GET 30% OFF</button>
+                        {% else %}
+                        <button class="btn-primary" onclick="document.querySelector('.contact-section').scrollIntoView({ behavior: 'smooth', block: 'start' });" data-en="Contact Us" data-ar="تواصل معنا">Contact Us</button>
+                        {% endif %}
                     </div>
                 </div>
 
@@ -234,8 +242,12 @@
                         </ul>
                     </div>
                     <div class="offer-footer">
+                        {% if show_pay_button %}
                         <p class="proceed-text" data-en="👇 Press here to proceed to safe payment method 👇" data-ar="👇 اضغط هنا للانتقال إلى طريقة الدفع الآمنة 👇">👇 Press here to proceed to safe payment method 👇</p>
                         <button class="btn-primary" data-en="GET RECOMMENDATIONS NOW" data-ar="احصل على التوصيات الآن">GET RECOMMENDATIONS NOW</button>
+                        {% else %}
+                        <button class="btn-primary" onclick="document.querySelector('.contact-section').scrollIntoView({ behavior: 'smooth', block: 'start' });" data-en="Contact Us" data-ar="تواصل معنا">Contact Us</button>
+                        {% endif %}
                     </div>
                 </div>
 
@@ -264,8 +276,12 @@
                         </ul>
                     </div>
                     <div class="offer-footer">
+                        {% if show_pay_button %}
                         <p class="proceed-text" data-en="👇 Press here to proceed to safe payment method 👇" data-ar="👇 اضغط هنا للانتقال إلى طريقة الدفع الآمنة 👇">👇 Press here to proceed to safe payment method 👇</p>
                         <button class="btn-primary" data-en="JOIN LIVE STREAM NOW" data-ar="انضم للبث المباشر الآن">JOIN LIVE STREAM NOW</button>
+                        {% else %}
+                        <button class="btn-primary" onclick="document.querySelector('.contact-section').scrollIntoView({ behavior: 'smooth', block: 'start' });" data-en="Contact Us" data-ar="تواصل معنا">Contact Us</button>
+                        {% endif %}
                     </div>
                 </div>
             </div>
@@ -528,6 +544,7 @@
                                 </label>
                             </div>
                             
+                            {% if show_pay_button %}
                             <button type="submit" id="pay-button" class="btn-pay" disabled>
                                 <span class="lock-icon">🔒</span>
                                 <span data-en="Proceed to Secure Payment" data-ar="المتابعة إلى الدفع الآمن">Proceed to Secure Payment</span>
@@ -543,6 +560,11 @@
                                 <span data-en="and" data-ar="و">and</span>
                                 <a href="/privacy-policy/" data-en="Privacy Policy" data-ar="سياسة الخصوصية">Privacy Policy</a>
                             </p>
+                            {% else %}
+                            <button type="button" id="contact-form-button" class="btn-pay" onclick="document.querySelector('.contact-section').scrollIntoView({ behavior: 'smooth', block: 'start' });">
+                                <span data-en="Contact Us" data-ar="تواصل معنا">Contact Us</span>
+                            </button>
+                            {% endif %}
                         </form>
                     </div>
                 </div>

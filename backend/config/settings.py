@@ -207,6 +207,8 @@ RECAPTCHA_SITE_KEY = os.getenv('RECAPTCHA_SITE_KEY', '6LfluhcsAAAAAP4Yj4C2orUWz7
 RECAPTCHA_PROJECT_ID = os.getenv('RECAPTCHA_PROJECT_ID', 'fxglobals-40199')  # Google Cloud Project ID
 RECAPTCHA_API_KEY = os.getenv('RECAPTCHA_API_KEY', 'AIzaSyCP1-BXCq3TpBC-qH6XPdmwEQIX_vq7djU')  # API Key for reCAPTCHA Enterprise REST API
 # Legacy secret key (kept for backward compatibility, but Enterprise uses API_KEY instead)
-RECAPTCHA_SECRET_KEY = os.getenv('RECAPTCHA_SECRET_KEY', '')
+# Get from: https://www.google.com/recaptcha/admin (select your site and copy Secret Key)
+RECAPTCHA_SECRET_KEY = os.getenv('RECAPTCHA_SECRET_KEY', '6Lf3vxcsAAAAAArHmGwwTpnr5A6_ANF1JTsSZabX')
 # Set to False to disable backend reCAPTCHA verification (frontend validation still works)
+# WARNING: Only disable for development/testing, never in production!
 RECAPTCHA_VERIFY_ENABLED = os.getenv('RECAPTCHA_VERIFY_ENABLED', 'True').lower() == 'true'

@@ -601,13 +601,16 @@ def initialize_lahza_payment(request):
                             verification_successful = True
                         else:
                             error_codes = verify_result.get('error-codes', [])
-                            logger.warning(f"[reCAPTCHA] siteverify failed: {error_codes}")
+                            logger.warning(f"[reCAPTCHA] siteverify failed: {error_codes}, response: {verify_result}")
                             error_message = 'reCAPTCHA token is invalid or expired. Please complete the verification again.'
                             
-                            if 'invalid-input-secret' in error_codes:
-                                error_message = 'reCAPTCHA secret key is invalid. Please contact support.'
+                            if 'invalid-input-secret' in error_codes or 'invalid-keys' in error_codes:
+                                error_message = 'reCAPTCHA secret key is invalid or does not match the site key. Please verify that the Secret Key matches the Site Key (6Lf3vxcsAAAAAI03JSOmUJ67-DbZLh43CvnM6SAs) in Google reCAPTCHA Admin.'
+                                logger.error(f"[reCAPTCHA] Secret key mismatch - Site Key: {settings.RECAPTCHA_SITE_KEY[:20]}..., Secret Key: {settings.RECAPTCHA_SECRET_KEY[:20]}...")
                             elif 'invalid-input-response' in error_codes:
                                 error_message = 'reCAPTCHA token is invalid or expired. Please complete the verification again.'
+                            elif 'missing-input-secret' in error_codes:
+                                error_message = 'reCAPTCHA secret key is missing in configuration.'
                             
                             return Response({
                                 'success': False,

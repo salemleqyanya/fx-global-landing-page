@@ -68,10 +68,31 @@ RECAPTCHA_VERIFY_ENABLED = False
 
 ⚠️ **تحذير**: لا تعطّل التحقق في الإنتاج!
 
+## الحل البديل: استخدام Secret Key (Fallback)
+
+إذا كان Enterprise REST API غير متاح (خطأ 403)، يمكن استخدام **Secret Key** مع endpoint التوافق القديم:
+
+### الحصول على Secret Key من reCAPTCHA Enterprise:
+
+1. اذهب إلى [Google reCAPTCHA Admin Console](https://www.google.com/recaptcha/admin)
+2. اختر موقعك (Site key: `6LfluhcsAAAAAP4Yj4C2orUWz75nFaC5XkDWivPY`)
+3. انسخ **Secret Key** (المفتاح السري)
+
+### إضافة Secret Key:
+
+في `backend/config/settings.py` أو متغيرات البيئة:
+
+```python
+RECAPTCHA_SECRET_KEY = os.getenv('RECAPTCHA_SECRET_KEY', 'YOUR_SECRET_KEY_HERE')
+```
+
+**ملاحظة**: الكود سيحاول استخدام Enterprise REST API أولاً، وإذا فشل (403)، سيستخدم تلقائياً endpoint التوافق القديم مع Secret Key.
+
 ## ملاحظات إضافية
 
 - API Key يجب أن يكون مفعّل لـ reCAPTCHA Enterprise API في Google Cloud
+- إذا كان API Key لا يعمل (403)، استخدم Secret Key كحل بديل
 - تأكد من أن النطاق (`info.fxglobals.co` و `localhost`) مسجل في Google reCAPTCHA Admin
-- API Key حساس - لا تشاركه أبداً
+- API Key و Secret Key حساسان - لا تشاركهما أبداً
 - Project ID: `fxglobals-40199` (موجود افتراضياً في settings)
 

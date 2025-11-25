@@ -53,11 +53,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     updateLanguageContent();
     initializeScrollAnimations();
     checkPaymentCallback();
-    checkRecaptchaEnterprise(); // Check if reCAPTCHA Enterprise is loaded
+    checkRecaptchaV3(); // Check if reCAPTCHA v3 is loaded
 });
 
-// Check reCAPTCHA Enterprise loading status
-function checkRecaptchaEnterprise() {
+// Check reCAPTCHA v3 loading status
+function checkRecaptchaV3() {
     // Check multiple times as script loads asynchronously
     let attempts = 0;
     const maxAttempts = 5;
@@ -66,18 +66,18 @@ function checkRecaptchaEnterprise() {
         attempts++;
         const recaptchaIndicator = document.querySelector('.recaptcha-status');
         
-        if (typeof grecaptcha !== 'undefined' && typeof grecaptcha.enterprise !== 'undefined') {
-            // reCAPTCHA Enterprise is loaded
+        if (typeof grecaptcha !== 'undefined' && typeof grecaptcha.execute === 'function') {
+            // reCAPTCHA v3 is loaded
             if (recaptchaIndicator) {
                 const isArabic = currentLanguage === 'ar';
                 recaptchaIndicator.innerHTML = `
                     <span style="color: #10b981;">✓</span> 
                     <span style="color: rgba(255, 255, 255, 0.7); font-size: 13px;">
-                        ${isArabic ? 'reCAPTCHA Enterprise نشط' : 'reCAPTCHA Enterprise Active'}
+                        ${isArabic ? 'reCAPTCHA v3 نشط' : 'reCAPTCHA v3 Active'}
                     </span>
                 `;
             }
-            console.log('reCAPTCHA Enterprise loaded successfully');
+            console.log('reCAPTCHA v3 loaded successfully');
             clearInterval(checkInterval);
         } else if (attempts >= maxAttempts) {
             // Give up after max attempts
@@ -90,7 +90,7 @@ function checkRecaptchaEnterprise() {
                     </span>
                 `;
             }
-            console.error('reCAPTCHA Enterprise failed to load after', maxAttempts, 'attempts');
+            console.error('reCAPTCHA v3 failed to load after', maxAttempts, 'attempts');
             clearInterval(checkInterval);
         }
     }, 500);
@@ -811,7 +811,7 @@ function initializeEventListeners() {
         acceptPoliciesCheckbox.addEventListener('change', validatePaymentForm);
     }
     
-    // reCAPTCHA Enterprise doesn't use callbacks (it's invisible and executed on submit)
+    // reCAPTCHA v3 doesn't use callbacks (it's invisible and executed on submit)
     // No callbacks needed for Enterprise
 }
 
@@ -1084,10 +1084,10 @@ function validatePaymentForm() {
     // Check policy acceptance checkbox
     const isPoliciesAccepted = acceptPolicies ? acceptPolicies.checked : false;
     
-    // Check reCAPTCHA Enterprise (invisible - always valid if API is loaded)
+    // Check reCAPTCHA v3 (invisible - always valid if API is loaded)
     let isRecaptchaValid = true;
-    // reCAPTCHA Enterprise doesn't have a visible widget, just check if API is loaded
-    if (typeof grecaptcha === 'undefined' || typeof grecaptcha.enterprise === 'undefined') {
+    // reCAPTCHA v3 doesn't have a visible widget, just check if API is loaded
+    if (typeof grecaptcha === 'undefined' || typeof grecaptcha.execute !== 'function') {
         isRecaptchaValid = false;
     }
     
@@ -1182,9 +1182,9 @@ async function handlePaymentSubmit(e) {
     `;
     
     try {
-        // Get reCAPTCHA Enterprise token
+        // Get reCAPTCHA v3 token
         let recaptchaToken = '';
-        const siteKey = '6LfluhcsAAAAAP4Yj4C2orUWz75nFaC5XkDWivPY';
+        const siteKey = '6Lf3vxcsAAAAAI03JSOmUJ67-DbZLh43CvnM6SAs';
         
         if (typeof grecaptcha === 'undefined') {
             console.error('grecaptcha is not defined');
@@ -1198,24 +1198,12 @@ async function handlePaymentSubmit(e) {
             return;
         }
         
-        if (typeof grecaptcha.enterprise === 'undefined') {
-            console.error('grecaptcha.enterprise is not defined');
-            alert(currentLanguage === 'ar' ? 'خطأ في تحميل reCAPTCHA Enterprise. يرجى التحقق من اتصال الإنترنت.' : 'reCAPTCHA Enterprise failed to load. Please check your internet connection.');
-            payButton.disabled = false;
-            payButton.innerHTML = `
-                <span class="lock-icon">🔒</span>
-                <span>${currentLanguage === 'ar' ? 'المتابعة إلى الدفع الآمن' : 'Proceed to Secure Payment'}</span>
-                $<span id="pay-amount">${selectedOffer.price}</span>
-            `;
-            return;
-        }
-        
         try {
-            // Execute reCAPTCHA Enterprise directly (no need for ready() in Enterprise)
-            console.log('Executing reCAPTCHA Enterprise...');
+            // Execute reCAPTCHA v3
+            console.log('Executing reCAPTCHA v3...');
             
             // Execute with timeout
-            const executePromise = grecaptcha.enterprise.execute(siteKey, {
+            const executePromise = grecaptcha.execute(siteKey, {
                 action: 'payment_submit'
             });
             
@@ -1232,7 +1220,7 @@ async function handlePaymentSubmit(e) {
             
             console.log('reCAPTCHA token generated successfully:', recaptchaToken.substring(0, 20) + '...');
         } catch (error) {
-            console.error('reCAPTCHA Enterprise error:', error);
+            console.error('reCAPTCHA v3 error:', error);
             console.error('Error details:', {
                 message: error.message,
                 stack: error.stack,

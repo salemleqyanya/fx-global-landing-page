@@ -205,3 +205,5 @@ SERVER_EMAIL = os.getenv('SERVER_EMAIL', 'info@fxglobals.co')
 # reCAPTCHA Settings
 RECAPTCHA_SITE_KEY = os.getenv('RECAPTCHA_SITE_KEY', '6Lf3vxcsAAAAAI03JSOmUJ67-DbZLh43CvnM6SAs')
 RECAPTCHA_SECRET_KEY = os.getenv('RECAPTCHA_SECRET_KEY', '6Lf3vxcsAAAAAArHmGwwTpnr5A6_ANF1JTsSZabX')
+# Set to False to disable backend reCAPTCHA verification (frontend validation still works)
+RECAPTCHA_VERIFY_ENABLED = os.getenv('RECAPTCHA_VERIFY_ENABLED', 'True').lower() == 'true'

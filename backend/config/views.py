@@ -424,8 +424,8 @@ def initialize_lahza_payment(request):
         # Get recaptcha token if provided
         recaptcha_token = data.get('recaptchaToken', '')
         
-        # Verify reCAPTCHA token if provided
-        if recaptcha_token:
+        # Verify reCAPTCHA token if provided and verification is enabled
+        if recaptcha_token and settings.RECAPTCHA_VERIFY_ENABLED:
             try:
                 verify_url = 'https://www.google.com/recaptcha/api/siteverify'
                 verify_data = {
@@ -436,10 +436,25 @@ def initialize_lahza_payment(request):
                 verify_result = verify_response.json()
                 
                 if not verify_result.get('success'):
-                    logger.warning(f"[reCAPTCHA] Verification failed for payment: {verify_result}")
+                    error_codes = verify_result.get('error-codes', [])
+                    error_message = 'reCAPTCHA verification failed. Please try again.'
+                    
+                    # Provide specific error messages
+                    if 'invalid-input-secret' in error_codes:
+                        error_message = 'reCAPTCHA secret key is invalid. Please contact support.'
+                        logger.error(f"[reCAPTCHA] Invalid secret key: {settings.RECAPTCHA_SECRET_KEY[:10]}...")
+                    elif 'invalid-input-response' in error_codes:
+                        error_message = 'reCAPTCHA token is invalid. Please complete the verification again.'
+                    elif 'missing-input-secret' in error_codes:
+                        error_message = 'reCAPTCHA secret key is missing. Please contact support.'
+                    elif 'missing-input-response' in error_codes:
+                        error_message = 'reCAPTCHA token is missing. Please complete the verification.'
+                    
+                    logger.warning(f"[reCAPTCHA] Verification failed: {verify_result}")
                     return Response({
                         'success': False,
-                        'error': 'reCAPTCHA verification failed. Please try again.'
+                        'error': error_message,
+                        'error_codes': error_codes
                     }, status=status.HTTP_400_BAD_REQUEST)
                 
                 logger.info(f"[reCAPTCHA] Verification successful for payment")
@@ -449,13 +464,16 @@ def initialize_lahza_payment(request):
                 # But log it for monitoring
             except Exception as e:
                 logger.error(f"[reCAPTCHA] Unexpected error during verification: {str(e)}")
-        else:
-            # reCAPTCHA token is required for payment
+        elif settings.RECAPTCHA_VERIFY_ENABLED:
+            # reCAPTCHA token is required for payment (only if verification is enabled)
             logger.warning("[reCAPTCHA] No token provided for payment")
             return Response({
                 'success': False,
                 'error': 'reCAPTCHA verification is required'
             }, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            # Backend verification is disabled, just log it
+            logger.info("[reCAPTCHA] Backend verification disabled, proceeding without verification")
         
         # Create payment record in database with all form data
         payment = Payment.objects.create(

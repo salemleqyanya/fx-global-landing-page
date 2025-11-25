@@ -262,13 +262,17 @@ function initializeEventListeners() {
         acceptPoliciesCheckbox.addEventListener('change', validatePaymentForm);
     }
     
-    // ReCAPTCHA callback
-    if (typeof grecaptcha !== 'undefined') {
-        // Revalidate when reCAPTCHA is completed
-        window.recaptchaCallback = function() {
-            validatePaymentForm();
-        };
-    }
+    // ReCAPTCHA callback - must be defined globally before reCAPTCHA loads
+    window.recaptchaCallback = function() {
+        // Revalidate form when reCAPTCHA is completed
+        validatePaymentForm();
+    };
+    
+    // Also handle reCAPTCHA expiration
+    window.recaptchaExpiredCallback = function() {
+        // Revalidate form when reCAPTCHA expires
+        validatePaymentForm();
+    };
     
     // Listen for messages from iframe (for payment completion)
     window.addEventListener('message', handleIframeMessage);
@@ -459,11 +463,14 @@ function validatePaymentForm() {
     
     // Check reCAPTCHA (if present)
     let isRecaptchaValid = true;
-    const recaptchaResponse = grecaptcha && grecaptcha.getResponse ? grecaptcha.getResponse() : '';
-    if (recaptchaResponse === '') {
-        // Check if reCAPTCHA widget exists
-        const recaptchaWidget = document.querySelector('.g-recaptcha');
-        if (recaptchaWidget) {
+    const recaptchaWidget = document.querySelector('.g-recaptcha');
+    if (recaptchaWidget) {
+        // reCAPTCHA widget exists, so it must be completed
+        if (typeof grecaptcha !== 'undefined' && grecaptcha.getResponse) {
+            const recaptchaResponse = grecaptcha.getResponse();
+            isRecaptchaValid = recaptchaResponse !== '';
+        } else {
+            // grecaptcha not loaded yet, assume invalid
             isRecaptchaValid = false;
         }
     }
@@ -580,11 +587,19 @@ async function handlePaymentSubmit(e) {
     }
     
     // Validate reCAPTCHA
+    const recaptchaWidget = document.querySelector('.g-recaptcha');
     let recaptchaToken = '';
-    if (typeof grecaptcha !== 'undefined' && grecaptcha.getResponse) {
-        recaptchaToken = grecaptcha.getResponse();
-        if (!recaptchaToken) {
-            alert(currentLanguage === 'ar' ? 'يرجى إكمال التحقق من reCAPTCHA' : 'Please complete the reCAPTCHA verification');
+    if (recaptchaWidget) {
+        // reCAPTCHA widget exists, so it must be completed
+        if (typeof grecaptcha !== 'undefined' && grecaptcha.getResponse) {
+            recaptchaToken = grecaptcha.getResponse();
+            if (!recaptchaToken) {
+                alert(currentLanguage === 'ar' ? 'يرجى إكمال التحقق من reCAPTCHA' : 'Please complete the reCAPTCHA verification');
+                return;
+            }
+        } else {
+            // reCAPTCHA widget exists but grecaptcha API not loaded
+            alert(currentLanguage === 'ar' ? 'جارٍ تحميل reCAPTCHA. يرجى المحاولة مرة أخرى.' : 'reCAPTCHA is loading. Please try again.');
             return;
         }
     }

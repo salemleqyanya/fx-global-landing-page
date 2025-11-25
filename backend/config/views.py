@@ -18,6 +18,14 @@ import logging
 import requests
 from .lahza_service import initialize_transaction, verify_transaction, LahzaAPIError
 
+# Try to import Google Cloud reCAPTCHA Enterprise client library
+try:
+    from google.cloud import recaptchaenterprise_v1
+    RECAPTCHA_CLIENT_LIBRARY_AVAILABLE = True
+except ImportError:
+    RECAPTCHA_CLIENT_LIBRARY_AVAILABLE = False
+    # Logger not initialized yet, will log later if needed
+
 logger = logging.getLogger(__name__)
 
 
@@ -426,122 +434,197 @@ def initialize_lahza_payment(request):
         
         # Verify reCAPTCHA Enterprise token if provided and verification is enabled
         if recaptcha_token and settings.RECAPTCHA_VERIFY_ENABLED:
-            # Check if API key is configured (required for Enterprise)
-            if not settings.RECAPTCHA_API_KEY or settings.RECAPTCHA_API_KEY.strip() == '':
-                logger.error("[reCAPTCHA] API key is not configured in settings")
-                return Response({
-                    'success': False,
-                    'error': 'reCAPTCHA API key is not configured. Please contact support.',
-                    'error_codes': ['missing-api-key']
-                }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            verification_successful = False
             
-            try:
-                # Use reCAPTCHA Enterprise REST API endpoint
-                verify_url = f'https://recaptchaenterprise.googleapis.com/v1/projects/{settings.RECAPTCHA_PROJECT_ID}/assessments?key={settings.RECAPTCHA_API_KEY}'
-                
-                # Enterprise API requires JSON body with event object
-                verify_data = {
-                    'event': {
-                        'token': recaptcha_token,
-                        'expectedAction': 'payment_submit',  # Should match the action used in frontend
-                        'siteKey': settings.RECAPTCHA_SITE_KEY
+            # Try Google Cloud Client Library first (recommended method)
+            if RECAPTCHA_CLIENT_LIBRARY_AVAILABLE and settings.RECAPTCHA_PROJECT_ID:
+                try:
+                    logger.info(f"[reCAPTCHA] Verifying Enterprise token via Client Library (token length: {len(recaptcha_token)}, project: {settings.RECAPTCHA_PROJECT_ID})")
+                    
+                    client = recaptchaenterprise_v1.RecaptchaEnterpriseServiceClient()
+                    
+                    # Set the properties of the event to be tracked
+                    event = recaptchaenterprise_v1.Event()
+                    event.site_key = settings.RECAPTCHA_SITE_KEY
+                    event.token = recaptcha_token
+                    
+                    # Create the assessment
+                    assessment = recaptchaenterprise_v1.Assessment()
+                    assessment.event = event
+                    
+                    project_name = f"projects/{settings.RECAPTCHA_PROJECT_ID}"
+                    
+                    # Build the assessment request
+                    request = recaptchaenterprise_v1.CreateAssessmentRequest()
+                    request.assessment = assessment
+                    request.parent = project_name
+                    
+                    # Create the assessment
+                    response = client.create_assessment(request=request)
+                    
+                    # Check if the token is valid
+                    if not response.token_properties.valid:
+                        invalid_reason = str(response.token_properties.invalid_reason)
+                        logger.warning(f"[reCAPTCHA] Invalid token: {invalid_reason}")
+                        return Response({
+                            'success': False,
+                            'error': 'reCAPTCHA token is invalid or expired. Please complete the verification again.',
+                            'error_codes': [invalid_reason]
+                        }, status=status.HTTP_400_BAD_REQUEST)
+                    
+                    # Check if the expected action was executed
+                    action = response.token_properties.action
+                    expected_action = 'payment_submit'
+                    if action != expected_action:
+                        logger.warning(f"[reCAPTCHA] Action mismatch: expected '{expected_action}', got '{action}'")
+                        # Note: We log but don't fail, as action verification is optional
+                        # You can uncomment the following to reject mismatched actions:
+                        # return Response({
+                        #     'success': False,
+                        #     'error': 'reCAPTCHA action mismatch. Please try again.',
+                        #     'error_codes': ['action-mismatch']
+                        # }, status=status.HTTP_400_BAD_REQUEST)
+                    
+                    # Get the risk score
+                    score = response.risk_analysis.score
+                    logger.info(f"[reCAPTCHA] Verification successful via Client Library - score: {score}, action: {action}")
+                    
+                    # Optionally reject low scores (you can adjust threshold)
+                    if score < 0.5:
+                        logger.warning(f"[reCAPTCHA] Low risk score: {score}")
+                        # You can choose to reject or just log it
+                    
+                    verification_successful = True
+                    
+                except Exception as e:
+                    logger.warning(f"[reCAPTCHA] Client Library error: {str(e)}, trying REST API fallback...", exc_info=True)
+            
+            # Fallback: Try Enterprise REST API (if API key is configured and Client Library failed)
+            if not verification_successful and settings.RECAPTCHA_API_KEY and settings.RECAPTCHA_API_KEY.strip() != '':
+                try:
+                    # Use reCAPTCHA Enterprise REST API endpoint
+                    verify_url = f'https://recaptchaenterprise.googleapis.com/v1/projects/{settings.RECAPTCHA_PROJECT_ID}/assessments?key={settings.RECAPTCHA_API_KEY}'
+                    
+                    # Enterprise API requires JSON body with event object
+                    verify_data = {
+                        'event': {
+                            'token': recaptcha_token,
+                            'expectedAction': 'payment_submit',  # Should match the action used in frontend
+                            'siteKey': settings.RECAPTCHA_SITE_KEY
+                        }
                     }
-                }
-                
-                # Note: expectedAction is optional but recommended for better security
-                
-                logger.info(f"[reCAPTCHA] Verifying Enterprise token (token length: {len(recaptcha_token)}, project: {settings.RECAPTCHA_PROJECT_ID}, API key: {settings.RECAPTCHA_API_KEY[:10]}...)")
-                logger.debug(f"[reCAPTCHA] Request URL: {verify_url.split('?')[0]}... (API key hidden)")
-                logger.debug(f"[reCAPTCHA] Request body: {verify_data}")
-                
-                verify_response = requests.post(
-                    verify_url, 
-                    json=verify_data,  # Use json parameter for JSON body
-                    headers={'Content-Type': 'application/json'},
-                    timeout=10
-                )
-                
-                # Check HTTP status
-                if verify_response.status_code != 200:
-                    error_text = verify_response.text
-                    logger.error(f"[reCAPTCHA] HTTP error {verify_response.status_code}: {error_text}")
                     
-                    # Try to parse error details
-                    error_message = 'reCAPTCHA verification service error. Please try again.'
+                    logger.info(f"[reCAPTCHA] Verifying Enterprise token via REST API (token length: {len(recaptcha_token)}, project: {settings.RECAPTCHA_PROJECT_ID})")
+                    
+                    verify_response = requests.post(
+                        verify_url, 
+                        json=verify_data,
+                        headers={'Content-Type': 'application/json'},
+                        timeout=10
+                    )
+                    
+                    # Check HTTP status
+                    if verify_response.status_code == 200:
+                        verify_result = verify_response.json()
+                        logger.info(f"[reCAPTCHA] Verification response: {verify_result}")
+                        
+                        # Check if token is valid
+                        token_properties = verify_result.get('tokenProperties', {})
+                        is_valid = token_properties.get('valid', False)
+                        action = token_properties.get('action', '')
+                        
+                        if is_valid:
+                            # Verification successful
+                            risk_analysis = verify_result.get('riskAnalysis', {})
+                            score = risk_analysis.get('score', 1.0)
+                            logger.info(f"[reCAPTCHA] Verification successful - score: {score}, action: {action}")
+                            verification_successful = True
+                        else:
+                            invalid_reason = token_properties.get('invalidReason', 'UNKNOWN')
+                            logger.warning(f"[reCAPTCHA] Invalid token: {invalid_reason}")
+                            return Response({
+                                'success': False,
+                                'error': 'reCAPTCHA token is invalid or expired. Please complete the verification again.',
+                                'error_codes': [invalid_reason]
+                            }, status=status.HTTP_400_BAD_REQUEST)
+                    else:
+                        # API access denied or other error - try fallback
+                        error_text = verify_response.text
+                        logger.warning(f"[reCAPTCHA] Enterprise REST API failed ({verify_response.status_code}): {error_text[:200]}")
+                        if verify_response.status_code == 403:
+                            logger.warning("[reCAPTCHA] Enterprise API access denied, trying fallback method...")
+                        else:
+                            # For other errors, return immediately
+                            error_message = 'reCAPTCHA verification service error. Please try again.'
+                            try:
+                                error_json = verify_response.json()
+                                if 'error' in error_json:
+                                    error_info = error_json['error']
+                                    error_message = error_info.get('message', error_message)
+                            except:
+                                pass
+                            
+                            return Response({
+                                'success': False,
+                                'error': error_message,
+                                'error_codes': ['http-error'],
+                                'http_status': verify_response.status_code
+                            }, status=status.HTTP_400_BAD_REQUEST)
+                            
+                except requests.RequestException as e:
+                    logger.warning(f"[reCAPTCHA] Enterprise REST API network error: {str(e)}, trying fallback...")
+                except Exception as e:
+                    logger.warning(f"[reCAPTCHA] Enterprise REST API error: {str(e)}, trying fallback...")
+            
+            # Fallback: Use legacy siteverify endpoint (works with Enterprise tokens too)
+            if not verification_successful:
+                # Check if secret key is available for fallback
+                if settings.RECAPTCHA_SECRET_KEY and settings.RECAPTCHA_SECRET_KEY.strip() != '':
                     try:
-                        error_json = verify_response.json()
-                        if 'error' in error_json:
-                            error_info = error_json['error']
-                            error_message = error_info.get('message', error_message)
-                            logger.error(f"[reCAPTCHA] Google API error: {error_info}")
-                    except:
-                        pass
-                    
-                    # Provide specific error messages based on status code
-                    if verify_response.status_code == 400:
-                        error_message = 'reCAPTCHA API request is invalid. Please check API key and project ID.'
-                    elif verify_response.status_code == 401:
-                        error_message = 'reCAPTCHA API key is invalid or unauthorized. Please check API key configuration.'
-                    elif verify_response.status_code == 403:
-                        error_message = 'reCAPTCHA API access denied. Please ensure reCAPTCHA Enterprise API is enabled in Google Cloud.'
-                    elif verify_response.status_code == 404:
-                        error_message = 'reCAPTCHA project not found. Please check project ID configuration.'
-                    
+                        logger.info("[reCAPTCHA] Using fallback siteverify endpoint")
+                        verify_url = 'https://www.google.com/recaptcha/api/siteverify'
+                        verify_data = {
+                            'secret': settings.RECAPTCHA_SECRET_KEY,
+                            'response': recaptcha_token
+                        }
+                        
+                        verify_response = requests.post(verify_url, data=verify_data, timeout=10)
+                        verify_result = verify_response.json()
+                        
+                        if verify_result.get('success'):
+                            logger.info("[reCAPTCHA] Verification successful via siteverify endpoint")
+                            verification_successful = True
+                        else:
+                            error_codes = verify_result.get('error-codes', [])
+                            logger.warning(f"[reCAPTCHA] siteverify failed: {error_codes}")
+                            error_message = 'reCAPTCHA token is invalid or expired. Please complete the verification again.'
+                            
+                            if 'invalid-input-secret' in error_codes:
+                                error_message = 'reCAPTCHA secret key is invalid. Please contact support.'
+                            elif 'invalid-input-response' in error_codes:
+                                error_message = 'reCAPTCHA token is invalid or expired. Please complete the verification again.'
+                            
+                            return Response({
+                                'success': False,
+                                'error': error_message,
+                                'error_codes': error_codes
+                            }, status=status.HTTP_400_BAD_REQUEST)
+                            
+                    except Exception as e:
+                        logger.error(f"[reCAPTCHA] Fallback verification error: {str(e)}", exc_info=True)
+                        return Response({
+                            'success': False,
+                            'error': 'reCAPTCHA verification service unavailable. Please try again.',
+                            'error_codes': ['verification-error']
+                        }, status=status.HTTP_503_SERVICE_UNAVAILABLE)
+                else:
+                    # No API key and no secret key
+                    logger.error("[reCAPTCHA] Neither API key nor secret key is configured")
                     return Response({
                         'success': False,
-                        'error': error_message,
-                        'error_codes': ['http-error'],
-                        'http_status': verify_response.status_code,
-                        'error_details': error_text[:200] if error_text else None
-                    }, status=status.HTTP_400_BAD_REQUEST)
-                
-                verify_result = verify_response.json()
-                logger.info(f"[reCAPTCHA] Verification response: {verify_result}")
-                
-                # Check if token is valid
-                # Enterprise API returns tokenProperties with valid field
-                token_properties = verify_result.get('tokenProperties', {})
-                is_valid = token_properties.get('valid', False)
-                action = token_properties.get('action', '')
-                
-                if not is_valid:
-                    invalid_reason = token_properties.get('invalidReason', 'UNKNOWN')
-                    logger.warning(f"[reCAPTCHA] Invalid token: {invalid_reason} (token: {recaptcha_token[:20]}...)")
-                    return Response({
-                        'success': False,
-                        'error': 'reCAPTCHA token is invalid or expired. Please complete the verification again.',
-                        'error_codes': [invalid_reason]
-                    }, status=status.HTTP_400_BAD_REQUEST)
-                
-                # Verify action matches
-                if action != 'payment_submit':
-                    logger.warning(f"[reCAPTCHA] Action mismatch: expected 'payment_submit', got '{action}'")
-                    # Don't fail, but log it
-                
-                # Check risk score (optional, but good to log)
-                risk_analysis = verify_result.get('riskAnalysis', {})
-                score = risk_analysis.get('score', 1.0)  # Score ranges from 0.0 (bot) to 1.0 (human)
-                logger.info(f"[reCAPTCHA] Verification successful - score: {score}, action: {action}")
-                
-                # Optionally reject low scores (you can adjust threshold)
-                if score < 0.5:
-                    logger.warning(f"[reCAPTCHA] Low risk score: {score}")
-                    # You can choose to reject or just log it
-                
-            except requests.RequestException as e:
-                logger.error(f"[reCAPTCHA] Network error verifying token: {str(e)}", exc_info=True)
-                return Response({
-                    'success': False,
-                    'error': 'reCAPTCHA verification service unavailable. Please try again.',
-                    'error_codes': ['network-error']
-                }, status=status.HTTP_503_SERVICE_UNAVAILABLE)
-            except Exception as e:
-                logger.exception(f"[reCAPTCHA] Unexpected error during verification: {str(e)}")
-                return Response({
-                    'success': False,
-                    'error': 'reCAPTCHA verification error. Please try again.',
-                    'error_codes': ['internal-error']
-                }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+                        'error': 'reCAPTCHA verification is not properly configured. Please contact support.',
+                        'error_codes': ['missing-credentials']
+                    }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         elif settings.RECAPTCHA_VERIFY_ENABLED:
             # reCAPTCHA token is required for payment (only if verification is enabled)
             logger.warning("[reCAPTCHA] No token provided for payment")

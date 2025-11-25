@@ -397,6 +397,7 @@ def initialize_lahza_payment(request):
         data = request.data
         email = data.get('email')
         amount = float(data.get('amount', 0))
+        currency = data.get('currency', 'ILS')  # Default to ILS for backward compatibility
         first_name = data.get('firstName', '')
         last_name = data.get('lastName', '')
         mobile = data.get('mobile', '')
@@ -436,11 +437,11 @@ def initialize_lahza_payment(request):
             base_url = request.build_absolute_uri('/black-friday/')
         callback_url = f"{base_url}?reference={reference}"
         
-        # Initialize transaction with Lahza
+        # Initialize transaction with Lahza using the plan's currency
         transaction_data = initialize_transaction(
             email=email,
             amount_minor=amount_minor,
-            currency='ILS',
+            currency=currency.upper(),  # Use the currency from the plan
             reference=reference,
             first_name=first_name,
             last_name=last_name,
@@ -697,7 +698,7 @@ def initialize_lahza_payment(request):
             last_name=last_name if last_name else None,
             mobile=mobile if mobile else None,
             amount=amount,
-            currency='ILS',
+            currency=currency.upper(),  # Use the currency from the plan
             offer_type=offer_type,
             offer_name=offer_name,
             source=source,

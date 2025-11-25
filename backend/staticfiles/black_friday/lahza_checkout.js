@@ -747,6 +747,7 @@ async function handlePaymentSubmit(e) {
             body: JSON.stringify({
                 email: formData.email,
                 amount: selectedOffer.price,
+                currency: selectedOffer.currency || 'USD',
                 firstName: formData.firstName,
                 lastName: formData.lastName,
                 mobile: formData.mobile,

@@ -854,10 +854,19 @@ def verify_lahza_payment(request):
             
             # Mark payment as successful (this saves the payment and extracts card info)
             try:
+                # Log transaction_data structure before processing
+                logger.info(f"[Payment] Transaction data structure: {list(transaction_data.keys()) if isinstance(transaction_data, dict) else type(transaction_data)}")
+                logger.info(f"[Payment] Full transaction_data: {transaction_data}")
+                
                 payment.mark_as_success(transaction_data)
-                # Log card information if available
+                
+                # Log card information after saving
+                logger.info(f"[Payment] After mark_as_success - Card info: type={payment.card_type}, brand={payment.card_brand}, last4={payment.last_four_digits}, exp={payment.card_expiry_month}/{payment.card_expiry_year}")
+                
                 if payment.last_four_digits:
-                    logger.info(f"[Payment] Card info saved - Type: {payment.card_type or payment.card_brand}, Last 4: {payment.last_four_digits}")
+                    logger.info(f"[Payment] ✓ Card info saved successfully - Type: {payment.card_type or payment.card_brand}, Last 4: {payment.last_four_digits}")
+                else:
+                    logger.warning(f"[Payment] ⚠ No card info extracted. Payment fields: card_type={payment.card_type}, card_brand={payment.card_brand}, last_four_digits={payment.last_four_digits}")
             except Exception as e:
                 logger.error(f"[Payment] Error marking payment as success: {str(e)}", exc_info=True)
                 # Try to save manually

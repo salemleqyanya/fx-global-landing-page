@@ -175,55 +175,137 @@ class Payment(models.Model):
             
             # Extract card information from transaction data
             # Lahza API may return card info in different formats
+            import logging
+            logger = logging.getLogger(__name__)
+            
+            # Log the full transaction_data structure for debugging
+            logger.info(f"[Payment] Extracting card info from transaction_data. Keys: {list(transaction_data.keys()) if isinstance(transaction_data, dict) else 'Not a dict'}")
+            
             card_info = None
-            if 'card' in transaction_data:
-                card_info = transaction_data.get('card', {})
-            elif 'authorization' in transaction_data:
+            
+            # Try multiple possible locations for card info
+            # Lahza returns card info directly in 'authorization' object
+            if 'authorization' in transaction_data:
                 auth = transaction_data.get('authorization', {})
-                if 'card' in auth:
-                    card_info = auth.get('card', {})
+                if isinstance(auth, dict):
+                    # Check if card info is directly in authorization (Lahza format)
+                    if 'last4' in auth or 'brand' in auth or 'card_type' in auth:
+                        card_info = auth
+                        logger.info(f"[Payment] Found card info directly in 'authorization': {card_info}")
+                    # Or check if there's a nested 'card' object
+                    elif 'card' in auth:
+                        card_info = auth.get('card', {})
+                        logger.info(f"[Payment] Found card info in 'authorization.card': {card_info}")
+            elif 'card' in transaction_data:
+                card_info = transaction_data.get('card', {})
+                logger.info(f"[Payment] Found card info in 'card' key: {card_info}")
             elif 'payment_method' in transaction_data:
                 pm = transaction_data.get('payment_method', {})
-                if 'card' in pm:
+                if isinstance(pm, dict) and 'card' in pm:
                     card_info = pm.get('card', {})
+                    logger.info(f"[Payment] Found card info in 'payment_method.card': {card_info}")
+            elif 'paymentDetails' in transaction_data:
+                pd = transaction_data.get('paymentDetails', {})
+                if isinstance(pd, dict) and 'card' in pd:
+                    card_info = pd.get('card', {})
+                    logger.info(f"[Payment] Found card info in 'paymentDetails.card': {card_info}")
+            
+            # Also check if card info is directly in transaction_data with different key names
+            if not card_info:
+                # Check for direct card fields
+                if any(key in transaction_data for key in ['cardType', 'cardBrand', 'cardNumber', 'last4', 'last_4', 'lastFour']):
+                    card_info = {}
+                    if 'cardType' in transaction_data:
+                        card_info['type'] = transaction_data.get('cardType')
+                    if 'cardBrand' in transaction_data:
+                        card_info['brand'] = transaction_data.get('cardBrand')
+                    if 'last4' in transaction_data:
+                        card_info['last4'] = transaction_data.get('last4')
+                    elif 'last_4' in transaction_data:
+                        card_info['last4'] = transaction_data.get('last_4')
+                    elif 'lastFour' in transaction_data:
+                        card_info['last4'] = transaction_data.get('lastFour')
+                    elif 'cardNumber' in transaction_data:
+                        card_num = str(transaction_data.get('cardNumber', ''))
+                        if len(card_num) >= 4:
+                            card_info['last4'] = card_num[-4:]
+                    logger.info(f"[Payment] Constructed card info from direct fields: {card_info}")
             
             if card_info and isinstance(card_info, dict):
-                # Extract card type/brand
-                if 'type' in card_info:
-                    self.card_type = str(card_info.get('type', ''))[:50]
-                elif 'brand' in card_info:
-                    self.card_type = str(card_info.get('brand', ''))[:50]
+                logger.info(f"[Payment] Processing card_info: {card_info}")
                 
-                if 'brand' in card_info:
+                # Extract card type/brand (Lahza uses 'brand' in authorization)
+                if 'brand' in card_info and card_info.get('brand'):
                     self.card_brand = str(card_info.get('brand', ''))[:50]
-                elif 'type' in card_info:
-                    self.card_brand = str(card_info.get('type', ''))[:50]
+                    self.card_type = self.card_brand  # Use brand as type if type is not available
+                    logger.info(f"[Payment] Set card_brand: {self.card_brand}")
+                elif 'card_type' in card_info and card_info.get('card_type'):
+                    self.card_type = str(card_info.get('card_type', ''))[:50]
+                    self.card_brand = self.card_type  # Use type as brand if brand is not available
+                    logger.info(f"[Payment] Set card_type: {self.card_type}")
+                elif 'type' in card_info and card_info.get('type'):
+                    self.card_type = str(card_info.get('type', ''))[:50]
+                    self.card_brand = self.card_type
+                    logger.info(f"[Payment] Set card_type from type: {self.card_type}")
                 
-                # Extract last 4 digits
-                if 'last4' in card_info:
+                # Extract last 4 digits (Lahza uses 'last4' in authorization)
+                if 'last4' in card_info and card_info.get('last4'):
                     self.last_four_digits = str(card_info.get('last4', ''))[:4]
-                elif 'last_4' in card_info:
+                    logger.info(f"[Payment] Set last_four_digits: {self.last_four_digits}")
+                elif 'last_4' in card_info and card_info.get('last_4'):
                     self.last_four_digits = str(card_info.get('last_4', ''))[:4]
-                elif 'last_four' in card_info:
+                    logger.info(f"[Payment] Set last_four_digits from last_4: {self.last_four_digits}")
+                elif 'last_four' in card_info and card_info.get('last_four'):
                     self.last_four_digits = str(card_info.get('last_four', ''))[:4]
+                    logger.info(f"[Payment] Set last_four_digits from last_four: {self.last_four_digits}")
+                elif 'cardNumber' in card_info:
+                    card_num = str(card_info.get('cardNumber', ''))
+                    if len(card_num) >= 4:
+                        self.last_four_digits = card_num[-4:]
+                        logger.info(f"[Payment] Set last_four_digits from cardNumber: {self.last_four_digits}")
                 
-                # Extract expiry information
-                if 'exp_month' in card_info:
-                    self.card_expiry_month = str(card_info.get('exp_month', ''))[:2]
-                elif 'expiry_month' in card_info:
-                    self.card_expiry_month = str(card_info.get('expiry_month', ''))[:2]
+                # Extract expiry information (Lahza uses 'exp_month' and 'exp_year' in authorization)
+                if 'exp_month' in card_info and card_info.get('exp_month'):
+                    exp_month = str(card_info.get('exp_month', ''))
+                    # Ensure 2 digits with leading zero if needed
+                    if len(exp_month) == 1:
+                        exp_month = '0' + exp_month
+                    self.card_expiry_month = exp_month[:2]
+                    logger.info(f"[Payment] Set card_expiry_month: {self.card_expiry_month}")
+                elif 'expiry_month' in card_info and card_info.get('expiry_month'):
+                    exp_month = str(card_info.get('expiry_month', ''))
+                    if len(exp_month) == 1:
+                        exp_month = '0' + exp_month
+                    self.card_expiry_month = exp_month[:2]
+                    logger.info(f"[Payment] Set card_expiry_month from expiry_month: {self.card_expiry_month}")
+                elif 'expMonth' in card_info and card_info.get('expMonth'):
+                    exp_month = str(card_info.get('expMonth', ''))
+                    if len(exp_month) == 1:
+                        exp_month = '0' + exp_month
+                    self.card_expiry_month = exp_month[:2]
+                    logger.info(f"[Payment] Set card_expiry_month from expMonth: {self.card_expiry_month}")
                 
-                if 'exp_year' in card_info:
+                if 'exp_year' in card_info and card_info.get('exp_year'):
                     exp_year = str(card_info.get('exp_year', ''))
                     # Handle 2-digit years (convert to 4-digit)
                     if len(exp_year) == 2:
                         exp_year = '20' + exp_year
                     self.card_expiry_year = exp_year[:4]
-                elif 'expiry_year' in card_info:
+                    logger.info(f"[Payment] Set card_expiry_year: {self.card_expiry_year}")
+                elif 'expiry_year' in card_info and card_info.get('expiry_year'):
                     exp_year = str(card_info.get('expiry_year', ''))
                     if len(exp_year) == 2:
                         exp_year = '20' + exp_year
                     self.card_expiry_year = exp_year[:4]
+                    logger.info(f"[Payment] Set card_expiry_year from expiry_year: {self.card_expiry_year}")
+                elif 'expYear' in card_info and card_info.get('expYear'):
+                    exp_year = str(card_info.get('expYear', ''))
+                    if len(exp_year) == 2:
+                        exp_year = '20' + exp_year
+                    self.card_expiry_year = exp_year[:4]
+                    logger.info(f"[Payment] Set card_expiry_year from expYear: {self.card_expiry_year}")
+            else:
+                logger.warning(f"[Payment] No card info found in transaction_data. Available keys: {list(transaction_data.keys()) if isinstance(transaction_data, dict) else 'Not a dict'}")
         self.save()
     
     def mark_as_failed(self, error_message=None):

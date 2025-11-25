@@ -153,18 +153,23 @@
             </div>
         </div>
 
-        {% if payment.card_type or payment.card_brand or payment.last_four_digits %}
-        <div class="info-section" style="background-color: #f0f4ff; border: 2px solid #6943A7;">
-            <h3 style="color: #6943A7; margin-top: 0; margin-bottom: 15px; font-size: 18px;">Payment Card Information</h3>
-            {% if payment.card_type or payment.card_brand %}
+        {% if payment.card_type or payment.card_brand or payment.last_four_digits or payment.card_expiry_month or payment.card_expiry_year %}
+        <div class="info-section" style="background-color: #f0f4ff; border: 2px solid #6943A7; margin-top: 25px;">
+            <h3 style="color: #6943A7; margin-top: 0; margin-bottom: 15px; font-size: 18px; text-align: center;">Payment Card Information</h3>
+            {% if payment.card_brand %}
             <div class="info-row">
-                <span class="info-label" style="color: #6943A7; font-weight: 700;">Card Type/Brand:</span>
-                <span class="info-value" style="color: #6943A7; font-weight: 600;">{{ payment.card_brand|default:payment.card_type|upper }}</span>
+                <span class="info-label" style="color: #6943A7; font-weight: 700;">Card Brand:</span>
+                <span class="info-value" style="color: #6943A7; font-weight: 600;">{{ payment.card_brand|upper }}</span>
+            </div>
+            {% elif payment.card_type %}
+            <div class="info-row">
+                <span class="info-label" style="color: #6943A7; font-weight: 700;">Card Type:</span>
+                <span class="info-value" style="color: #6943A7; font-weight: 600;">{{ payment.card_type|upper }}</span>
             </div>
             {% endif %}
             {% if payment.last_four_digits %}
             <div class="info-row">
-                <span class="info-label" style="color: #6943A7; font-weight: 700;">Card Number:</span>
+                <span class="info-label" style="color: #6943A7; font-weight: 700;">Card Number (Last 4 Digits):</span>
                 <span class="info-value" style="color: #6943A7; font-weight: 600; font-size: 16px; letter-spacing: 2px;">**** **** **** {{ payment.last_four_digits }}</span>
             </div>
             {% endif %}

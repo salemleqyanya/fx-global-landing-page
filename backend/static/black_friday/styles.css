@@ -3630,6 +3630,8 @@ body[dir="rtl"] .resource-link {
     margin: 2rem auto 0;
     position: relative;
     z-index: 1;
+    animation: fadeInUp 0.8s ease-out 0.3s both;
+    will-change: transform, opacity;
 }
 
 @media (min-width: 768px) {
@@ -3761,6 +3763,32 @@ body[dir="rtl"] .resource-link {
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
+    animation: fadeInUp 0.6s ease-out forwards;
+    opacity: 0;
+}
+
+.pre-bf-form-group:nth-child(1) {
+    animation-delay: 0.6s;
+}
+
+.pre-bf-form-group:nth-child(2) {
+    animation-delay: 0.7s;
+}
+
+.pre-bf-form-group:nth-child(3) {
+    animation-delay: 0.8s;
+}
+
+.pre-bf-form-group:nth-child(4) {
+    animation-delay: 0.9s;
+}
+
+.pre-bf-form-group:nth-child(5) {
+    animation-delay: 1.0s;
+}
+
+.pre-bf-form-group:nth-child(6) {
+    animation-delay: 1.1s;
 }
 
 .pre-bf-form-group label {
@@ -3831,7 +3859,8 @@ body[dir="rtl"] .resource-link {
     position: relative;
     overflow: hidden;
     margin-top: 0.5rem;
-    animation: gradientShift 4s ease infinite;
+    animation: gradientShift 4s ease infinite, fadeInUp 0.6s ease-out 1.2s both;
+    will-change: transform, opacity, background-position;
 }
 
 .pre-bf-submit-btn::before {

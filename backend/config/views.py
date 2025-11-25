@@ -18,14 +18,27 @@ import logging
 import requests
 import os
 from io import BytesIO
-from reportlab.lib.pagesizes import A4
-from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
-from reportlab.lib.units import inch
-from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, PageBreak
-from reportlab.lib.enums import TA_RIGHT, TA_CENTER, TA_LEFT
-from reportlab.pdfbase import pdfmetrics
-from reportlab.pdfbase.ttfonts import TTFont
+
+# Get logger first
+logger = logging.getLogger(__name__)
+
+# Optional reportlab import for PDF generation fallback
+try:
+    from reportlab.lib.pagesizes import A4
+    from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+    from reportlab.lib.units import inch
+    from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, PageBreak
+    from reportlab.lib.enums import TA_RIGHT, TA_CENTER, TA_LEFT
+    from reportlab.pdfbase import pdfmetrics
+    from reportlab.pdfbase.ttfonts import TTFont
+    REPORTLAB_AVAILABLE = True
+except ImportError:
+    REPORTLAB_AVAILABLE = False
+
 from .lahza_service import initialize_transaction, verify_transaction, LahzaAPIError
+
+# Get BASE_DIR for file paths (backend directory)
+BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Try to import Google Cloud reCAPTCHA Enterprise client library
 try:
@@ -35,7 +48,9 @@ except ImportError:
     RECAPTCHA_CLIENT_LIBRARY_AVAILABLE = False
     # Logger not initialized yet, will log later if needed
 
-logger = logging.getLogger(__name__)
+# Log reportlab availability if not available
+if not REPORTLAB_AVAILABLE:
+    logger.warning("[PDF] reportlab not available. PDF generation fallback will not work.")
 
 
 def landing_page(request, short_code=None, force_template=None):
@@ -924,7 +939,10 @@ def verify_lahza_payment(request):
 
 
 def generate_instructions_pdf(payment):
-    """Generate PDF file with instructions for the customer"""
+    """Generate PDF file with instructions for the customer (fallback if PDF file not found)"""
+    if not REPORTLAB_AVAILABLE:
+        raise ImportError("reportlab is not installed. Cannot generate PDF dynamically.")
+    
     try:
         buffer = BytesIO()
         doc = SimpleDocTemplate(buffer, pagesize=A4, rightMargin=72, leftMargin=72, topMargin=72, bottomMargin=72)
@@ -1109,12 +1127,34 @@ def send_payment_receipt_email(payment):
         # Create plain text version
         plain_message = strip_tags(html_message)
         
-        # Generate PDF instructions
+        # Use existing PDF file instead of generating
+        pdf_path = os.path.join(BASE_DIR, 'اهم التعليمات الصادره لدورات (2).pdf')
+        pdf_content = None
+        pdf_filename = 'اهم_التعليمات_الصادرة_لدورات.pdf'
+        
         try:
-            pdf_content = generate_instructions_pdf(payment)
-            pdf_filename = f'instructions_{payment.reference}.pdf'
+            if os.path.exists(pdf_path):
+                with open(pdf_path, 'rb') as pdf_file:
+                    pdf_content = pdf_file.read()
+                logger.info(f"[Email] PDF file found and loaded: {pdf_path}")
+            else:
+                logger.warning(f"[Email] PDF file not found at {pdf_path}")
+                # Try to generate PDF dynamically as fallback (only if reportlab is available)
+                if REPORTLAB_AVAILABLE:
+                    try:
+                        pdf_content = generate_instructions_pdf(payment)
+                        pdf_filename = f'instructions_{payment.reference}.pdf'
+                        logger.info(f"[Email] Generated PDF dynamically as fallback")
+                    except Exception as e:
+                        logger.warning(f"[Email] Could not generate PDF dynamically: {str(e)}")
+                        pdf_content = None
+                        pdf_filename = None
+                else:
+                    logger.warning(f"[Email] reportlab not available, cannot generate PDF dynamically")
+                    pdf_content = None
+                    pdf_filename = None
         except Exception as e:
-            logger.warning(f"[Email] Could not generate PDF: {str(e)}, sending email without PDF")
+            logger.warning(f"[Email] Could not attach PDF: {str(e)}, sending email without PDF")
             pdf_content = None
             pdf_filename = None
         
@@ -1128,9 +1168,10 @@ def send_payment_receipt_email(payment):
         email.content_subtype = "html"
         email.body = html_message
         
-        # Attach PDF if generated successfully
+        # Attach PDF if available
         if pdf_content:
             email.attach(pdf_filename, pdf_content, 'application/pdf')
+            logger.info(f"[Email] PDF attached: {pdf_filename}")
         
         # Send email
         email.send(fail_silently=False)
@@ -1150,21 +1191,49 @@ def download_instructions_pdf(request, reference):
     try:
         payment = get_object_or_404(Payment, reference=reference)
         
-        # Generate PDF
-        pdf_content = generate_instructions_pdf(payment)
+        # Use existing PDF file instead of generating
+        pdf_path = os.path.join(BASE_DIR, 'اهم التعليمات الصادره لدورات (2).pdf')
         
-        # Create response
-        from django.http import HttpResponse
-        response = HttpResponse(pdf_content, content_type='application/pdf')
-        response['Content-Disposition'] = f'attachment; filename="instructions_{reference}.pdf"'
-        
-        return response
+        if os.path.exists(pdf_path):
+            with open(pdf_path, 'rb') as pdf_file:
+                pdf_content = pdf_file.read()
+            
+            # Create response
+            from django.http import HttpResponse
+            response = HttpResponse(pdf_content, content_type='application/pdf')
+            response['Content-Disposition'] = f'attachment; filename="اهم_التعليمات_الصادرة_لدورات.pdf"'
+            
+            logger.info(f"[PDF] PDF file served: {pdf_path}")
+            return response
+        else:
+            # Fallback to generating PDF if file doesn't exist (only if reportlab is available)
+            logger.warning(f"[PDF] PDF file not found at {pdf_path}")
+            if REPORTLAB_AVAILABLE:
+                try:
+                    pdf_content = generate_instructions_pdf(payment)
+                    from django.http import HttpResponse
+                    response = HttpResponse(pdf_content, content_type='application/pdf')
+                    response['Content-Disposition'] = f'attachment; filename="instructions_{reference}.pdf"'
+                    logger.info(f"[PDF] Generated PDF dynamically as fallback")
+                    return response
+                except Exception as e:
+                    logger.error(f"[PDF] Could not generate PDF dynamically: {str(e)}")
+                    return Response({
+                        'success': False,
+                        'error': 'PDF file not found and could not be generated'
+                    }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            else:
+                logger.error(f"[PDF] reportlab not available, cannot generate PDF dynamically")
+                return Response({
+                    'success': False,
+                    'error': 'PDF file not found'
+                }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         
     except Exception as e:
         logger.error(f"[PDF] Error downloading instructions PDF: {str(e)}", exc_info=True)
         return Response({
             'success': False,
-            'error': 'Could not generate PDF'
+            'error': 'Could not load PDF file'
         }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 

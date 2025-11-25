@@ -811,6 +811,12 @@ function updateSuccessPage() {
     if (orderIdEl) orderIdEl.textContent = orderId;
     if (emailEl) emailEl.textContent = userEmail;
     if (savedAmountEl) savedAmountEl.textContent = `$${selectedOffer.originalPrice - selectedOffer.price}`;
+    
+    // Set download instructions button link
+    const downloadBtn = document.getElementById('download-instructions-btn');
+    if (downloadBtn && orderId) {
+        downloadBtn.href = `/instructions/${orderId}/download/`;
+    }
 }
 
 function showDeclinedPage(reference, errorMessage) {

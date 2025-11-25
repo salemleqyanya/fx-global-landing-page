@@ -6,8 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Secure Checkout - FX Global</title>
     <link rel="stylesheet" href="{% static 'black_friday/styles.css' %}">
-    <!-- Google reCAPTCHA -->
-    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+    <!-- Google reCAPTCHA Enterprise -->
+    <script src="https://www.google.com/recaptcha/enterprise.js?render=6LfluhcsAAAAAP4Yj4C2orUWz75nFaC5XkDWivPY"></script>
     <style>
         /* Additional Checkout Page Specific Styles */
         body {
@@ -401,10 +401,12 @@
                                     <p class="form-hint" data-en="Email required for account creation" data-ar="البريد الإلكتروني مطلوب لإنشاء الحساب">Email required for account creation</p>
                                 </div>
                                 
-                                <!-- Google reCAPTCHA -->
+                                <!-- Google reCAPTCHA Enterprise (invisible - protected by reCAPTCHA) -->
                                 <div class="form-group">
-                                    <div class="g-recaptcha" data-sitekey="6Lf3vxcsAAAAAI03JSOmUJ67-DbZLh43CvnM6SAs" data-callback="recaptchaCallback" data-expired-callback="recaptchaExpiredCallback"></div>
-                                    <p class="form-hint" data-en="Please complete the reCAPTCHA verification" data-ar="يرجى إكمال التحقق من reCAPTCHA">Please complete the reCAPTCHA verification</p>
+                                    <div class="recaptcha-status" style="display: flex; align-items: center; gap: 8px; padding: 12px; background: rgba(105, 67, 167, 0.1); border-radius: 8px; border: 1px solid rgba(105, 67, 167, 0.3);">
+                                        <span style="color: #6B46C1;">🔒</span>
+                                        <p class="form-hint" style="margin: 0; color: rgba(255, 255, 255, 0.7); font-size: 13px;" data-en="Protected by reCAPTCHA Enterprise" data-ar="محمي بواسطة reCAPTCHA Enterprise">Protected by reCAPTCHA Enterprise</p>
+                                    </div>
                                 </div>
                                 
                                 <!-- Policy Acceptance Checkbox -->

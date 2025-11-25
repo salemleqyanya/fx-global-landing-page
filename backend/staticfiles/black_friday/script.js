@@ -53,7 +53,48 @@ document.addEventListener('DOMContentLoaded', async () => {
     updateLanguageContent();
     initializeScrollAnimations();
     checkPaymentCallback();
+    checkRecaptchaEnterprise(); // Check if reCAPTCHA Enterprise is loaded
 });
+
+// Check reCAPTCHA Enterprise loading status
+function checkRecaptchaEnterprise() {
+    // Check multiple times as script loads asynchronously
+    let attempts = 0;
+    const maxAttempts = 5;
+    
+    const checkInterval = setInterval(() => {
+        attempts++;
+        const recaptchaIndicator = document.querySelector('.recaptcha-status');
+        
+        if (typeof grecaptcha !== 'undefined' && typeof grecaptcha.enterprise !== 'undefined') {
+            // reCAPTCHA Enterprise is loaded
+            if (recaptchaIndicator) {
+                const isArabic = currentLanguage === 'ar';
+                recaptchaIndicator.innerHTML = `
+                    <span style="color: #10b981;">✓</span> 
+                    <span style="color: rgba(255, 255, 255, 0.7); font-size: 13px;">
+                        ${isArabic ? 'reCAPTCHA Enterprise نشط' : 'reCAPTCHA Enterprise Active'}
+                    </span>
+                `;
+            }
+            console.log('reCAPTCHA Enterprise loaded successfully');
+            clearInterval(checkInterval);
+        } else if (attempts >= maxAttempts) {
+            // Give up after max attempts
+            if (recaptchaIndicator) {
+                const isArabic = currentLanguage === 'ar';
+                recaptchaIndicator.innerHTML = `
+                    <span style="color: #ef4444;">⚠</span> 
+                    <span style="color: rgba(255, 255, 255, 0.7); font-size: 13px;">
+                        ${isArabic ? 'reCAPTCHA غير محمل' : 'reCAPTCHA not loaded'}
+                    </span>
+                `;
+            }
+            console.error('reCAPTCHA Enterprise failed to load after', maxAttempts, 'attempts');
+            clearInterval(checkInterval);
+        }
+    }, 500);
+}
 
 // Check if returning from Lahza payment callback
 function checkPaymentCallback() {
@@ -770,17 +811,8 @@ function initializeEventListeners() {
         acceptPoliciesCheckbox.addEventListener('change', validatePaymentForm);
     }
     
-    // ReCAPTCHA callback - must be defined globally before reCAPTCHA loads
-    window.recaptchaCallback = function() {
-        // Revalidate form when reCAPTCHA is completed
-        validatePaymentForm();
-    };
-    
-    // Also handle reCAPTCHA expiration
-    window.recaptchaExpiredCallback = function() {
-        // Revalidate form when reCAPTCHA expires
-        validatePaymentForm();
-    };
+    // reCAPTCHA Enterprise doesn't use callbacks (it's invisible and executed on submit)
+    // No callbacks needed for Enterprise
 }
 
 // Offer Selection
@@ -1052,18 +1084,11 @@ function validatePaymentForm() {
     // Check policy acceptance checkbox
     const isPoliciesAccepted = acceptPolicies ? acceptPolicies.checked : false;
     
-    // Check reCAPTCHA (if present)
+    // Check reCAPTCHA Enterprise (invisible - always valid if API is loaded)
     let isRecaptchaValid = true;
-    const recaptchaWidget = document.querySelector('.g-recaptcha');
-    if (recaptchaWidget) {
-        // reCAPTCHA widget exists, so it must be completed
-        if (typeof grecaptcha !== 'undefined' && grecaptcha.getResponse) {
-            const recaptchaResponse = grecaptcha.getResponse();
-            isRecaptchaValid = recaptchaResponse !== '';
-        } else {
-            // grecaptcha not loaded yet, assume invalid
-            isRecaptchaValid = false;
-        }
+    // reCAPTCHA Enterprise doesn't have a visible widget, just check if API is loaded
+    if (typeof grecaptcha === 'undefined' || typeof grecaptcha.enterprise === 'undefined') {
+        isRecaptchaValid = false;
     }
     
     const isValid = isFirstNameValid && isLastNameValid && isMobileValid && isEmailValid && 
@@ -1148,24 +1173,6 @@ async function handlePaymentSubmit(e) {
         return;
     }
     
-    // Validate reCAPTCHA
-    const recaptchaWidget = document.querySelector('.g-recaptcha');
-    let recaptchaToken = '';
-    if (recaptchaWidget) {
-        // reCAPTCHA widget exists, so it must be completed
-        if (typeof grecaptcha !== 'undefined' && grecaptcha.getResponse) {
-            recaptchaToken = grecaptcha.getResponse();
-            if (!recaptchaToken) {
-                alert(currentLanguage === 'ar' ? 'يرجى إكمال التحقق من reCAPTCHA' : 'Please complete the reCAPTCHA verification');
-                return;
-            }
-        } else {
-            // reCAPTCHA widget exists but grecaptcha API not loaded
-            alert(currentLanguage === 'ar' ? 'جارٍ تحميل reCAPTCHA. يرجى المحاولة مرة أخرى.' : 'reCAPTCHA is loading. Please try again.');
-            return;
-        }
-    }
-    
     // Disable button and show processing
     const payButton = document.getElementById('pay-button');
     payButton.disabled = true;
@@ -1175,6 +1182,36 @@ async function handlePaymentSubmit(e) {
     `;
     
     try {
+        // Get reCAPTCHA Enterprise token
+        let recaptchaToken = '';
+        if (typeof grecaptcha !== 'undefined' && grecaptcha.enterprise) {
+            try {
+                await grecaptcha.enterprise.ready();
+                recaptchaToken = await grecaptcha.enterprise.execute('6LfluhcsAAAAAP4Yj4C2orUWz75nFaC5XkDWivPY', {
+                    action: 'payment_submit'
+                });
+            } catch (error) {
+                console.error('reCAPTCHA Enterprise error:', error);
+                alert(currentLanguage === 'ar' ? 'خطأ في التحقق من reCAPTCHA. يرجى المحاولة مرة أخرى.' : 'reCAPTCHA verification error. Please try again.');
+                payButton.disabled = false;
+                payButton.innerHTML = `
+                    <span class="lock-icon">🔒</span>
+                    <span>${currentLanguage === 'ar' ? 'المتابعة إلى الدفع الآمن' : 'Proceed to Secure Payment'}</span>
+                    $<span id="pay-amount">${selectedOffer.price}</span>
+                `;
+                return;
+            }
+        } else {
+            alert(currentLanguage === 'ar' ? 'جارٍ تحميل reCAPTCHA. يرجى المحاولة مرة أخرى.' : 'reCAPTCHA is loading. Please try again.');
+            payButton.disabled = false;
+            payButton.innerHTML = `
+                <span class="lock-icon">🔒</span>
+                <span>${currentLanguage === 'ar' ? 'المتابعة إلى الدفع الآمن' : 'Proceed to Secure Payment'}</span>
+                $<span id="pay-amount">${selectedOffer.price}</span>
+            `;
+            return;
+        }
+        
         // Initialize Lahza payment
         const response = await fetch('/black-friday/payment/initialize/', {
             method: 'POST',

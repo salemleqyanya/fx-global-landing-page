@@ -202,8 +202,8 @@ EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD', 'spjc izvo nggd zfeh')
 DEFAULT_FROM_EMAIL = os.getenv('DEFAULT_FROM_EMAIL', 'info@fxglobals.co')
 SERVER_EMAIL = os.getenv('SERVER_EMAIL', 'info@fxglobals.co')
 
-# reCAPTCHA Settings
-RECAPTCHA_SITE_KEY = os.getenv('RECAPTCHA_SITE_KEY', '6Lf3vxcsAAAAAI03JSOmUJ67-DbZLh43CvnM6SAs')
-RECAPTCHA_SECRET_KEY = os.getenv('RECAPTCHA_SECRET_KEY', '6Lf3vxcsAAAAAArHmGwwTpnr5A6_ANF1JTsSZabX')
+# reCAPTCHA Enterprise Settings
+RECAPTCHA_SITE_KEY = os.getenv('RECAPTCHA_SITE_KEY', '6LfluhcsAAAAAP4Yj4C2orUWz75nFaC5XkDWivPY')
+RECAPTCHA_SECRET_KEY = os.getenv('RECAPTCHA_SECRET_KEY', '')  # Get from Google reCAPTCHA Enterprise admin
 # Set to False to disable backend reCAPTCHA verification (frontend validation still works)
 RECAPTCHA_VERIFY_ENABLED = os.getenv('RECAPTCHA_VERIFY_ENABLED', 'True').lower() == 'true'

@@ -703,10 +703,23 @@ def initialize_lahza_payment(request):
         })
         
     except LahzaAPIError as e:
-        logger.error(f"[Lahza] Payment initialization error: {str(e)}")
+        error_message = str(e)
+        logger.error(f"[Lahza] Payment initialization error: {error_message}")
+        
+        # Provide user-friendly error messages
+        if "Network is unreachable" in error_message or "Failed to establish" in error_message:
+            user_error = "Unable to connect to payment service. Please check your internet connection and try again."
+        elif "timeout" in error_message.lower():
+            user_error = "Payment service request timed out. Please try again."
+        elif "Connection" in error_message or "connection" in error_message.lower():
+            user_error = "Unable to connect to payment service. Please try again later."
+        else:
+            # For other errors, show a generic message (don't expose technical details)
+            user_error = "Unable to initialize payment. Please try again or contact support if the problem persists."
+        
         return Response({
             'success': False,
-            'error': str(e)
+            'error': user_error
         }, status=status.HTTP_400_BAD_REQUEST)
     except Exception as e:
         logger.exception("[Lahza] Unexpected error during payment initialization")
@@ -815,9 +828,12 @@ def verify_lahza_payment(request):
             except Exception as e:
                 logger.warning(f"[Payment] Error updating payment details: {str(e)}", exc_info=True)
             
-            # Mark payment as successful (this saves the payment)
+            # Mark payment as successful (this saves the payment and extracts card info)
             try:
                 payment.mark_as_success(transaction_data)
+                # Log card information if available
+                if payment.last_four_digits:
+                    logger.info(f"[Payment] Card info saved - Type: {payment.card_type or payment.card_brand}, Last 4: {payment.last_four_digits}")
             except Exception as e:
                 logger.error(f"[Payment] Error marking payment as success: {str(e)}", exc_info=True)
                 # Try to save manually

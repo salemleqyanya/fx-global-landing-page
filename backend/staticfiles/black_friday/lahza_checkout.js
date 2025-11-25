@@ -497,7 +497,7 @@ function validatePaymentForm() {
     let isRecaptchaValid = true;
     // reCAPTCHA v3 doesn't have a visible widget, just check if API is loaded
     if (typeof grecaptcha === 'undefined' || typeof grecaptcha.execute !== 'function') {
-        isRecaptchaValid = false;
+            isRecaptchaValid = false;
     }
     
     const isValid = isFirstNameValid && isLastNameValid && isMobileValid && isEmailValid && 

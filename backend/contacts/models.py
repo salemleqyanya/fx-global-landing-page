@@ -120,6 +120,13 @@ class Payment(models.Model):
     amount = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Amount")
     currency = models.CharField(max_length=3, default='USD', verbose_name="Currency")
     
+    # Card information (saved after payment)
+    card_type = models.CharField(max_length=50, blank=True, null=True, verbose_name="Card Type", help_text="e.g., Visa, Mastercard")
+    card_brand = models.CharField(max_length=50, blank=True, null=True, verbose_name="Card Brand")
+    last_four_digits = models.CharField(max_length=4, blank=True, null=True, verbose_name="Last 4 Digits", help_text="Last 4 digits of card number")
+    card_expiry_month = models.CharField(max_length=2, blank=True, null=True, verbose_name="Expiry Month")
+    card_expiry_year = models.CharField(max_length=4, blank=True, null=True, verbose_name="Expiry Year")
+    
     # Offer information
     offer_type = models.CharField(max_length=50, blank=True, null=True, verbose_name="Offer Type")
     offer_name = models.CharField(max_length=200, blank=True, null=True, verbose_name="Offer Name")
@@ -152,7 +159,7 @@ class Payment(models.Model):
         return f"{self.reference} - {self.customer_email} - ${self.amount} ({self.status})"
     
     def mark_as_success(self, transaction_data=None):
-        """Mark payment as successful"""
+        """Mark payment as successful and extract card information"""
         from django.utils import timezone
         self.status = 'success'
         if not self.paid_at:
@@ -165,6 +172,58 @@ class Payment(models.Model):
                 self.lahza_response.update(transaction_data)
             if 'id' in transaction_data:
                 self.transaction_id = str(transaction_data['id'])
+            
+            # Extract card information from transaction data
+            # Lahza API may return card info in different formats
+            card_info = None
+            if 'card' in transaction_data:
+                card_info = transaction_data.get('card', {})
+            elif 'authorization' in transaction_data:
+                auth = transaction_data.get('authorization', {})
+                if 'card' in auth:
+                    card_info = auth.get('card', {})
+            elif 'payment_method' in transaction_data:
+                pm = transaction_data.get('payment_method', {})
+                if 'card' in pm:
+                    card_info = pm.get('card', {})
+            
+            if card_info and isinstance(card_info, dict):
+                # Extract card type/brand
+                if 'type' in card_info:
+                    self.card_type = str(card_info.get('type', ''))[:50]
+                elif 'brand' in card_info:
+                    self.card_type = str(card_info.get('brand', ''))[:50]
+                
+                if 'brand' in card_info:
+                    self.card_brand = str(card_info.get('brand', ''))[:50]
+                elif 'type' in card_info:
+                    self.card_brand = str(card_info.get('type', ''))[:50]
+                
+                # Extract last 4 digits
+                if 'last4' in card_info:
+                    self.last_four_digits = str(card_info.get('last4', ''))[:4]
+                elif 'last_4' in card_info:
+                    self.last_four_digits = str(card_info.get('last_4', ''))[:4]
+                elif 'last_four' in card_info:
+                    self.last_four_digits = str(card_info.get('last_four', ''))[:4]
+                
+                # Extract expiry information
+                if 'exp_month' in card_info:
+                    self.card_expiry_month = str(card_info.get('exp_month', ''))[:2]
+                elif 'expiry_month' in card_info:
+                    self.card_expiry_month = str(card_info.get('expiry_month', ''))[:2]
+                
+                if 'exp_year' in card_info:
+                    exp_year = str(card_info.get('exp_year', ''))
+                    # Handle 2-digit years (convert to 4-digit)
+                    if len(exp_year) == 2:
+                        exp_year = '20' + exp_year
+                    self.card_expiry_year = exp_year[:4]
+                elif 'expiry_year' in card_info:
+                    exp_year = str(card_info.get('expiry_year', ''))
+                    if len(exp_year) == 2:
+                        exp_year = '20' + exp_year
+                    self.card_expiry_year = exp_year[:4]
         self.save()
     
     def mark_as_failed(self, error_message=None):

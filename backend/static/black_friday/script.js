@@ -469,15 +469,15 @@ async function handlePreBFContactSubmit(e) {
             form_type: 'pre_bf',
         };
         
-        const bfResponse = await fetch('/api/contacts/black-friday/register/', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(bfFormData),
-        });
-        
-        const bfData = await bfResponse.json();
+            const bfResponse = await fetch('/api/contacts/black-friday/register/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(bfFormData),
+            });
+            
+                const bfData = await bfResponse.json();
         
         if (bfResponse.ok && bfData.success) {
             // Show success message
@@ -992,15 +992,15 @@ async function handleContactSubmit(e) {
             form_type: 'main_contact',
         };
         
-        const bfResponse = await fetch('/api/contacts/black-friday/register/', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(bfFormData),
-        });
-        
-        const bfData = await bfResponse.json();
+            const bfResponse = await fetch('/api/contacts/black-friday/register/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(bfFormData),
+            });
+            
+                const bfData = await bfResponse.json();
         
         if (bfResponse.ok && bfData.success) {
             // Show success message
@@ -1088,7 +1088,7 @@ function validatePaymentForm() {
     let isRecaptchaValid = true;
     // reCAPTCHA v3 doesn't have a visible widget, just check if API is loaded
     if (typeof grecaptcha === 'undefined' || typeof grecaptcha.execute !== 'function') {
-        isRecaptchaValid = false;
+            isRecaptchaValid = false;
     }
     
     const isValid = isFirstNameValid && isLastNameValid && isMobileValid && isEmailValid && 

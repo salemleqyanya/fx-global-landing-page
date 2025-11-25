@@ -901,22 +901,9 @@
     </section>
 
     <!-- Footer -->
-    <footer class="bg-black/50 backdrop-blur-sm border-t border-[#E91E8C]/20 py-8">
-        <div class="container mx-auto px-4">
-            <div class="text-center">
-                <h3 class="text-[#E91E8C] mb-2">FX GLOBAL</h3>
-                <p class="text-white/50 text-sm mb-4">أكاديمية التداول الفلسطينية الرائدة</p>
-                <div class="flex flex-wrap justify-center gap-6 text-xs text-white/40">
-                    <span>بث مباشر يومي الساعة 3:00</span>
-                    <span>•</span>
-                    <span>3000+ متداول</span>
-                    <span>•</span>
-                    <span>دعم فني 24/7</span>
-                </div>
-                <div class="mt-6 text-xs text-white/30">© 2025 FX GLOBAL Academy. جميع الحقوق محفوظة.</div>
-            </div>
-        </div>
-    </footer>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'black_friday/styles.css' %}">
+    {% include 'includes/footer.html' %}
 
     <!-- Registration Dialog -->
     <div id="registration-dialog" class="hidden fixed inset-0 z-[100] flex items-center justify-center bg-black/50 backdrop-blur-sm">

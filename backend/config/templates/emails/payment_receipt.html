@@ -151,21 +151,22 @@
                 <span class="info-label">Payment Method:</span>
                 <span class="info-value">Lahza Payment Gateway</span>
             </div>
-            {% if payment.lahza_response.card_type %}
+            {% if payment.card_type or payment.card_brand %}
             <div class="info-row">
                 <span class="info-label">Card Type:</span>
-                <span class="info-value">{{ payment.lahza_response.card_type|upper }}</span>
+                <span class="info-value">{{ payment.card_brand|default:payment.card_type|upper }}</span>
             </div>
             {% endif %}
-            {% if payment.lahza_response.last4 %}
+            {% if payment.last_four_digits %}
             <div class="info-row">
-                <span class="info-label">Card Last 4 Digits:</span>
-                <span class="info-value">****{{ payment.lahza_response.last4 }}</span>
+                <span class="info-label">Card Number (Last 4 Digits):</span>
+                <span class="info-value">****{{ payment.last_four_digits }}</span>
             </div>
-            {% elif payment.lahza_response.card and payment.lahza_response.card.last4 %}
+            {% endif %}
+            {% if payment.card_expiry_month and payment.card_expiry_year %}
             <div class="info-row">
-                <span class="info-label">Card Last 4 Digits:</span>
-                <span class="info-value">****{{ payment.lahza_response.card.last4 }}</span>
+                <span class="info-label">Card Expiry:</span>
+                <span class="info-value">{{ payment.card_expiry_month }}/{{ payment.card_expiry_year }}</span>
             </div>
             {% endif %}
         </div>

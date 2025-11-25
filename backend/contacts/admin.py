@@ -465,7 +465,7 @@ class BlackFridayContactAdmin(admin.ModelAdmin):
     search_fields = ['name', 'email', 'phone', 'whatsapp', 'city', 'message']
     readonly_fields = ['created_at']
     date_hierarchy = 'created_at'
-    actions = ['export_contacts_csv']
+    actions = ['export_contacts_csv', 'send_to_accounting_modules']
     
     fieldsets = (
         ('Contact Information', {
@@ -515,3 +515,74 @@ class BlackFridayContactAdmin(admin.ModelAdmin):
         return response
     
     export_contacts_csv.short_description = "Export to CSV"
+    
+    def send_to_accounting_modules(self, request, queryset):
+        """Send selected contacts to accounting_modules as customers"""
+        # API endpoint URL - adjust port if needed
+        api_url = 'https://site.fxglobal.cloud/sales/api/create-customer/'
+        
+        success_count = 0
+        error_count = 0
+        skipped_count = 0
+        errors = []
+        
+        for contact in queryset:
+            try:
+                # Prepare data
+                data = {
+                    'name': contact.name,
+                    'phone': contact.phone or contact.whatsapp,
+                    'whatsapp': contact.whatsapp,
+                    'city': contact.city,
+                    'address': None,  # BlackFridayContact doesn't have address field
+                    'goal': contact.get_form_type_display() if contact.form_type else None,
+                    'message': contact.message,
+                    'source_key': 'black'
+                }
+                
+                # Send POST request
+                response = requests.post(
+                    api_url,
+                    json=data,
+                    headers={'Content-Type': 'application/json'},
+                    timeout=10
+                )
+                
+                if response.status_code == 201:
+                    success_count += 1
+                elif response.status_code == 409:
+                    # Customer already exists
+                    skipped_count += 1
+                    errors.append(f"{contact.name}: Customer already exists")
+                else:
+                    error_count += 1
+                    error_msg = response.json().get('error', 'Unknown error') if response.content else 'Unknown error'
+                    errors.append(f"{contact.name}: {error_msg}")
+                    
+            except requests.exceptions.RequestException as e:
+                error_count += 1
+                errors.append(f"{contact.name}: Connection error - {str(e)}")
+            except Exception as e:
+                error_count += 1
+                errors.append(f"{contact.name}: {str(e)}")
+        
+        # Prepare message
+        message_parts = [
+            f"Successfully sent: {success_count}",
+            f"Already exists: {skipped_count}",
+            f"Errors: {error_count}"
+        ]
+        
+        if errors:
+            message_parts.append("\nErrors:")
+            message_parts.extend(errors[:10])  # Show first 10 errors
+            if len(errors) > 10:
+                message_parts.append(f"... and {len(errors) - 10} more errors")
+        
+        self.message_user(
+            request,
+            "\n".join(message_parts),
+            level='success' if error_count == 0 else 'warning' if success_count > 0 else 'error'
+        )
+    
+    send_to_accounting_modules.short_description = "إرسال إلى accounting_modules (Sales/Customer)"

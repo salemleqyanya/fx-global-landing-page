@@ -258,19 +258,18 @@ def black_friday(request):
 @api_view(['GET'])
 @permission_classes([AllowAny])
 def get_black_friday_end_date(request):
-    """Get the Black Friday sale end date from database."""
+    """Get the Black Friday sale end date from database. End date is calculated as 24 hours from start date."""
     try:
         settings = BlackFridaySettings.get_active_settings()
-        # Ensure the datetime is timezone-aware
-        end_date = settings.end_date
-        # Django models with USE_TZ=True store timezone-aware datetimes, but check anyway
-        if timezone.is_naive(end_date):
-            end_date = timezone.make_aware(end_date)
         
         # Get start date (pre-BF start date is when BF actually starts)
         start_date = settings.pre_black_friday_start_date
         if timezone.is_naive(start_date):
             start_date = timezone.make_aware(start_date)
+        
+        # Calculate end date as 24 hours from start date
+        from datetime import timedelta
+        end_date = start_date + timedelta(hours=24)
         
         # Return end date as ISO format timestamp (in milliseconds for JavaScript)
         # Use timestamp() which handles timezone conversion correctly
@@ -304,7 +303,7 @@ def get_black_friday_end_date(request):
         })
     except Exception as e:
         logger.error(f"[Black Friday] Error getting end date: {str(e)}", exc_info=True)
-        # Return default (midnight tomorrow) if error
+        # Return default (24 hours from now) if error
         from datetime import timedelta
         try:
             import pytz
@@ -312,21 +311,25 @@ def get_black_friday_end_date(request):
         except ImportError:
             palestine_tz = timezone.get_fixed_timezone(120)  # GMT+2
         now = timezone.now()
-        tomorrow = now + timedelta(days=1)
-        tomorrow = tomorrow.replace(hour=0, minute=0, second=0, microsecond=0)
-        if timezone.is_naive(tomorrow):
-            tomorrow = timezone.make_aware(tomorrow)
-        end_date_timestamp = int(tomorrow.timestamp() * 1000)
-        tomorrow_palestine = tomorrow.astimezone(palestine_tz)
+        # Default: 24 hours from now
+        start_date = now
+        end_date = now + timedelta(hours=24)
+        if timezone.is_naive(end_date):
+            end_date = timezone.make_aware(end_date)
+        end_date_timestamp = int(end_date.timestamp() * 1000)
+        start_date_timestamp = int(start_date.timestamp() * 1000)
+        
+        start_date_palestine = start_date.astimezone(palestine_tz)
+        end_date_palestine = end_date.astimezone(palestine_tz)
         
         return Response({
             'success': True,
-            'end_date': tomorrow.isoformat(),
+            'end_date': end_date.isoformat(),
             'end_date_timestamp': end_date_timestamp,
-            'start_date': tomorrow.isoformat(),
-            'start_date_timestamp': end_date_timestamp,
-            'start_date_display': tomorrow_palestine.strftime('%B %d, %Y at %I:%M %p'),
-            'end_date_display': tomorrow_palestine.strftime('%B %d, %Y at %I:%M %p'),
+            'start_date': start_date.isoformat(),
+            'start_date_timestamp': start_date_timestamp,
+            'start_date_display': start_date_palestine.strftime('%B %d, %Y at %I:%M %p'),
+            'end_date_display': end_date_palestine.strftime('%B %d, %Y at %I:%M %p'),
             'timezone': 'Palestine Time (GMT+2)',
             'is_active': True,
         })

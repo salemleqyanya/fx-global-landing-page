@@ -62,7 +62,26 @@ const offers = {
 // Initialize
 document.addEventListener('DOMContentLoaded', async () => {
     initializeLanguage();
-    initializePreBlackFridayTimer(); // Check if we should show pre-BF timer or BF content
+    
+    // Initialize pre-BF timer check first (this will initialize the countdown if Black Friday has started)
+    await initializePreBlackFridayTimer();
+    
+    // Additional check: if Black Friday content is visible but timer wasn't initialized, initialize it now
+    const heroSection = document.querySelector('.hero-section');
+    const countdownContainer = document.querySelector('.countdown-container');
+    const hoursEl = document.getElementById('hours');
+    
+    if (heroSection && countdownContainer && hoursEl) {
+        // Check if timer is still showing loading state
+        if (hoursEl.textContent === '--' || hoursEl.textContent === '23') {
+            console.log('Timer appears not initialized, initializing now...');
+            // Clear cache to ensure fresh data
+            localStorage.removeItem('black_friday_end_time');
+            localStorage.removeItem('black_friday_end_date_fetched');
+            await initializeCountdown();
+        }
+    }
+    
     initializePreBFContactForm(); // Initialize pre-BF contact form
     initializeEventListeners();
     updateLanguageContent();
@@ -297,6 +316,10 @@ async function initializePreBlackFridayTimer() {
         if (testimonialsSection) testimonialsSection.style.display = '';
         if (contactSection) contactSection.style.display = '';
         if (footer) footer.style.display = '';
+        // Clear cached timer data to ensure fresh 24-hour countdown from backend
+        localStorage.removeItem('black_friday_end_time');
+        localStorage.removeItem('black_friday_end_date_fetched');
+        
         // Initialize the main Black Friday countdown timer
         initializeCountdown();
         console.log('Black Friday has started! Showing Black Friday content.');
@@ -375,6 +398,10 @@ async function initializePreBlackFridayTimer() {
             if (testimonialsSection) testimonialsSection.style.display = '';
             if (contactSection) contactSection.style.display = '';
             if (footer) footer.style.display = '';
+            
+            // Clear cached timer data to ensure fresh 24-hour countdown from backend
+            localStorage.removeItem('black_friday_end_time');
+            localStorage.removeItem('black_friday_end_date_fetched');
             
             // Initialize the main Black Friday countdown timer
             initializeCountdown();
@@ -560,60 +587,83 @@ async function initializeCountdown() {
     const minutesEl = document.getElementById('minutes');
     const secondsEl = document.getElementById('seconds');
     
-    if (hoursEl && minutesEl && secondsEl) {
-        hoursEl.textContent = '--';
-        minutesEl.textContent = '--';
-        secondsEl.textContent = '--';
+    if (!hoursEl || !minutesEl || !secondsEl) {
+        console.error('Timer elements not found in DOM');
+        return;
     }
     
-    // Check if we already have a valid cached end time that hasn't expired
+    hoursEl.textContent = '--';
+    minutesEl.textContent = '--';
+    secondsEl.textContent = '--';
+    
+    // Always fetch 24-hour countdown from backend API to ensure accuracy
+    // Check cache only as a fallback if API fails
     const cachedTime = localStorage.getItem('black_friday_end_time');
     const cachedTimestamp = cachedTime ? parseInt(cachedTime, 10) : null;
     
-    if (cachedTimestamp && cachedTimestamp > Date.now()) {
-        // Use cached time if it's still valid (not expired)
-        timerEndTime = cachedTimestamp;
-        console.log('Using cached end date:', new Date(timerEndTime).toLocaleString());
-    } else {
-        // Fetch end date from database API
-        try {
-            const response = await fetch('/api/black-friday/end-date/');
+    // Fetch end date from database API (backend calculates 24 hours from start date)
+    try {
+        console.log('Fetching 24-hour countdown from backend...');
+        const response = await fetch('/api/black-friday/end-date/');
+        
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        console.log('Backend API response:', data);
+        
+        if (data.success && data.end_date_timestamp) {
+            const endTimestamp = data.end_date_timestamp;
+            const now = Date.now();
             
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            
-            const data = await response.json();
-            
-            if (data.success && data.end_date_timestamp) {
-                timerEndTime = data.end_date_timestamp;
+            // Check if the end time is in the future
+            if (endTimestamp > now) {
+                timerEndTime = endTimestamp;
                 // Cache in localStorage for offline/fallback
                 localStorage.setItem('black_friday_end_time', timerEndTime.toString());
                 localStorage.setItem('black_friday_end_date_fetched', Date.now().toString());
-                console.log('Timer initialized with end date from database:', new Date(timerEndTime).toLocaleString());
+                console.log('✓ Timer initialized with 24-hour countdown from backend');
+                console.log('  Start date:', new Date(data.start_date_timestamp).toLocaleString());
+                console.log('  End date (start + 24h):', new Date(timerEndTime).toLocaleString());
+                console.log('  Time remaining:', Math.floor((timerEndTime - now) / (1000 * 60 * 60)) + ' hours');
             } else {
-                throw new Error('Invalid response from API: ' + JSON.stringify(data));
+                // End time has passed, calculate new 24 hours from start
+                console.warn('End time has passed, calculating new 24-hour period from start date');
+                const startTimestamp = data.start_date_timestamp || now;
+                timerEndTime = startTimestamp + (24 * 60 * 60 * 1000);
+                
+                // If that also passed, set it to 24 hours from now
+                if (timerEndTime <= now) {
+                    timerEndTime = now + (24 * 60 * 60 * 1000);
+                    console.warn('Start date also passed, setting timer to 24 hours from now');
+                }
+                
+                localStorage.setItem('black_friday_end_time', timerEndTime.toString());
             }
-        } catch (error) {
-            console.warn('Failed to fetch end date from API, using cached value:', error);
-            // Fallback to localStorage if API fails
-            if (cachedTimestamp) {
-                timerEndTime = cachedTimestamp;
-                console.log('Using cached end date (fallback):', new Date(timerEndTime).toLocaleString());
-            } else {
-                // Last resort: set to midnight tomorrow (but don't save to avoid resetting)
-                const now = new Date();
-                const tomorrow = new Date(now);
-                tomorrow.setDate(tomorrow.getDate() + 1);
-                tomorrow.setHours(0, 0, 0, 0);
-                timerEndTime = tomorrow.getTime();
-                console.warn('Using default end date (midnight tomorrow) - please set end date in admin:', tomorrow.toLocaleString());
-            }
+        } else {
+            throw new Error('Invalid response from API: ' + JSON.stringify(data));
+        }
+    } catch (error) {
+        console.error('Failed to fetch end date from API:', error);
+        // Fallback to localStorage if API fails
+        if (cachedTimestamp && cachedTimestamp > Date.now()) {
+            timerEndTime = cachedTimestamp;
+            console.log('Using cached end date (fallback):', new Date(timerEndTime).toLocaleString());
+        } else {
+            // Last resort: set to 24 hours from now
+            const now = Date.now();
+            timerEndTime = now + (24 * 60 * 60 * 1000); // 24 hours from now
+            console.warn('Using default 24-hour countdown (from now) - please check backend connection:', new Date(timerEndTime).toLocaleString());
+            // Don't cache this fallback value
         }
     }
     
     if (!timerEndTime) {
         console.error('Failed to initialize timer - no end time available');
+        hoursEl.textContent = '00';
+        minutesEl.textContent = '00';
+        secondsEl.textContent = '00';
         return;
     }
     
@@ -690,11 +740,16 @@ async function initializeCountdown() {
         }
     }
     
-    // Update immediately
+    // Update immediately and force first update
     updateCountdown();
+    
+    // Also update after a small delay to ensure DOM is ready
+    setTimeout(updateCountdown, 100);
     
     // Update every second for real-time countdown
     countdownInterval = setInterval(updateCountdown, 1000);
+    
+    console.log('✓ Timer countdown started, updating every second');
 }
 
 // Scroll Animations

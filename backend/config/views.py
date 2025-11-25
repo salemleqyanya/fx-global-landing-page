@@ -448,7 +448,11 @@ def initialize_lahza_payment(request):
                     }
                 }
                 
-                logger.info(f"[reCAPTCHA] Verifying Enterprise token (token length: {len(recaptcha_token)}, project: {settings.RECAPTCHA_PROJECT_ID})")
+                # Note: expectedAction is optional but recommended for better security
+                
+                logger.info(f"[reCAPTCHA] Verifying Enterprise token (token length: {len(recaptcha_token)}, project: {settings.RECAPTCHA_PROJECT_ID}, API key: {settings.RECAPTCHA_API_KEY[:10]}...)")
+                logger.debug(f"[reCAPTCHA] Request URL: {verify_url.split('?')[0]}... (API key hidden)")
+                logger.debug(f"[reCAPTCHA] Request body: {verify_data}")
                 
                 verify_response = requests.post(
                     verify_url, 
@@ -459,11 +463,36 @@ def initialize_lahza_payment(request):
                 
                 # Check HTTP status
                 if verify_response.status_code != 200:
-                    logger.error(f"[reCAPTCHA] HTTP error {verify_response.status_code}: {verify_response.text}")
+                    error_text = verify_response.text
+                    logger.error(f"[reCAPTCHA] HTTP error {verify_response.status_code}: {error_text}")
+                    
+                    # Try to parse error details
+                    error_message = 'reCAPTCHA verification service error. Please try again.'
+                    try:
+                        error_json = verify_response.json()
+                        if 'error' in error_json:
+                            error_info = error_json['error']
+                            error_message = error_info.get('message', error_message)
+                            logger.error(f"[reCAPTCHA] Google API error: {error_info}")
+                    except:
+                        pass
+                    
+                    # Provide specific error messages based on status code
+                    if verify_response.status_code == 400:
+                        error_message = 'reCAPTCHA API request is invalid. Please check API key and project ID.'
+                    elif verify_response.status_code == 401:
+                        error_message = 'reCAPTCHA API key is invalid or unauthorized. Please check API key configuration.'
+                    elif verify_response.status_code == 403:
+                        error_message = 'reCAPTCHA API access denied. Please ensure reCAPTCHA Enterprise API is enabled in Google Cloud.'
+                    elif verify_response.status_code == 404:
+                        error_message = 'reCAPTCHA project not found. Please check project ID configuration.'
+                    
                     return Response({
                         'success': False,
-                        'error': 'reCAPTCHA verification service error. Please try again.',
-                        'error_codes': ['http-error']
+                        'error': error_message,
+                        'error_codes': ['http-error'],
+                        'http_status': verify_response.status_code,
+                        'error_details': error_text[:200] if error_text else None
                     }, status=status.HTTP_400_BAD_REQUEST)
                 
                 verify_result = verify_response.json()

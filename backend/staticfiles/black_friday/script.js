@@ -1342,6 +1342,12 @@ function updateSuccessPage() {
     
     document.getElementById('display-order-id').textContent = orderId;
     document.getElementById('display-email').textContent = userEmail;
+    
+    // Set download instructions button link
+    const downloadBtn = document.getElementById('download-instructions-btn');
+    if (downloadBtn && orderId) {
+        downloadBtn.href = `/instructions/${orderId}/download/`;
+    }
     document.getElementById('saved-amount').textContent = `$${selectedOffer.originalPrice - selectedOffer.price}`;
 }
 

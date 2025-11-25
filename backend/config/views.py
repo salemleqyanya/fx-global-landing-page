@@ -10,12 +10,21 @@ from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework import status
 from django.views.decorators.csrf import csrf_exempt
-from django.core.mail import send_mail
+from django.core.mail import send_mail, EmailMessage
 from django.template.loader import render_to_string
 from django.utils.html import strip_tags
 from django.utils import timezone
 import logging
 import requests
+import os
+from io import BytesIO
+from reportlab.lib.pagesizes import A4
+from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+from reportlab.lib.units import inch
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, PageBreak
+from reportlab.lib.enums import TA_RIGHT, TA_CENTER, TA_LEFT
+from reportlab.pdfbase import pdfmetrics
+from reportlab.pdfbase.ttfonts import TTFont
 from .lahza_service import initialize_transaction, verify_transaction, LahzaAPIError
 
 # Try to import Google Cloud reCAPTCHA Enterprise client library
@@ -914,8 +923,181 @@ def verify_lahza_payment(request):
         }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
+def generate_instructions_pdf(payment):
+    """Generate PDF file with instructions for the customer"""
+    try:
+        buffer = BytesIO()
+        doc = SimpleDocTemplate(buffer, pagesize=A4, rightMargin=72, leftMargin=72, topMargin=72, bottomMargin=72)
+        
+        # Container for the 'Flowable' objects
+        elements = []
+        
+        # Define styles
+        styles = getSampleStyleSheet()
+        
+        # Title style
+        title_style = ParagraphStyle(
+            'CustomTitle',
+            parent=styles['Heading1'],
+            fontSize=24,
+            textColor='#6B46C1',
+            spaceAfter=30,
+            alignment=TA_CENTER,
+            fontName='Helvetica-Bold'
+        )
+        
+        # Heading style
+        heading_style = ParagraphStyle(
+            'CustomHeading',
+            parent=styles['Heading2'],
+            fontSize=16,
+            textColor='#E91E8C',
+            spaceAfter=12,
+            spaceBefore=20,
+            fontName='Helvetica-Bold'
+        )
+        
+        # Subheading style
+        subheading_style = ParagraphStyle(
+            'CustomSubheading',
+            parent=styles['Heading3'],
+            fontSize=14,
+            textColor='#6B46C1',
+            spaceAfter=8,
+            spaceBefore=12,
+            fontName='Helvetica-Bold'
+        )
+        
+        # Normal text style (RTL for Arabic)
+        normal_style = ParagraphStyle(
+            'CustomNormal',
+            parent=styles['Normal'],
+            fontSize=12,
+            spaceAfter=10,
+            leading=18,
+            alignment=TA_RIGHT,
+            rightIndent=0,
+            leftIndent=0
+        )
+        
+        # Bullet style (RTL for Arabic)
+        bullet_style = ParagraphStyle(
+            'CustomBullet',
+            parent=styles['Normal'],
+            fontSize=12,
+            spaceAfter=8,
+            leading=18,
+            rightIndent=20,
+            leftIndent=0,
+            alignment=TA_RIGHT
+        )
+        
+        # Title
+        title = Paragraph("أهم التعليمات الصادرة لمساعدتك", title_style)
+        elements.append(title)
+        elements.append(Spacer(1, 0.2*inch))
+        
+        subtitle = Paragraph("لحتى تقدر تبدأ معنا، يرجى اتباع الخطوات التالية بعد الدفع", normal_style)
+        elements.append(subtitle)
+        elements.append(Spacer(1, 0.3*inch))
+        
+        # Section 1
+        heading1 = Paragraph("1. إرسال وثائق التسجيل", heading_style)
+        elements.append(heading1)
+        
+        text1 = Paragraph("يرجى إرسال ما يلي على الرقم التالي: <b>+972593700806</b>", normal_style)
+        elements.append(text1)
+        
+        items1 = [
+            "الاسم الكامل",
+            "صورة الهوية",
+            "الايميل",
+            "رقم الجوال",
+            "اشعار الدفع",
+            "اسم الخدمة التي تم التسجيل فيها"
+        ]
+        
+        for item in items1:
+            bullet = Paragraph(f"• {item}", bullet_style)
+            elements.append(bullet)
+        
+        elements.append(Spacer(1, 0.2*inch))
+        
+        # Section 2
+        heading2 = Paragraph("2. الدخول إلى المنصة", heading_style)
+        elements.append(heading2)
+        
+        text2 = Paragraph("بعد وصول بيانات الدخول:", normal_style)
+        elements.append(text2)
+        
+        items2 = [
+            "اضغط على رابط المنصة: <b>https://discord.gg/t2J8ajgt</b> و سوف يتم تفعيلك في اقرب وقت.",
+            "سجل دخولك على منصة الديسكورد و ارسل لنا اسمك على التطبيق.",
+            "بعد التواصل مع القسم المختص سيتم اضافتك على السيرفر الخاص بنا و ستظهر لك الدورة علي الشاشة الرئيسية"
+        ]
+        
+        for item in items2:
+            bullet = Paragraph(f"• {item}", bullet_style)
+            elements.append(bullet)
+        
+        elements.append(Spacer(1, 0.2*inch))
+        
+        # Section 3
+        heading3 = Paragraph("3. بدء الدراسة", heading_style)
+        elements.append(heading3)
+        
+        items3 = [
+            "اختيار اليوم و الوقت المناسبين لك للدراسة.",
+            "يرجى الانضمام والمتابعه بمواعيد المحاضرات لديك.",
+            "بالأضافة يمكنك بدء مشاهدة الدروس المسجلة فورًا بعد تفعيل حسابك معنا.",
+            "المحتوى المسجل على التيليجرام متاح لك 24/7.",
+            "جميع الملفات والاختبارات موجودة داخل تطبيق الديسكورد."
+        ]
+        
+        for item in items3:
+            bullet = Paragraph(f"• {item}", bullet_style)
+            elements.append(bullet)
+        
+        elements.append(Spacer(1, 0.2*inch))
+        
+        # Section 4
+        heading4 = Paragraph("4. لدعم الفني", heading_style)
+        elements.append(heading4)
+        
+        text4 = Paragraph("إذا واجهتك أي مشكلة:", normal_style)
+        elements.append(text4)
+        
+        bullet4 = Paragraph("• للتواصل والأستفسار معنا عبر واتساب: <b>+972593700806</b>", bullet_style)
+        elements.append(bullet4)
+        
+        elements.append(Spacer(1, 0.3*inch))
+        
+        # Footer
+        footer_text = Paragraph(f"<i>Order Reference: {payment.reference}</i>", ParagraphStyle(
+            'Footer',
+            parent=styles['Normal'],
+            fontSize=10,
+            textColor='#666666',
+            alignment=TA_CENTER
+        ))
+        elements.append(footer_text)
+        
+        # Build PDF
+        doc.build(elements)
+        
+        # Get the value of the BytesIO buffer
+        pdf = buffer.getvalue()
+        buffer.close()
+        
+        return pdf
+        
+    except Exception as e:
+        logger.error(f"[PDF] Error generating instructions PDF: {str(e)}", exc_info=True)
+        raise
+
+
 def send_payment_receipt_email(payment):
-    """Send payment receipt email to customer"""
+    """Send payment receipt email to customer with PDF instructions"""
     try:
         subject = f'Payment Receipt - Order {payment.reference}'
         
@@ -927,21 +1109,63 @@ def send_payment_receipt_email(payment):
         # Create plain text version
         plain_message = strip_tags(html_message)
         
-        # Send email
-        send_mail(
+        # Generate PDF instructions
+        try:
+            pdf_content = generate_instructions_pdf(payment)
+            pdf_filename = f'instructions_{payment.reference}.pdf'
+        except Exception as e:
+            logger.warning(f"[Email] Could not generate PDF: {str(e)}, sending email without PDF")
+            pdf_content = None
+            pdf_filename = None
+        
+        # Create email message
+        email = EmailMessage(
             subject=subject,
-            message=plain_message,
+            body=plain_message,
             from_email=settings.DEFAULT_FROM_EMAIL,
-            recipient_list=[payment.customer_email],
-            html_message=html_message,
-            fail_silently=False,
+            to=[payment.customer_email],
         )
+        email.content_subtype = "html"
+        email.body = html_message
+        
+        # Attach PDF if generated successfully
+        if pdf_content:
+            email.attach(pdf_filename, pdf_content, 'application/pdf')
+        
+        # Send email
+        email.send(fail_silently=False)
         
         logger.info(f"[Email] Receipt sent successfully to {payment.customer_email} for payment {payment.reference}")
         
     except Exception as e:
         logger.error(f"[Email] Error sending receipt email: {str(e)}", exc_info=True)
         raise
+
+
+@csrf_exempt
+@api_view(['GET'])
+@permission_classes([AllowAny])
+def download_instructions_pdf(request, reference):
+    """Download instructions PDF for a payment"""
+    try:
+        payment = get_object_or_404(Payment, reference=reference)
+        
+        # Generate PDF
+        pdf_content = generate_instructions_pdf(payment)
+        
+        # Create response
+        from django.http import HttpResponse
+        response = HttpResponse(pdf_content, content_type='application/pdf')
+        response['Content-Disposition'] = f'attachment; filename="instructions_{reference}.pdf"'
+        
+        return response
+        
+    except Exception as e:
+        logger.error(f"[PDF] Error downloading instructions PDF: {str(e)}", exc_info=True)
+        return Response({
+            'success': False,
+            'error': 'Could not generate PDF'
+        }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 @csrf_exempt

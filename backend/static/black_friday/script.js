@@ -1211,9 +1211,8 @@ async function handlePaymentSubmit(e) {
         }
         
         try {
-            // Wait for Enterprise to be ready
-            await grecaptcha.enterprise.ready();
-            console.log('reCAPTCHA Enterprise ready, executing...');
+            // Execute reCAPTCHA Enterprise directly (no need for ready() in Enterprise)
+            console.log('Executing reCAPTCHA Enterprise...');
             
             // Execute with timeout
             const executePromise = grecaptcha.enterprise.execute(siteKey, {
@@ -1231,7 +1230,7 @@ async function handlePaymentSubmit(e) {
                 throw new Error('Empty token received from reCAPTCHA');
             }
             
-            console.log('reCAPTCHA token generated successfully');
+            console.log('reCAPTCHA token generated successfully:', recaptchaToken.substring(0, 20) + '...');
         } catch (error) {
             console.error('reCAPTCHA Enterprise error:', error);
             console.error('Error details:', {

@@ -204,6 +204,9 @@ SERVER_EMAIL = os.getenv('SERVER_EMAIL', 'info@fxglobals.co')
 
 # reCAPTCHA Enterprise Settings
 RECAPTCHA_SITE_KEY = os.getenv('RECAPTCHA_SITE_KEY', '6LfluhcsAAAAAP4Yj4C2orUWz75nFaC5XkDWivPY')
-RECAPTCHA_SECRET_KEY = os.getenv('RECAPTCHA_SECRET_KEY', '')  # Get from Google reCAPTCHA Enterprise admin
+RECAPTCHA_PROJECT_ID = os.getenv('RECAPTCHA_PROJECT_ID', 'fxglobals-40199')  # Google Cloud Project ID
+RECAPTCHA_API_KEY = os.getenv('RECAPTCHA_API_KEY', 'AIzaSyCP1-BXCq3TpBC-qH6XPdmwEQIX_vq7djU')  # API Key for reCAPTCHA Enterprise REST API
+# Legacy secret key (kept for backward compatibility, but Enterprise uses API_KEY instead)
+RECAPTCHA_SECRET_KEY = os.getenv('RECAPTCHA_SECRET_KEY', '')
 # Set to False to disable backend reCAPTCHA verification (frontend validation still works)
 RECAPTCHA_VERIFY_ENABLED = os.getenv('RECAPTCHA_VERIFY_ENABLED', 'True').lower() == 'true'

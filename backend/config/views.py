@@ -439,7 +439,7 @@ def initialize_lahza_payment(request):
             # Try Google Cloud Client Library first (recommended method)
             if RECAPTCHA_CLIENT_LIBRARY_AVAILABLE and settings.RECAPTCHA_PROJECT_ID:
                 try:
-                    logger.info(f"[reCAPTCHA] Verifying Enterprise token via Client Library (token length: {len(recaptcha_token)}, project: {settings.RECAPTCHA_PROJECT_ID})")
+                    logger.info(f"[reCAPTCHA] Attempting verification via Client Library (token length: {len(recaptcha_token)}, project: {settings.RECAPTCHA_PROJECT_ID})")
                     
                     client = recaptchaenterprise_v1.RecaptchaEnterpriseServiceClient()
                     
@@ -497,7 +497,12 @@ def initialize_lahza_payment(request):
                     verification_successful = True
                     
                 except Exception as e:
-                    logger.warning(f"[reCAPTCHA] Client Library error: {str(e)}, trying REST API fallback...", exc_info=True)
+                    error_msg = str(e)
+                    logger.warning(f"[reCAPTCHA] Client Library error: {error_msg}")
+                    # Log specific error types for debugging
+                    if "Could not automatically determine credentials" in error_msg or "authentication" in error_msg.lower():
+                        logger.warning("[reCAPTCHA] Authentication issue - ensure Google Cloud credentials are configured")
+                    logger.warning("[reCAPTCHA] Trying REST API fallback...", exc_info=True)
             
             # Fallback: Try Enterprise REST API (if API key is configured and Client Library failed)
             if not verification_successful and settings.RECAPTCHA_API_KEY and settings.RECAPTCHA_API_KEY.strip() != '':
@@ -618,12 +623,32 @@ def initialize_lahza_payment(request):
                             'error_codes': ['verification-error']
                         }, status=status.HTTP_503_SERVICE_UNAVAILABLE)
                 else:
-                    # No API key and no secret key
-                    logger.error("[reCAPTCHA] Neither API key nor secret key is configured")
+                    # No API key and no secret key - log detailed info
+                    logger.error("[reCAPTCHA] Verification failed - no credentials available")
+                    logger.error(f"[reCAPTCHA] Client Library available: {RECAPTCHA_CLIENT_LIBRARY_AVAILABLE}")
+                    logger.error(f"[reCAPTCHA] Project ID: {settings.RECAPTCHA_PROJECT_ID}")
+                    logger.error(f"[reCAPTCHA] API Key configured: {bool(settings.RECAPTCHA_API_KEY and settings.RECAPTCHA_API_KEY.strip())}")
+                    logger.error(f"[reCAPTCHA] Secret Key configured: {bool(settings.RECAPTCHA_SECRET_KEY and settings.RECAPTCHA_SECRET_KEY.strip())}")
+                    
+                    # Provide helpful error message
+                    error_msg = 'reCAPTCHA verification is not properly configured. '
+                    if not RECAPTCHA_CLIENT_LIBRARY_AVAILABLE:
+                        error_msg += 'Google Cloud Client Library is not installed. '
+                    if not settings.RECAPTCHA_SECRET_KEY or settings.RECAPTCHA_SECRET_KEY.strip() == '':
+                        error_msg += 'Please configure RECAPTCHA_SECRET_KEY in settings or environment variables.'
+                    else:
+                        error_msg += 'Please check reCAPTCHA configuration in settings.'
+                    
                     return Response({
                         'success': False,
-                        'error': 'reCAPTCHA verification is not properly configured. Please contact support.',
-                        'error_codes': ['missing-credentials']
+                        'error': error_msg,
+                        'error_codes': ['missing-credentials'],
+                        'debug_info': {
+                            'client_library_available': RECAPTCHA_CLIENT_LIBRARY_AVAILABLE,
+                            'project_id': settings.RECAPTCHA_PROJECT_ID,
+                            'api_key_configured': bool(settings.RECAPTCHA_API_KEY and settings.RECAPTCHA_API_KEY.strip()),
+                            'secret_key_configured': bool(settings.RECAPTCHA_SECRET_KEY and settings.RECAPTCHA_SECRET_KEY.strip())
+                        }
                     }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         elif settings.RECAPTCHA_VERIFY_ENABLED:
             # reCAPTCHA token is required for payment (only if verification is enabled)

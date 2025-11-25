@@ -1184,25 +1184,79 @@ async function handlePaymentSubmit(e) {
     try {
         // Get reCAPTCHA Enterprise token
         let recaptchaToken = '';
-        if (typeof grecaptcha !== 'undefined' && grecaptcha.enterprise) {
-            try {
-                await grecaptcha.enterprise.ready();
-                recaptchaToken = await grecaptcha.enterprise.execute('6LfluhcsAAAAAP4Yj4C2orUWz75nFaC5XkDWivPY', {
-                    action: 'payment_submit'
-                });
-            } catch (error) {
-                console.error('reCAPTCHA Enterprise error:', error);
-                alert(currentLanguage === 'ar' ? 'خطأ في التحقق من reCAPTCHA. يرجى المحاولة مرة أخرى.' : 'reCAPTCHA verification error. Please try again.');
-                payButton.disabled = false;
-                payButton.innerHTML = `
-                    <span class="lock-icon">🔒</span>
-                    <span>${currentLanguage === 'ar' ? 'المتابعة إلى الدفع الآمن' : 'Proceed to Secure Payment'}</span>
-                    $<span id="pay-amount">${selectedOffer.price}</span>
-                `;
-                return;
+        const siteKey = '6LfluhcsAAAAAP4Yj4C2orUWz75nFaC5XkDWivPY';
+        
+        if (typeof grecaptcha === 'undefined') {
+            console.error('grecaptcha is not defined');
+            alert(currentLanguage === 'ar' ? 'جارٍ تحميل reCAPTCHA. يرجى تحديث الصفحة والمحاولة مرة أخرى.' : 'reCAPTCHA is loading. Please refresh the page and try again.');
+            payButton.disabled = false;
+            payButton.innerHTML = `
+                <span class="lock-icon">🔒</span>
+                <span>${currentLanguage === 'ar' ? 'المتابعة إلى الدفع الآمن' : 'Proceed to Secure Payment'}</span>
+                $<span id="pay-amount">${selectedOffer.price}</span>
+            `;
+            return;
+        }
+        
+        if (typeof grecaptcha.enterprise === 'undefined') {
+            console.error('grecaptcha.enterprise is not defined');
+            alert(currentLanguage === 'ar' ? 'خطأ في تحميل reCAPTCHA Enterprise. يرجى التحقق من اتصال الإنترنت.' : 'reCAPTCHA Enterprise failed to load. Please check your internet connection.');
+            payButton.disabled = false;
+            payButton.innerHTML = `
+                <span class="lock-icon">🔒</span>
+                <span>${currentLanguage === 'ar' ? 'المتابعة إلى الدفع الآمن' : 'Proceed to Secure Payment'}</span>
+                $<span id="pay-amount">${selectedOffer.price}</span>
+            `;
+            return;
+        }
+        
+        try {
+            // Wait for Enterprise to be ready
+            await grecaptcha.enterprise.ready();
+            console.log('reCAPTCHA Enterprise ready, executing...');
+            
+            // Execute with timeout
+            const executePromise = grecaptcha.enterprise.execute(siteKey, {
+                action: 'payment_submit'
+            });
+            
+            // Add timeout to prevent hanging
+            const timeoutPromise = new Promise((_, reject) => {
+                setTimeout(() => reject(new Error('reCAPTCHA execution timeout')), 10000);
+            });
+            
+            recaptchaToken = await Promise.race([executePromise, timeoutPromise]);
+            
+            if (!recaptchaToken || recaptchaToken.length === 0) {
+                throw new Error('Empty token received from reCAPTCHA');
             }
-        } else {
-            alert(currentLanguage === 'ar' ? 'جارٍ تحميل reCAPTCHA. يرجى المحاولة مرة أخرى.' : 'reCAPTCHA is loading. Please try again.');
+            
+            console.log('reCAPTCHA token generated successfully');
+        } catch (error) {
+            console.error('reCAPTCHA Enterprise error:', error);
+            console.error('Error details:', {
+                message: error.message,
+                stack: error.stack,
+                grecaptcha: typeof grecaptcha,
+                enterprise: typeof grecaptcha?.enterprise
+            });
+            
+            // More specific error messages
+            let errorMsg = currentLanguage === 'ar' 
+                ? 'خطأ في التحقق من reCAPTCHA. يرجى المحاولة مرة أخرى.' 
+                : 'reCAPTCHA verification error. Please try again.';
+            
+            if (error.message && error.message.includes('timeout')) {
+                errorMsg = currentLanguage === 'ar'
+                    ? 'انتهت مهلة reCAPTCHA. يرجى تحديث الصفحة والمحاولة مرة أخرى.'
+                    : 'reCAPTCHA timeout. Please refresh the page and try again.';
+            } else if (error.message && error.message.includes('Invalid site key')) {
+                errorMsg = currentLanguage === 'ar'
+                    ? 'مفتاح reCAPTCHA غير صحيح. يرجى الاتصال بالدعم.'
+                    : 'Invalid reCAPTCHA site key. Please contact support.';
+            }
+            
+            alert(errorMsg);
             payButton.disabled = false;
             payButton.innerHTML = `
                 <span class="lock-icon">🔒</span>

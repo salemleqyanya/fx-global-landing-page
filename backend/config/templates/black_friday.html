@@ -174,7 +174,7 @@
                         <p class="proceed-text" data-en="👇 Press here to proceed to safe payment method 👇" data-ar="👇 اضغط هنا للانتقال إلى طريقة الدفع الآمنة 👇">👇 Press here to proceed to safe payment method 👇</p>
                         <button class="btn-primary" data-en="To subscribe, click here" data-ar="للاشتراك، اضغط هنا">To subscribe, click here</button>
                         {% else %}
-                        <button class="btn-primary" onclick="document.querySelector('.contact-section').scrollIntoView({ behavior: 'smooth', block: 'start' });" data-en="Contact Us" data-ar="تواصل معنا">Contact Us</button>
+                        <button type="button" class="btn-primary contact-form-btn" onclick="event.preventDefault(); event.stopPropagation(); document.querySelector('.contact-section').scrollIntoView({ behavior: 'smooth', block: 'start' }); return false;" data-en="Contact Us" data-ar="تواصل معنا">Contact Us</button>
                         {% endif %}
                     </div>
                 </div>
@@ -209,7 +209,7 @@
                         <p class="proceed-text" data-en="👇 Press here to proceed to safe payment method 👇" data-ar="👇 اضغط هنا للانتقال إلى طريقة الدفع الآمنة 👇">👇 Press here to proceed to safe payment method 👇</p>
                         <button class="btn-primary" data-en="LAST CHANCE - GET 30% OFF" data-ar="الفرصة الأخيرة - خصم 30%">LAST CHANCE - GET 30% OFF</button>
                         {% else %}
-                        <button class="btn-primary" onclick="document.querySelector('.contact-section').scrollIntoView({ behavior: 'smooth', block: 'start' });" data-en="Contact Us" data-ar="تواصل معنا">Contact Us</button>
+                        <button type="button" class="btn-primary contact-form-btn" onclick="event.preventDefault(); event.stopPropagation(); document.querySelector('.contact-section').scrollIntoView({ behavior: 'smooth', block: 'start' }); return false;" data-en="Contact Us" data-ar="تواصل معنا">Contact Us</button>
                         {% endif %}
                     </div>
                 </div>
@@ -244,7 +244,7 @@
                         <p class="proceed-text" data-en="👇 Press here to proceed to safe payment method 👇" data-ar="👇 اضغط هنا للانتقال إلى طريقة الدفع الآمنة 👇">👇 Press here to proceed to safe payment method 👇</p>
                         <button class="btn-primary" data-en="GET RECOMMENDATIONS NOW" data-ar="احصل على التوصيات الآن">GET RECOMMENDATIONS NOW</button>
                         {% else %}
-                        <button class="btn-primary" onclick="document.querySelector('.contact-section').scrollIntoView({ behavior: 'smooth', block: 'start' });" data-en="Contact Us" data-ar="تواصل معنا">Contact Us</button>
+                        <button type="button" class="btn-primary contact-form-btn" onclick="event.preventDefault(); event.stopPropagation(); document.querySelector('.contact-section').scrollIntoView({ behavior: 'smooth', block: 'start' }); return false;" data-en="Contact Us" data-ar="تواصل معنا">Contact Us</button>
                         {% endif %}
                     </div>
                 </div>
@@ -278,7 +278,7 @@
                         <p class="proceed-text" data-en="👇 Press here to proceed to safe payment method 👇" data-ar="👇 اضغط هنا للانتقال إلى طريقة الدفع الآمنة 👇">👇 Press here to proceed to safe payment method 👇</p>
                         <button class="btn-primary" data-en="JOIN LIVE STREAM NOW" data-ar="انضم للبث المباشر الآن">JOIN LIVE STREAM NOW</button>
                         {% else %}
-                        <button class="btn-primary" onclick="document.querySelector('.contact-section').scrollIntoView({ behavior: 'smooth', block: 'start' });" data-en="Contact Us" data-ar="تواصل معنا">Contact Us</button>
+                        <button type="button" class="btn-primary contact-form-btn" onclick="event.preventDefault(); event.stopPropagation(); document.querySelector('.contact-section').scrollIntoView({ behavior: 'smooth', block: 'start' }); return false;" data-en="Contact Us" data-ar="تواصل معنا">Contact Us</button>
                         {% endif %}
                     </div>
                 </div>
@@ -545,7 +545,7 @@
                                 <a href="/privacy-policy/" data-en="Privacy Policy" data-ar="سياسة الخصوصية">Privacy Policy</a>
                             </p>
                             {% else %}
-                            <button type="button" id="contact-form-button" class="btn-pay" onclick="document.querySelector('.contact-section').scrollIntoView({ behavior: 'smooth', block: 'start' });">
+                            <button type="button" id="contact-form-button" class="btn-pay contact-form-btn" onclick="event.preventDefault(); event.stopPropagation(); document.querySelector('.contact-section').scrollIntoView({ behavior: 'smooth', block: 'start' }); return false;">
                                 <span data-en="Contact Us" data-ar="تواصل معنا">Contact Us</span>
                             </button>
                             {% endif %}

@@ -788,7 +788,21 @@ function initializeEventListeners() {
     document.getElementById('language-toggle').addEventListener('click', toggleLanguage);
     
     // Offer cards - handle button clicks to navigate to checkout
+    // Skip buttons that have onclick handlers (these are contact form buttons when show_pay_button is false)
     document.querySelectorAll('.offer-card .btn-primary').forEach(button => {
+        // Check if button has onclick attribute, contact-form-btn class, or if it's a contact button
+        const buttonText = button.textContent.trim();
+        const isContactButton = button.hasAttribute('onclick') || 
+                                button.classList.contains('contact-form-btn') ||
+                                buttonText.includes('Contact Us') || 
+                                buttonText.includes('تواصل معنا');
+        
+        if (isContactButton) {
+            // This is a contact form button, don't override it - let onclick handler work
+            console.log('Skipping checkout redirect for contact button:', buttonText);
+            return;
+        }
+        
         button.addEventListener('click', (e) => {
             e.preventDefault();
             e.stopPropagation();

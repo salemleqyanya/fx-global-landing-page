@@ -363,6 +363,8 @@ function updatePaymentPage() {
     
     const offerName = currentLanguage === 'ar' ? selectedOffer.nameAr : selectedOffer.name;
     const discount = currentLanguage === 'ar' ? selectedOffer.discountAr : selectedOffer.discount;
+    const currency = selectedOffer.currency || 'USD';
+    const currencySymbol = getCurrencySymbol(currency);
     
     const nameEl = document.getElementById('selected-offer-name');
     const badgeEl = document.getElementById('selected-offer-badge');
@@ -372,9 +374,6 @@ function updatePaymentPage() {
     const savingsAmountEl = document.getElementById('savings-amount');
     const payAmountEl = document.getElementById('pay-amount');
     const popupPayAmountEl = document.getElementById('popup-pay-amount');
-    
-    const currency = selectedOffer.currency || 'USD';
-    const currencySymbol = getCurrencySymbol(currency);
     
     if (nameEl) nameEl.textContent = offerName;
     if (badgeEl) badgeEl.textContent = discount;

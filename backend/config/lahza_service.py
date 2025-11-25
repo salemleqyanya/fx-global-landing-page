@@ -35,7 +35,7 @@ def initialize_transaction(
     *,
     email: str,
     amount_minor: int,
-    currency: str = "USD",
+    currency: str = "ILS",
     reference: Optional[str] = None,
     mobile: Optional[str] = None,
     first_name: Optional[str] = None,

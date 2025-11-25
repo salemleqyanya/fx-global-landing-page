@@ -5,6 +5,17 @@ let selectedOffer = null;
 let orderId = '';
 let userEmail = '';
 
+// Helper function to get currency symbol
+function getCurrencySymbol(currency) {
+    const symbols = {
+        'ILS': '₪',
+        'USD': '$',
+        'EUR': '€',
+        'GBP': '£'
+    };
+    return symbols[currency] || '$';
+}
+
 // Initialize
 document.addEventListener('DOMContentLoaded', () => {
     initializeLanguage();
@@ -82,6 +93,7 @@ function loadOfferFromURL() {
     const nameAr = urlParams.get('nameAr') || 'حزمة التداول المباشر + إشارت VIP';
     const discount = urlParams.get('discount') || '55% OFF';
     const discountAr = urlParams.get('discountAr') || 'خصم 55%';
+    const currency = urlParams.get('currency') || 'USD';
     
     // Set selected offer
     selectedOffer = {
@@ -90,6 +102,7 @@ function loadOfferFromURL() {
         nameAr: nameAr,
         price: price,
         originalPrice: originalPrice,
+        currency: currency,
         discount: discount,
         discountAr: discountAr
     };
@@ -360,14 +373,39 @@ function updatePaymentPage() {
     const payAmountEl = document.getElementById('pay-amount');
     const popupPayAmountEl = document.getElementById('popup-pay-amount');
     
+    const currency = selectedOffer.currency || 'USD';
+    const currencySymbol = getCurrencySymbol(currency);
+    
     if (nameEl) nameEl.textContent = offerName;
     if (badgeEl) badgeEl.textContent = discount;
-    if (originalPriceEl) originalPriceEl.textContent = `$${selectedOffer.originalPrice}`;
-    if (discountAmountEl) discountAmountEl.textContent = `-$${selectedOffer.originalPrice - selectedOffer.price}`;
-    if (totalPriceEl) totalPriceEl.textContent = `$${selectedOffer.price}`;
-    if (savingsAmountEl) savingsAmountEl.textContent = selectedOffer.originalPrice - selectedOffer.price;
+    if (originalPriceEl) originalPriceEl.textContent = `${currencySymbol}${selectedOffer.originalPrice}`;
+    if (discountAmountEl) discountAmountEl.textContent = `-${currencySymbol}${selectedOffer.originalPrice - selectedOffer.price}`;
+    if (totalPriceEl) totalPriceEl.textContent = `${currencySymbol}${selectedOffer.price}`;
+    const savingsAmount = selectedOffer.originalPrice - selectedOffer.price;
+    if (savingsAmountEl) {
+        // Update the parent savings-content div to include currency symbol
+        const savingsContent = savingsAmountEl.closest('.savings-content');
+        if (savingsContent) {
+            const savingsText = savingsContent.querySelector('.savings-text');
+            const savingsTextContent = savingsText ? savingsText.textContent : 'You Save';
+            savingsContent.innerHTML = `
+                <p class="savings-text" data-en="You Save" data-ar="توفر">${savingsTextContent}</p>
+                <p class="savings-amount">${currencySymbol}${savingsAmount}</p>
+            `;
+        } else {
+            savingsAmountEl.textContent = savingsAmount;
+        }
+    }
     if (payAmountEl) payAmountEl.textContent = selectedOffer.price;
     if (popupPayAmountEl) popupPayAmountEl.textContent = selectedOffer.price;
+    
+    // Update pay button with currency
+    const payButton = document.getElementById('pay-button');
+    if (payButton) {
+        const payButtonText = payButton.innerHTML;
+        // Update currency in pay button
+        payButton.innerHTML = payButtonText.replace(/\$|₪|€|£/, currencySymbol);
+    }
     
     // Validate form after updating payment page
     setTimeout(() => validatePaymentForm(), 100);
@@ -808,9 +846,12 @@ function updateSuccessPage() {
     const emailEl = document.getElementById('display-email');
     const savedAmountEl = document.getElementById('saved-amount');
     
+    const currency = selectedOffer.currency || 'USD';
+    const currencySymbol = getCurrencySymbol(currency);
+    
     if (orderIdEl) orderIdEl.textContent = orderId;
     if (emailEl) emailEl.textContent = userEmail;
-    if (savedAmountEl) savedAmountEl.textContent = `$${selectedOffer.originalPrice - selectedOffer.price}`;
+    if (savedAmountEl) savedAmountEl.textContent = `${currencySymbol}${selectedOffer.originalPrice - selectedOffer.price}`;
     
     // Set download instructions button link
     const downloadBtn = document.getElementById('download-instructions-btn');

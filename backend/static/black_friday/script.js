@@ -4,6 +4,17 @@ let selectedOffer = null;
 let orderId = '';
 let userEmail = '';
 
+// Helper function to get currency symbol
+function getCurrencySymbol(currency) {
+    const symbols = {
+        'ILS': '₪',
+        'USD': '$',
+        'EUR': '€',
+        'GBP': '£'
+    };
+    return symbols[currency] || '$';
+}
+
 // Offer data
 const offers = {
     bundle: {
@@ -12,17 +23,19 @@ const offers = {
         nameAr: 'حزمة التصميم + نصائح VIP',
         price: 136,
         originalPrice: 300,
+        currency: 'USD',
         discount: '55% OFF',
         discountAr: 'خصم 55%'
     },
     yearly: {
         type: 'yearly',
-        name: 'Annual VIP Membership',
-        nameAr: 'العضوية السنوية VIP',
-        price: 300,
-        originalPrice: 500,
-        discount: '40% OFF',
-        discountAr: 'خصم 40%'
+        name: 'Annual Membership',
+        nameAr: 'العضوية السنوية',
+        price: 1300,
+        originalPrice: 1850,
+        currency: 'ILS',
+        discount: '30% OFF',
+        discountAr: 'خصم 30%'
     },
     recommendations: {
         type: 'recommendations',
@@ -30,6 +43,7 @@ const offers = {
         nameAr: 'عرض التوصيات',
         price: 75,
         originalPrice: 150,
+        currency: 'USD',
         discount: '50% OFF',
         discountAr: 'خصم 50%'
     },
@@ -39,6 +53,7 @@ const offers = {
         nameAr: 'عرض البث المباشر',
         price: 75,
         originalPrice: 150,
+        currency: 'USD',
         discount: '50% OFF',
         discountAr: 'خصم 50%'
     }
@@ -150,10 +165,12 @@ async function verifyPaymentAfterCallback(reference) {
             // Reset payment button
             if (payButton) {
                 payButton.disabled = false;
+                const currency = selectedOffer ? (selectedOffer.currency || 'USD') : 'USD';
+                const currencySymbol = getCurrencySymbol(currency);
                 payButton.innerHTML = `
                     <span class="lock-icon">🔒</span>
                     <span>${currentLanguage === 'ar' ? 'المتابعة إلى الدفع الآمن' : 'Proceed to Secure Payment'}</span>
-                    $<span id="pay-amount">${selectedOffer ? selectedOffer.price : 0}</span>
+                    ${currencySymbol}<span id="pay-amount">${selectedOffer ? selectedOffer.price : 0}</span>
                 `;
             }
         }
@@ -838,6 +855,7 @@ function navigateToCheckout(offerType) {
         nameAr: offer.nameAr,
         discount: offer.discount,
         discountAr: offer.discountAr,
+        currency: offer.currency || 'USD',
     });
     
     // Navigate to checkout page
@@ -891,14 +909,34 @@ function updatePaymentPage() {
     
     const offerName = currentLanguage === 'ar' ? selectedOffer.nameAr : selectedOffer.name;
     const discount = currentLanguage === 'ar' ? selectedOffer.discountAr : selectedOffer.discount;
+    const currency = selectedOffer.currency || 'USD';
+    const currencySymbol = getCurrencySymbol(currency);
     
     document.getElementById('selected-offer-name').textContent = offerName;
     document.getElementById('selected-offer-badge').textContent = discount;
-    document.getElementById('original-price').textContent = `$${selectedOffer.originalPrice}`;
-    document.getElementById('discount-amount').textContent = `-$${selectedOffer.originalPrice - selectedOffer.price}`;
-    document.getElementById('total-price').textContent = `$${selectedOffer.price}`;
-    document.getElementById('savings-amount').textContent = selectedOffer.originalPrice - selectedOffer.price;
+    document.getElementById('original-price').textContent = `${currencySymbol}${selectedOffer.originalPrice}`;
+    document.getElementById('discount-amount').textContent = `-${currencySymbol}${selectedOffer.originalPrice - selectedOffer.price}`;
+    document.getElementById('total-price').textContent = `${currencySymbol}${selectedOffer.price}`;
+    const savingsAmount = selectedOffer.originalPrice - selectedOffer.price;
+    const savingsAmountEl = document.getElementById('savings-amount');
+    if (savingsAmountEl) {
+        // Update the parent paragraph to include currency symbol
+        const savingsParagraph = savingsAmountEl.closest('p');
+        if (savingsParagraph) {
+            savingsParagraph.innerHTML = `💰 <span data-en="You Save" data-ar="توفر">You Save</span> ${currencySymbol}<span id="savings-amount">${savingsAmount}</span>!`;
+        } else {
+            savingsAmountEl.textContent = savingsAmount;
+        }
+    }
     document.getElementById('pay-amount').textContent = selectedOffer.price;
+    
+    // Update pay button with currency
+    const payButton = document.getElementById('pay-button');
+    if (payButton && !payButton.disabled) {
+        const payButtonText = payButton.innerHTML;
+        // Update currency in pay button if it exists
+        payButton.innerHTML = payButtonText.replace(/\$|₪|€|£/, currencySymbol);
+    }
     
     // Validate form after updating payment page
     setTimeout(() => validatePaymentForm(), 100);
@@ -1190,10 +1228,12 @@ async function handlePaymentSubmit(e) {
             console.error('grecaptcha is not defined');
             alert(currentLanguage === 'ar' ? 'جارٍ تحميل reCAPTCHA. يرجى تحديث الصفحة والمحاولة مرة أخرى.' : 'reCAPTCHA is loading. Please refresh the page and try again.');
             payButton.disabled = false;
+            const currency = selectedOffer.currency || 'USD';
+            const currencySymbol = getCurrencySymbol(currency);
             payButton.innerHTML = `
                 <span class="lock-icon">🔒</span>
                 <span>${currentLanguage === 'ar' ? 'المتابعة إلى الدفع الآمن' : 'Proceed to Secure Payment'}</span>
-                $<span id="pay-amount">${selectedOffer.price}</span>
+                ${currencySymbol}<span id="pay-amount">${selectedOffer.price}</span>
             `;
             return;
         }
@@ -1245,10 +1285,12 @@ async function handlePaymentSubmit(e) {
             
             alert(errorMsg);
             payButton.disabled = false;
+            const currency = selectedOffer.currency || 'USD';
+            const currencySymbol = getCurrencySymbol(currency);
             payButton.innerHTML = `
                 <span class="lock-icon">🔒</span>
                 <span>${currentLanguage === 'ar' ? 'المتابعة إلى الدفع الآمن' : 'Proceed to Secure Payment'}</span>
-                $<span id="pay-amount">${selectedOffer.price}</span>
+                ${currencySymbol}<span id="pay-amount">${selectedOffer.price}</span>
             `;
             return;
         }
@@ -1295,7 +1337,7 @@ async function handlePaymentSubmit(e) {
         payButton.innerHTML = `
             <span class="lock-icon">🔒</span>
             <span>${currentLanguage === 'ar' ? 'المتابعة إلى الدفع الآمن' : 'Proceed to Secure Payment'}</span>
-            $<span id="pay-amount">${selectedOffer.price}</span>
+            ₪<span id="pay-amount">${selectedOffer.price}</span>
         `;
         alert(currentLanguage === 'ar' 
             ? 'حدث خطأ أثناء معالجة الدفع. يرجى المحاولة مرة أخرى.' 
@@ -1348,6 +1390,8 @@ function updateSuccessPage() {
     if (downloadBtn && orderId) {
         downloadBtn.href = `/instructions/${orderId}/download/`;
     }
-    document.getElementById('saved-amount').textContent = `$${selectedOffer.originalPrice - selectedOffer.price}`;
+    const currency = selectedOffer.currency || 'USD';
+    const currencySymbol = getCurrencySymbol(currency);
+    document.getElementById('saved-amount').textContent = `${currencySymbol}${selectedOffer.originalPrice - selectedOffer.price}`;
 }
 

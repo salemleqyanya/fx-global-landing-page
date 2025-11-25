@@ -1,9 +1,18 @@
 from django.contrib import admin
 from django.http import HttpResponse
 from django.utils import timezone
+from django.utils.html import format_html
+from django.utils.safestring import mark_safe
 import csv
+import json
+import requests
 
 from .models import CustomerContact, Payment, BlackFridaySettings, BlackFridayContact, LandingPage
+
+# Set admin site name to fxglobal
+admin.site.site_header = "FX Global Administration"
+admin.site.site_title = "FX Global"
+admin.site.index_title = "FX Global Admin"
 
 
 @admin.register(LandingPage)
@@ -71,7 +80,7 @@ class CustomerContactAdmin(admin.ModelAdmin):
     readonly_fields = ['created_at']
     list_editable = ['is_contacted']
     date_hierarchy = 'created_at'
-    actions = ['export_contacts_csv']
+    actions = ['export_contacts_csv', 'send_to_accounting_modules']
     
     fieldsets = (
         ('معلومات العميل', {
@@ -125,6 +134,80 @@ class CustomerContactAdmin(admin.ModelAdmin):
         return response
 
     export_contacts_csv.short_description = "تصدير كملف CSV"
+    
+    def send_to_accounting_modules(self, request, queryset):
+        """Send selected contacts to accounting_modules as customers"""
+        # API endpoint URL - adjust port if needed
+        api_url = 'https://site.fxglobal.cloud/sales/api/create-customer/'
+        
+        success_count = 0
+        error_count = 0
+        skipped_count = 0
+        errors = []
+        
+        for contact in queryset:
+            try:
+                # Prepare data
+                data = {
+                    'name': contact.name,
+                    'phone': contact.phone or contact.whatsapp,
+                    'whatsapp': contact.whatsapp,
+                    'city': contact.city,
+                    'address': contact.address,
+                    'goal': contact.get_goal_display() if contact.goal else None,
+                    'message': contact.message,
+                    'source_key': 'black'
+                }
+                
+                # Send POST request
+                response = requests.post(
+                    api_url,
+                    json=data,
+                    headers={'Content-Type': 'application/json'},
+                    timeout=10
+                )
+                
+                if response.status_code == 201:
+                    success_count += 1
+                    # Mark as contacted
+                    contact.is_contacted = True
+                    contact.save()
+                elif response.status_code == 409:
+                    # Customer already exists
+                    skipped_count += 1
+                    errors.append(f"{contact.name}: Customer already exists")
+                else:
+                    error_count += 1
+                    error_msg = response.json().get('error', 'Unknown error') if response.content else 'Unknown error'
+                    errors.append(f"{contact.name}: {error_msg}")
+                    
+            except requests.exceptions.RequestException as e:
+                error_count += 1
+                errors.append(f"{contact.name}: Connection error - {str(e)}")
+            except Exception as e:
+                error_count += 1
+                errors.append(f"{contact.name}: {str(e)}")
+        
+        # Prepare message
+        message_parts = [
+            f"Successfully sent: {success_count}",
+            f"Already exists: {skipped_count}",
+            f"Errors: {error_count}"
+        ]
+        
+        if errors:
+            message_parts.append("\nErrors:")
+            message_parts.extend(errors[:10])  # Show first 10 errors
+            if len(errors) > 10:
+                message_parts.append(f"... and {len(errors) - 10} more errors")
+        
+        self.message_user(
+            request,
+            "\n".join(message_parts),
+            level='success' if error_count == 0 else 'warning' if success_count > 0 else 'error'
+        )
+    
+    send_to_accounting_modules.short_description = "إرسال إلى accounting_modules (Sales/Customer)"
 
 
 @admin.register(Payment)
@@ -132,7 +215,7 @@ class PaymentAdmin(admin.ModelAdmin):
     list_display = ['reference', 'customer_name', 'customer_email', 'first_name', 'last_name', 'mobile', 'amount', 'currency', 'status', 'source', 'offer_type', 'created_at', 'paid_at']
     list_filter = ['status', 'source', 'currency', 'created_at', 'paid_at']
     search_fields = ['reference', 'transaction_id', 'customer_name', 'customer_email', 'first_name', 'last_name', 'mobile', 'offer_type']
-    readonly_fields = ['reference', 'transaction_id', 'created_at', 'updated_at', 'paid_at', 'lahza_response', 'metadata']
+    readonly_fields = ['reference', 'transaction_id', 'created_at', 'updated_at', 'paid_at', 'lahza_response_table', 'metadata_table', 'card_info_display']
     date_hierarchy = 'created_at'
     actions = ['export_payments_csv', 'mark_as_success', 'mark_as_failed']
     
@@ -144,16 +227,119 @@ class PaymentAdmin(admin.ModelAdmin):
             'fields': ('customer_name', 'customer_email', 'first_name', 'last_name', 'mobile')
         }),
         ('Payment Details', {
-            'fields': ('amount', 'currency', 'offer_type', 'offer_name')
+            'fields': ('amount', 'currency', 'offer_type', 'offer_name', 'card_info_display')
         }),
-        ('Transaction Data', {
-            'fields': ('lahza_response', 'metadata'),
+        ('Lahza Response', {
+            'fields': ('lahza_response_table',),
+            'classes': ('collapse',)
+        }),
+        ('Metadata', {
+            'fields': ('metadata_table',),
             'classes': ('collapse',)
         }),
         ('Timestamps', {
             'fields': ('created_at', 'updated_at', 'paid_at')
         }),
     )
+    
+    def lahza_response_table(self, obj):
+        """Display Lahza response data in a table format"""
+        if not obj.lahza_response or not isinstance(obj.lahza_response, dict):
+            return "No data available"
+        
+        from django.utils.html import escape
+        
+        html = '<table style="width: 100%; border-collapse: collapse; font-family: monospace; font-size: 12px;">'
+        html += '<thead><tr style="background-color: #417690; color: white;"><th style="padding: 8px; text-align: left; border: 1px solid #ddd;">Field</th><th style="padding: 8px; text-align: left; border: 1px solid #ddd;">Value</th></tr></thead>'
+        html += '<tbody>'
+        
+        def format_value(value):
+            """Format value for display"""
+            if isinstance(value, dict):
+                json_str = json.dumps(value, indent=2, ensure_ascii=False)
+                return f'<pre style="margin: 0; white-space: pre-wrap;">{escape(json_str)}</pre>'
+            elif isinstance(value, list):
+                json_str = json.dumps(value, indent=2, ensure_ascii=False)
+                return f'<pre style="margin: 0; white-space: pre-wrap;">{escape(json_str)}</pre>'
+            elif value is None:
+                return '<em style="color: #999;">null</em>'
+            else:
+                return escape(str(value))
+        
+        # Sort keys for better readability
+        sorted_keys = sorted(obj.lahza_response.keys())
+        for key in sorted_keys:
+            value = obj.lahza_response[key]
+            formatted_value = format_value(value)
+            html += f'<tr style="border-bottom: 1px solid #ddd;"><td style="padding: 8px; font-weight: bold; background-color: #f5f5f5; border: 1px solid #ddd;">{escape(key)}</td><td style="padding: 8px; border: 1px solid #ddd; word-break: break-word;">{formatted_value}</td></tr>'
+        
+        html += '</tbody></table>'
+        return mark_safe(html)
+    lahza_response_table.short_description = "Lahza Response Data"
+    
+    def metadata_table(self, obj):
+        """Display metadata in a table format"""
+        if not obj.metadata or not isinstance(obj.metadata, dict):
+            return "No data available"
+        
+        from django.utils.html import escape
+        
+        html = '<table style="width: 100%; border-collapse: collapse; font-family: monospace; font-size: 12px;">'
+        html += '<thead><tr style="background-color: #417690; color: white;"><th style="padding: 8px; text-align: left; border: 1px solid #ddd;">Field</th><th style="padding: 8px; text-align: left; border: 1px solid #ddd;">Value</th></tr></thead>'
+        html += '<tbody>'
+        
+        def format_value(value):
+            """Format value for display"""
+            if isinstance(value, dict):
+                json_str = json.dumps(value, indent=2, ensure_ascii=False)
+                return f'<pre style="margin: 0; white-space: pre-wrap;">{escape(json_str)}</pre>'
+            elif isinstance(value, list):
+                json_str = json.dumps(value, indent=2, ensure_ascii=False)
+                return f'<pre style="margin: 0; white-space: pre-wrap;">{escape(json_str)}</pre>'
+            elif value is None:
+                return '<em style="color: #999;">null</em>'
+            elif isinstance(value, str) and len(value) > 100:
+                # Truncate very long strings (like recaptcha tokens)
+                return f'{escape(value[:100])}... (truncated)'
+            else:
+                return escape(str(value))
+        
+        # Sort keys for better readability
+        sorted_keys = sorted(obj.metadata.keys())
+        for key in sorted_keys:
+            value = obj.metadata[key]
+            formatted_value = format_value(value)
+            html += f'<tr style="border-bottom: 1px solid #ddd;"><td style="padding: 8px; font-weight: bold; background-color: #f5f5f5; border: 1px solid #ddd;">{escape(key)}</td><td style="padding: 8px; border: 1px solid #ddd; word-break: break-word;">{formatted_value}</td></tr>'
+        
+        html += '</tbody></table>'
+        return mark_safe(html)
+    metadata_table.short_description = "Metadata"
+    
+    def card_info_display(self, obj):
+        """Display card information in a table format"""
+        if not obj.card_brand and not obj.last_four_digits:
+            return "No card information available"
+        
+        from django.utils.html import escape
+        
+        html = '<table style="width: 100%; border-collapse: collapse; font-family: monospace; font-size: 12px;">'
+        html += '<thead><tr style="background-color: #417690; color: white;"><th style="padding: 8px; text-align: left; border: 1px solid #ddd;">Field</th><th style="padding: 8px; text-align: left; border: 1px solid #ddd;">Value</th></tr></thead>'
+        html += '<tbody>'
+        
+        card_data = {
+            'Card Brand': obj.card_brand or 'N/A',
+            'Card Type': obj.card_type or 'N/A',
+            'Last 4 Digits': obj.last_four_digits or 'N/A',
+            'Expiry Month': obj.card_expiry_month or 'N/A',
+            'Expiry Year': obj.card_expiry_year or 'N/A',
+        }
+        
+        for key, value in card_data.items():
+            html += f'<tr style="border-bottom: 1px solid #ddd;"><td style="padding: 8px; font-weight: bold; background-color: #f5f5f5; border: 1px solid #ddd;">{escape(key)}</td><td style="padding: 8px; border: 1px solid #ddd;">{escape(str(value))}</td></tr>'
+        
+        html += '</tbody></table>'
+        return mark_safe(html)
+    card_info_display.short_description = "Card Information"
     
     def mark_as_success(self, request, queryset):
         """Mark selected payments as successful"""

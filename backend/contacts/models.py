@@ -118,7 +118,7 @@ class Payment(models.Model):
     
     # Payment details
     amount = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Amount")
-    currency = models.CharField(max_length=3, default='USD', verbose_name="Currency")
+    currency = models.CharField(max_length=3, default='ILS', verbose_name="Currency")
     
     # Card information (saved after payment)
     card_type = models.CharField(max_length=50, blank=True, null=True, verbose_name="Card Type", help_text="e.g., Visa, Mastercard")

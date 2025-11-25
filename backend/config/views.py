@@ -440,7 +440,7 @@ def initialize_lahza_payment(request):
         transaction_data = initialize_transaction(
             email=email,
             amount_minor=amount_minor,
-            currency='USD',
+            currency='ILS',
             reference=reference,
             first_name=first_name,
             last_name=last_name,
@@ -697,7 +697,7 @@ def initialize_lahza_payment(request):
             last_name=last_name if last_name else None,
             mobile=mobile if mobile else None,
             amount=amount,
-            currency='USD',
+            currency='ILS',
             offer_type=offer_type,
             offer_name=offer_name,
             source=source,
@@ -790,7 +790,7 @@ def verify_lahza_payment(request):
                     last_name=last_name if last_name else None,
                     mobile=mobile if mobile else None,
                     amount=0,
-                    currency='USD',
+                    currency='ILS',
                     status='pending'
                 )
             except Exception as e:
@@ -838,7 +838,7 @@ def verify_lahza_payment(request):
                             payment.amount = amount_value
                 
                 if 'currency' in transaction_data:
-                    currency_value = transaction_data.get('currency', 'USD')
+                    currency_value = transaction_data.get('currency', 'ILS')
                     if currency_value:
                         payment.currency = str(currency_value)[:3]  # Ensure max 3 chars
                 
@@ -1271,7 +1271,7 @@ def test_email(request):
                     customer_name='Test Customer',
                     customer_email=test_email_address,
                     amount=Decimal('300.00'),
-                    currency='USD',
+                    currency='ILS',
                     offer_type='bundle',
                     offer_name='Design Package + VIP Tips',
                     status='success',
@@ -1286,7 +1286,7 @@ def test_email(request):
                 customer_name='Test Customer',
                 customer_email=test_email_address,
                 amount=Decimal('300.00'),
-                currency='USD',
+                currency='ILS',
                 offer_type='bundle',
                 offer_name='Live Trading + VIP Signals Bundle',
                 status='success',

@@ -395,6 +395,13 @@ class BlackFridayContact(models.Model):
         ('other', 'Other'),
     ]
     
+    CONTACT_TYPE_CHOICES = [
+        ('annual_membership', 'Annual Membership'),
+        ('recommendations_broadcast', 'Recommendations Package + Live Broadcast'),
+        ('live_broadcast', 'Live Broadcast Offer'),
+        ('recommendations', 'Recommendations Offer'),
+    ]
+    
     # Contact information
     name = models.CharField(max_length=200, verbose_name="Name")
     email = models.EmailField(verbose_name="Email", blank=True, null=True)
@@ -402,6 +409,15 @@ class BlackFridayContact(models.Model):
     whatsapp = models.CharField(max_length=20, verbose_name="WhatsApp Number", blank=True, null=True)
     city = models.CharField(max_length=100, blank=True, null=True, verbose_name="City")
     message = models.TextField(blank=True, null=True, verbose_name="Message")
+    
+    # Contact type field for back office categorization
+    contact_type = models.CharField(
+        max_length=30,
+        choices=CONTACT_TYPE_CHOICES,
+        default='annual_membership',
+        verbose_name="Contact Type",
+        help_text="Selected offer type"
+    )
     
     # Form metadata
     form_type = models.CharField(
@@ -413,6 +429,9 @@ class BlackFridayContact(models.Model):
     
     # Additional metadata
     metadata = models.JSONField(default=dict, blank=True, verbose_name="Metadata")
+    
+    # Contact status
+    is_contacted = models.BooleanField(default=False, verbose_name="Is Contacted", help_text="Mark as contacted when you have reached out to this contact")
     
     # Timestamps
     created_at = models.DateTimeField(default=timezone.now, verbose_name="Created At")

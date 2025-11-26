@@ -233,6 +233,28 @@ function updateLanguageContent() {
         } else if (el.tagName === 'A') {
             // Handle anchor tags - update text content but preserve href
             el.textContent = text;
+        } else if (el.tagName === 'SELECT') {
+            // Handle select elements - update options
+            const currentValue = el.value;
+            const options = el.querySelectorAll('option[data-en][data-ar]');
+            options.forEach(option => {
+                const optionText = currentLanguage === 'ar' ? option.getAttribute('data-ar') : option.getAttribute('data-en');
+                option.textContent = optionText;
+            });
+            // Restore selected value
+            el.value = currentValue;
+            // Update select color based on validity
+            if (el.id === 'contact-type') {
+                if (el.value && el.value !== '') {
+                    el.style.color = 'var(--white)';
+                    el.classList.remove('invalid');
+                    el.classList.add('valid');
+                } else {
+                    el.style.color = 'rgba(255, 255, 255, 0.4)';
+                    el.classList.remove('valid');
+                    el.classList.add('invalid');
+                }
+            }
         } else {
             // Check if text contains HTML tags (for elements like terms-note with links)
             if (text && text.includes('<')) {
@@ -818,6 +840,33 @@ function initializeEventListeners() {
         contactForm.addEventListener('submit', handleContactSubmit);
     }
     
+    // Contact type select field - update color when valid option is selected
+    const contactTypeSelect = document.getElementById('contact-type');
+    if (contactTypeSelect) {
+        function updateSelectColor() {
+            if (contactTypeSelect.value && contactTypeSelect.value !== '') {
+                contactTypeSelect.style.color = 'var(--white)';
+                contactTypeSelect.style.opacity = '1';
+                contactTypeSelect.classList.remove('invalid');
+                contactTypeSelect.classList.add('valid');
+            } else {
+                contactTypeSelect.style.color = 'rgba(255, 255, 255, 0.4)';
+                contactTypeSelect.style.opacity = '1';
+                contactTypeSelect.classList.remove('valid');
+                contactTypeSelect.classList.add('invalid');
+            }
+        }
+        
+        contactTypeSelect.addEventListener('change', updateSelectColor);
+        contactTypeSelect.addEventListener('input', updateSelectColor);
+        
+        // Initialize color on page load
+        updateSelectColor();
+        
+        // Also update after language change (if language update happens)
+        setTimeout(updateSelectColor, 100);
+    }
+    
     // Auto-fill contact form
     // Auto-fill button removed for contact form
     // const autoFillBtn = document.getElementById('auto-fill-btn');
@@ -1042,12 +1091,13 @@ async function handleContactSubmit(e) {
         submitButton.textContent = currentLanguage === 'ar' ? 'جاري الإرسال...' : 'Sending...';
     }
     
-    // Get form data - API expects: name, phone, whatsapp, message, city (optional), address (optional)
+    // Get form data - API expects: name, phone, whatsapp, message, city (optional), contact_type
     const nameInput = document.getElementById('contact-name');
     const phoneInput = document.getElementById('contact-phone');
     const cityInput = document.getElementById('contact-city');
     const emailInput = document.getElementById('contact-email');
     const messageInput = document.getElementById('contact-message');
+    const contactTypeInput = document.getElementById('contact-type');
     
     const formData = {
         name: nameInput ? nameInput.value.trim() : '',
@@ -1055,6 +1105,7 @@ async function handleContactSubmit(e) {
         whatsapp: phoneInput ? phoneInput.value.trim() : '', // Use phone as whatsapp
         message: messageInput ? messageInput.value.trim() : 'Contact form submission from Black Friday page',
         city: cityInput ? cityInput.value.trim() : null,
+        contact_type: contactTypeInput ? (contactTypeInput.value || '') : '',
     };
     
     // Validate required fields
@@ -1069,6 +1120,19 @@ async function handleContactSubmit(e) {
     
     if (!formData.phone || formData.phone.length < 8) {
         alert(currentLanguage === 'ar' ? 'يرجى إدخال رقم هاتف صحيح' : 'Please enter a valid phone number');
+        if (submitButton) {
+            submitButton.disabled = false;
+            submitButton.textContent = originalButtonText;
+        }
+        return;
+    }
+    
+    // Validate contact type
+    if (!formData.contact_type || formData.contact_type === '') {
+        alert(currentLanguage === 'ar' ? 'يرجى اختيار نوع الاستفسار' : 'Please select a contact type');
+        if (contactTypeInput) {
+            contactTypeInput.focus();
+        }
         if (submitButton) {
             submitButton.disabled = false;
             submitButton.textContent = originalButtonText;
@@ -1092,6 +1156,7 @@ async function handleContactSubmit(e) {
             whatsapp: formData.whatsapp,
             city: formData.city,
             message: formData.message,
+            contact_type: formData.contact_type || 'general',
             form_type: 'main_contact',
         };
         

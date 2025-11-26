@@ -462,10 +462,11 @@ class BlackFridaySettingsAdmin(admin.ModelAdmin):
 
 @admin.register(BlackFridayContact)
 class BlackFridayContactAdmin(admin.ModelAdmin):
-    list_display = ['name', 'email', 'phone', 'whatsapp', 'city', 'form_type', 'created_at']
-    list_filter = ['form_type', 'created_at']
+    list_display = ['name', 'email', 'phone', 'whatsapp', 'city', 'contact_type', 'form_type', 'is_contacted', 'created_at']
+    list_filter = ['is_contacted', 'contact_type', 'form_type', 'created_at']
     search_fields = ['name', 'email', 'phone', 'whatsapp', 'city', 'message']
     readonly_fields = ['created_at']
+    list_editable = ['is_contacted']
     date_hierarchy = 'created_at'
     actions = ['export_contacts_csv', 'send_to_accounting_modules']
     
@@ -474,7 +475,10 @@ class BlackFridayContactAdmin(admin.ModelAdmin):
             'fields': ('name', 'email', 'phone', 'whatsapp', 'city')
         }),
         ('Form Details', {
-            'fields': ('form_type', 'message', 'metadata')
+            'fields': ('contact_type', 'form_type', 'message', 'metadata')
+        }),
+        ('Status', {
+            'fields': ('is_contacted',)
         }),
         ('Timestamps', {
             'fields': ('created_at',)
@@ -496,8 +500,10 @@ class BlackFridayContactAdmin(admin.ModelAdmin):
             'Phone',
             'WhatsApp',
             'City',
+            'Contact Type',
             'Message',
             'Form Type',
+            'Is Contacted',
             'Created At',
         ]
         writer.writerow(headers)
@@ -509,8 +515,10 @@ class BlackFridayContactAdmin(admin.ModelAdmin):
                 contact.phone or '',
                 contact.whatsapp or '',
                 contact.city or '',
+                contact.get_contact_type_display(),
                 contact.message.replace('\n', ' ').strip() if contact.message else '',
                 contact.get_form_type_display(),
+                'Yes' if contact.is_contacted else 'No',
                 timezone.localtime(contact.created_at).strftime('%Y-%m-%d %H:%M:%S') if contact.created_at else '',
             ])
         
@@ -552,6 +560,9 @@ class BlackFridayContactAdmin(admin.ModelAdmin):
                 
                 if response.status_code == 201:
                     success_count += 1
+                    # Mark as contacted
+                    contact.is_contacted = True
+                    contact.save()
                 elif response.status_code == 409:
                     # Customer already exists
                     skipped_count += 1

@@ -89,7 +89,7 @@ class BlackFridayContactSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = BlackFridayContact
-        fields = ['name', 'email', 'phone', 'whatsapp', 'city', 'message', 'form_type', 'metadata']
+        fields = ['name', 'email', 'phone', 'whatsapp', 'city', 'message', 'contact_type', 'form_type', 'metadata']
         read_only_fields = []
     
     def validate_phone(self, value):

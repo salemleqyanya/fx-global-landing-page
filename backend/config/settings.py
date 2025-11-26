@@ -179,18 +179,12 @@ CORS_ALLOW_CREDENTIALS = True
 FRONTEND_URL = os.getenv('FRONTEND_URL', 'http://localhost:8009')
 
 
-LAHZA_SECRET_KEY = os.getenv('LAHZA_SECRET_KEY')
+LAHZA_SECRET_KEY = os.getenv('LAHZA_SECRET_KEY','sk_live_iuYWzHtoKYTMKHDLVjwKYYohYWXisHOE6')
 if not LAHZA_SECRET_KEY:
-    if DEBUG:
-        LAHZA_SECRET_KEY = 'dev-secret-key'  # Placeholder for development
-    else:
-        raise ValueError("LAHZA_SECRET_KEY environment variable is required")
-LAHZA_PUBLIC_KEY = os.getenv('LAHZA_PUBLIC_KEY')
+    raise ValueError("LAHZA_SECRET_KEY environment variable is required")
+LAHZA_PUBLIC_KEY = os.getenv('LAHZA_PUBLIC_KEY','pk_live_RufakeN2n1jkqTBnZ0OXr3egrTnon5l9Y')
 if not LAHZA_PUBLIC_KEY:
-    if DEBUG:
-        LAHZA_PUBLIC_KEY = 'dev-public-key'  # Placeholder for development
-    else:
-        raise ValueError("LAHZA_PUBLIC_KEY environment variable is required")
+    raise ValueError("LAHZA_PUBLIC_KEY environment variable is required")
 LAHZA_BASE_URL = os.getenv('LAHZA_BASE_URL', 'https://api.lahza.io')
 LAHZA_CALLBACK_URL = os.getenv(
     'LAHZA_CALLBACK_URL',

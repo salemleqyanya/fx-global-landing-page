@@ -287,11 +287,6 @@ function initializeEventListeners() {
         paymentForm.addEventListener('submit', handlePaymentSubmit);
     }
     
-    // Auto-fill payment form
-    const paymentAutoFill = document.getElementById('payment-auto-fill');
-    if (paymentAutoFill) {
-        paymentAutoFill.addEventListener('click', handleAutoFillPayment);
-    }
     
     // Payment form validation on input
     const paymentFirstNameInput = document.getElementById('payment-first-name');
@@ -552,32 +547,6 @@ function validatePaymentForm() {
     console.log('Form validation:', { firstName, lastName, mobile, email, isFirstNameValid, isLastNameValid, isMobileValid, isEmailValid, isPoliciesAccepted, isRecaptchaValid, isValid });
     
     return isValid;
-}
-
-function handleAutoFillPayment() {
-    const firstNameInput = document.getElementById('payment-first-name');
-    const lastNameInput = document.getElementById('payment-last-name');
-    const mobileInput = document.getElementById('payment-mobile');
-    const emailInput = document.getElementById('payment-email');
-    const acceptPolicies = document.getElementById('accept-policies');
-    
-    if (currentLanguage === 'ar') {
-        if (firstNameInput) firstNameInput.value = 'أحمد';
-        if (lastNameInput) lastNameInput.value = 'السعيد';
-        if (mobileInput) mobileInput.value = '+962791234567';
-        if (emailInput) emailInput.value = 'ahmad.test@fxglobals.com';
-    } else {
-        if (firstNameInput) firstNameInput.value = 'John';
-        if (lastNameInput) lastNameInput.value = 'Doe';
-        if (mobileInput) mobileInput.value = '+962791234567';
-        if (emailInput) emailInput.value = 'john.test@fxglobals.com';
-    }
-    
-    // Auto-check policy checkbox for testing
-    if (acceptPolicies) acceptPolicies.checked = true;
-    
-    // Validate form after auto-fill
-    setTimeout(() => validatePaymentForm(), 100);
 }
 
 async function handlePaymentSubmit(e) {

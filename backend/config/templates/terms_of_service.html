@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title data-en="Terms of Service - FX Global" data-ar="شروط الخدمة - FX Global">Terms of Service - FX Global</title>
+    <link rel="stylesheet" href="{% static 'black_friday/styles.css' %}">
     <style>
         * {
             margin: 0;
@@ -24,6 +25,7 @@
             max-width: 900px;
             margin: 0 auto;
             padding: 40px 20px;
+            padding-bottom: 60px; /* Extra space before footer */
         }
         
         .header {
@@ -138,6 +140,21 @@
             margin-left: 0;
             margin-right: 30px;
         }
+        
+        /* Footer spacing */
+        .site-footer {
+            margin-top: 4rem;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding-bottom: 40px;
+            }
+            
+            .site-footer {
+                margin-top: 2rem;
+            }
+        }
     </style>
 </head>
 <body>
@@ -189,6 +206,10 @@
                     <li data-en="Refund policy will be provided at the time of purchase" data-ar="سيتم توفير سياسة الاسترداد في وقت الشراء">Refund policy will be provided at the time of purchase</li>
                     <li data-en="All transactions are processed securely through third-party payment providers" data-ar="يتم معالجة جميع المعاملات بأمان من خلال مزودي الدفع الخارجيين">All transactions are processed securely through third-party payment providers</li>
                 </ul>
+                <div class="warning-box" style="margin-top: 20px;">
+                    <p data-en="After signing the official contract between the student and FX Global company, the subscription is considered final and non-refundable, and the student is not entitled to request any refund or exchange after signing the contract." data-ar="بعد توقيع العقد الرسمي بين الطالب وشركة FX Global، يُعتبر الاشتراك نهائياً وغير قابل للانسحاب أو الاسترجاع، ولا يحق للطالب طلب أي استرداد أو استبدال بعد توقيع العقد.">After signing the official contract between the student and FX Global company, the subscription is considered final and non-refundable, and the student is not entitled to request any refund or exchange after signing the contract.</p>
+                    <p data-en="Once the requested service is activated and the content or educational sessions begin to be provided to the student, a portion of the fees is deducted for the period and services that have already been provided, and this portion is not refunded under any circumstances." data-ar="بمجرد تفعيل الخدمة المطلوبة وبدء تقديم المحتوى أو الجلسات التعليمية للطالب، يتم خصم جزء من الرسوم مقابل الفترة والخدمات التي تم توفيرها بالفعل، ولا يتم استرجاع هذا الجزء تحت أي ظرف.">Once the requested service is activated and the content or educational sessions begin to be provided to the student, a portion of the fees is deducted for the period and services that have already been provided, and this portion is not refunded under any circumstances.</p>
+                </div>
             </div>
             
             <div class="section">

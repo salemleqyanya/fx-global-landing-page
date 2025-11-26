@@ -880,11 +880,6 @@ function initializeEventListeners() {
         paymentForm.addEventListener('submit', handlePaymentSubmit);
     }
     
-    // Auto-fill payment form
-    const paymentAutoFill = document.getElementById('payment-auto-fill');
-    if (paymentAutoFill) {
-        paymentAutoFill.addEventListener('click', handleAutoFillPayment);
-    }
     
     // Back buttons
     const backToOffers = document.getElementById('back-to-offers');
@@ -1265,32 +1260,6 @@ function validatePaymentForm() {
     payButton.disabled = !isValid;
     
     return isValid;
-}
-
-function handleAutoFillPayment() {
-    const firstNameInput = document.getElementById('payment-first-name');
-    const lastNameInput = document.getElementById('payment-last-name');
-    const mobileInput = document.getElementById('payment-mobile');
-    const emailInput = document.getElementById('payment-email');
-    const acceptPolicies = document.getElementById('accept-policies');
-    
-    if (currentLanguage === 'ar') {
-        if (firstNameInput) firstNameInput.value = 'أحمد';
-        if (lastNameInput) lastNameInput.value = 'محمد السعيد';
-        if (mobileInput) mobileInput.value = '+972 59 123 4567';
-        if (emailInput) emailInput.value = 'ahmad.test@fxglobals.com';
-    } else {
-        if (firstNameInput) firstNameInput.value = 'John';
-        if (lastNameInput) lastNameInput.value = 'Michael Doe';
-        if (mobileInput) mobileInput.value = '+1 234 567 8900';
-        if (emailInput) emailInput.value = 'john.test@fxglobals.com';
-    }
-    
-    // Auto-check policy checkbox for testing
-    if (acceptPolicies) acceptPolicies.checked = true;
-    
-    // Validate form after auto-fill
-    setTimeout(() => validatePaymentForm(), 100);
 }
 
 async function handlePaymentSubmit(e) {

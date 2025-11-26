@@ -298,7 +298,6 @@ async function initializePreBlackFridayTimer() {
     const offersSection = document.querySelector('.offers-section');
     const timerBanner = document.querySelector('.timer-banner');
     const statsGrid = document.querySelector('.stats-grid');
-    const testimonialsSection = document.querySelector('.testimonials-section');
     const contactSection = document.querySelector('.contact-section');
     const footer = document.querySelector('footer');
     
@@ -313,7 +312,6 @@ async function initializePreBlackFridayTimer() {
         if (offersSection) offersSection.style.display = '';
         if (timerBanner) timerBanner.style.display = '';
         if (statsGrid) statsGrid.style.display = '';
-        if (testimonialsSection) testimonialsSection.style.display = '';
         if (contactSection) contactSection.style.display = '';
         if (footer) footer.style.display = '';
         // Clear cached timer data to ensure fresh 24-hour countdown from backend
@@ -343,7 +341,6 @@ async function initializePreBlackFridayTimer() {
     if (offersSection) offersSection.style.display = 'none';
     if (timerBanner) timerBanner.style.display = 'none';
     if (statsGrid) statsGrid.style.display = 'none';
-    if (testimonialsSection) testimonialsSection.style.display = 'none';
     if (contactSection) contactSection.style.display = 'none';
     if (footer) footer.style.display = 'none';
     
@@ -395,7 +392,6 @@ async function initializePreBlackFridayTimer() {
             if (offersSection) offersSection.style.display = '';
             if (timerBanner) timerBanner.style.display = '';
             if (statsGrid) statsGrid.style.display = '';
-            if (testimonialsSection) testimonialsSection.style.display = '';
             if (contactSection) contactSection.style.display = '';
             if (footer) footer.style.display = '';
             

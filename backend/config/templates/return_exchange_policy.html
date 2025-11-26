@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title data-en="Return and Exchange Policy - FX Global" data-ar="سياسة الإرجاع والاستبدال - FX Global">Return and Exchange Policy - FX Global</title>
+    <link rel="stylesheet" href="{% static 'black_friday/styles.css' %}">
     <style>
         * {
             margin: 0;
@@ -24,6 +25,7 @@
             max-width: 900px;
             margin: 0 auto;
             padding: 40px 20px;
+            padding-bottom: 60px; /* Extra space before footer */
         }
         
         .header {
@@ -137,6 +139,21 @@
         [dir="ltr"] .section ul {
             margin-left: 0;
             margin-right: 30px;
+        }
+        
+        /* Footer spacing */
+        .site-footer {
+            margin-top: 4rem;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding-bottom: 40px;
+            }
+            
+            .site-footer {
+                margin-top: 2rem;
+            }
         }
     </style>
 </head>

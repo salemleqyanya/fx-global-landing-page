@@ -614,68 +614,17 @@ async function initializeCountdown() {
     minutesEl.textContent = '--';
     secondsEl.textContent = '--';
     
-    // Always fetch 24-hour countdown from backend API to ensure accuracy
-    // Check cache only as a fallback if API fails
-    const cachedTime = localStorage.getItem('black_friday_end_time');
-    const cachedTimestamp = cachedTime ? parseInt(cachedTime, 10) : null;
+    // Set Black Friday end date to December 1st, 2025 00:00:00
+    // Month is 0-indexed, so 11 = December
+    const blackFridayEndDate = new Date(2025, 11, 1, 0, 0, 0, 0);
+    timerEndTime = blackFridayEndDate.getTime();
     
-    // Fetch end date from database API (backend calculates 24 hours from start date)
-    try {
-        console.log('Fetching 24-hour countdown from backend...');
-        const response = await fetch('/api/black-friday/end-date/');
-        
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        
-        const data = await response.json();
-        console.log('Backend API response:', data);
-        
-        if (data.success && data.end_date_timestamp) {
-            const endTimestamp = data.end_date_timestamp;
-            const now = Date.now();
-            
-            // Check if the end time is in the future
-            if (endTimestamp > now) {
-                timerEndTime = endTimestamp;
-                // Cache in localStorage for offline/fallback
-                localStorage.setItem('black_friday_end_time', timerEndTime.toString());
-                localStorage.setItem('black_friday_end_date_fetched', Date.now().toString());
-                console.log('✓ Timer initialized with 24-hour countdown from backend');
-                console.log('  Start date:', new Date(data.start_date_timestamp).toLocaleString());
-                console.log('  End date (start + 24h):', new Date(timerEndTime).toLocaleString());
-                console.log('  Time remaining:', Math.floor((timerEndTime - now) / (1000 * 60 * 60)) + ' hours');
-            } else {
-                // End time has passed, calculate new 24 hours from start
-                console.warn('End time has passed, calculating new 24-hour period from start date');
-                const startTimestamp = data.start_date_timestamp || now;
-                timerEndTime = startTimestamp + (24 * 60 * 60 * 1000);
-                
-                // If that also passed, set it to 24 hours from now
-                if (timerEndTime <= now) {
-                    timerEndTime = now + (24 * 60 * 60 * 1000);
-                    console.warn('Start date also passed, setting timer to 24 hours from now');
-                }
-                
-                localStorage.setItem('black_friday_end_time', timerEndTime.toString());
-            }
-        } else {
-            throw new Error('Invalid response from API: ' + JSON.stringify(data));
-        }
-    } catch (error) {
-        console.error('Failed to fetch end date from API:', error);
-        // Fallback to localStorage if API fails
-        if (cachedTimestamp && cachedTimestamp > Date.now()) {
-            timerEndTime = cachedTimestamp;
-            console.log('Using cached end date (fallback):', new Date(timerEndTime).toLocaleString());
-        } else {
-            // Last resort: set to 24 hours from now
-            const now = Date.now();
-            timerEndTime = now + (24 * 60 * 60 * 1000); // 24 hours from now
-            console.warn('Using default 24-hour countdown (from now) - please check backend connection:', new Date(timerEndTime).toLocaleString());
-            // Don't cache this fallback value
-        }
-    }
+    // Cache in localStorage
+    localStorage.setItem('black_friday_end_time', timerEndTime.toString());
+    localStorage.setItem('black_friday_end_date_fetched', Date.now().toString());
+    
+    console.log('✓ Timer initialized with Black Friday end date: December 1st, 2025 00:00:00');
+    console.log('  End date:', new Date(timerEndTime).toLocaleString());
     
     if (!timerEndTime) {
         console.error('Failed to initialize timer - no end time available');
@@ -683,6 +632,15 @@ async function initializeCountdown() {
         minutesEl.textContent = '00';
         secondsEl.textContent = '00';
         return;
+    }
+    
+    // Check if Black Friday has already ended on page load
+    const now = Date.now();
+    if (timerEndTime <= now) {
+        console.log('Black Friday has already ended');
+        handleBlackFridayEnd();
+    } else {
+        console.log('  Time remaining:', Math.floor((timerEndTime - now) / (1000 * 60 * 60)) + ' hours');
     }
     
     function updateCountdown() {
@@ -699,21 +657,14 @@ async function initializeCountdown() {
             hoursEl.textContent = '00';
             minutesEl.textContent = '00';
             secondsEl.textContent = '00';
-            // Only refresh from API once when expired, not continuously
-            const lastRefresh = localStorage.getItem('black_friday_last_refresh');
-            const now = Date.now();
-            if (!lastRefresh || (now - parseInt(lastRefresh, 10)) > 60000) { // Refresh max once per minute
-                localStorage.setItem('black_friday_last_refresh', now.toString());
-                fetch('/api/black-friday/end-date/')
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success && data.end_date_timestamp && data.end_date_timestamp > now) {
-                            timerEndTime = data.end_date_timestamp;
-                            localStorage.setItem('black_friday_end_time', timerEndTime.toString());
-                            console.log('Timer refreshed with new end date:', new Date(timerEndTime).toLocaleString());
-                        }
-                    })
-                    .catch(err => console.warn('Failed to refresh end date:', err));
+            
+            // Black Friday has ended - update prices to original and show end message
+            handleBlackFridayEnd();
+            
+            // Clear interval to stop updating
+            if (countdownInterval) {
+                clearInterval(countdownInterval);
+                countdownInterval = null;
             }
             return;
         }
@@ -768,6 +719,86 @@ async function initializeCountdown() {
     countdownInterval = setInterval(updateCountdown, 1000);
     
     console.log('✓ Timer countdown started, updating every second');
+}
+
+// Handle Black Friday End - Update prices to original and show end message
+function handleBlackFridayEnd() {
+    console.log('Black Friday has ended - updating prices to original');
+    
+    // Update all offer prices to original prices
+    const offerCards = document.querySelectorAll('.offer-card');
+    offerCards.forEach(card => {
+        const offerType = card.getAttribute('data-offer');
+        if (offerType && offers[offerType]) {
+            const offer = offers[offerType];
+            const currencySymbol = getCurrencySymbol(offer.currency);
+            
+            // Update current price to original price
+            const priceCurrentEl = card.querySelector('.price-current');
+            if (priceCurrentEl) {
+                priceCurrentEl.textContent = `${currencySymbol}${offer.originalPrice}`;
+            }
+            
+            // Hide or remove discount badge
+            const discountBadgeEl = card.querySelector('.discount-badge-small');
+            if (discountBadgeEl) {
+                discountBadgeEl.style.display = 'none';
+            }
+            
+            // Hide original price strikethrough (or keep it visible but update styling)
+            const priceOriginalEl = card.querySelector('.price-original');
+            if (priceOriginalEl) {
+                priceOriginalEl.style.display = 'none';
+            }
+        }
+    });
+    
+    // Update offers object prices to original (for payment page)
+    Object.keys(offers).forEach(key => {
+        offers[key].price = offers[key].originalPrice;
+    });
+    
+    // Show Black Friday End title
+    const heroTitle = document.querySelector('.hero-title');
+    const countdownContainer = document.querySelector('.countdown-container');
+    const heroDiscountBanner = document.querySelector('.hero-discount-banner');
+    
+    if (heroTitle) {
+        // Create or update Black Friday End message
+        let endMessage = document.getElementById('black-friday-end-message');
+        if (!endMessage) {
+            endMessage = document.createElement('div');
+            endMessage.id = 'black-friday-end-message';
+            endMessage.className = 'black-friday-end-message';
+            endMessage.innerHTML = `
+                <h2 class="black-friday-end-title" data-en="Black Friday Has Ended" data-ar="انتهت الجمعة السوداء">Black Friday Has Ended</h2>
+            `;
+            
+            // Insert after hero title or before countdown
+            if (countdownContainer && countdownContainer.parentNode) {
+                countdownContainer.parentNode.insertBefore(endMessage, countdownContainer);
+            } else if (heroTitle && heroTitle.parentNode) {
+                heroTitle.parentNode.appendChild(endMessage);
+            }
+        }
+        endMessage.style.display = 'block';
+        
+        // Update language content for the new message
+        updateLanguageContent();
+    }
+    
+    // Hide discount banner if exists
+    if (heroDiscountBanner) {
+        heroDiscountBanner.style.display = 'none';
+    }
+    
+    // Hide timer banner
+    const timerBanner = document.querySelector('.timer-banner');
+    if (timerBanner) {
+        timerBanner.style.display = 'none';
+    }
+    
+    console.log('✓ Prices updated to original and Black Friday End message displayed');
 }
 
 // Scroll Animations

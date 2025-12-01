@@ -1341,55 +1341,80 @@ async function handlePaymentSubmit(e) {
         return;
     }
     
-    // Disable button and show processing
+    // Disable button and show processing IMMEDIATELY - use requestAnimationFrame for instant visual feedback
     const payButton = document.getElementById('pay-button');
-    payButton.disabled = true;
-    payButton.innerHTML = `
-        <div class="spinner"></div>
-        <span>${currentLanguage === 'ar' ? 'جاري المعالجة...' : 'Processing...'}</span>
-    `;
+    const originalButtonContent = payButton.innerHTML;
     
-    try {
-        // Get reCAPTCHA v3 token
-        let recaptchaToken = '';
-        const siteKey = '6Lf3vxcsAAAAAI03JSOmUJ67-DbZLh43CvnM6SAs';
+    // Immediately disable and update button - use requestAnimationFrame to ensure UI updates before async work
+    requestAnimationFrame(() => {
+        payButton.disabled = true;
+        payButton.style.opacity = '0.8';
+        payButton.style.cursor = 'not-allowed';
+        payButton.innerHTML = `
+            <div class="spinner"></div>
+            <span>${currentLanguage === 'ar' ? 'جاري المعالجة...' : 'Processing...'}</span>
+        `;
         
-        if (typeof grecaptcha === 'undefined') {
-            console.error('grecaptcha is not defined');
-            alert(currentLanguage === 'ar' ? 'جارٍ تحميل reCAPTCHA. يرجى تحديث الصفحة والمحاولة مرة أخرى.' : 'reCAPTCHA is loading. Please refresh the page and try again.');
-            payButton.disabled = false;
-            const currency = selectedOffer.currency || 'USD';
-            const currencySymbol = getCurrencySymbol(currency);
-            payButton.innerHTML = `
-                <span class="lock-icon">🔒</span>
-                <span>${currentLanguage === 'ar' ? 'المتابعة إلى الدفع الآمن' : 'Proceed to Secure Payment'}</span>
-                ${currencySymbol}<span id="pay-amount">${selectedOffer.price}</span>
-            `;
-            return;
-        }
+        // Force immediate reflow and repaint
+        payButton.offsetHeight;
         
+        // Use setTimeout to ensure the UI is updated before starting async operations
+        setTimeout(() => {
+            processPayment();
+        }, 0);
+    });
+    
+    // Function to handle the actual payment processing
+    async function processPayment() {
         try {
-            // Execute reCAPTCHA v3
-            console.log('Executing reCAPTCHA v3...');
+            // Get reCAPTCHA v3 token
+            let recaptchaToken = '';
+            const siteKey = '6Lf3vxcsAAAAAI03JSOmUJ67-DbZLh43CvnM6SAs';
             
-            // Execute with timeout
-            const executePromise = grecaptcha.execute(siteKey, {
-                action: 'payment_submit'
-            });
-            
-            // Add timeout to prevent hanging
-            const timeoutPromise = new Promise((_, reject) => {
-                setTimeout(() => reject(new Error('reCAPTCHA execution timeout')), 10000);
-            });
-            
-            recaptchaToken = await Promise.race([executePromise, timeoutPromise]);
-            
-            if (!recaptchaToken || recaptchaToken.length === 0) {
-                throw new Error('Empty token received from reCAPTCHA');
+            if (typeof grecaptcha === 'undefined') {
+                console.error('grecaptcha is not defined');
+                alert(currentLanguage === 'ar' ? 'جارٍ تحميل reCAPTCHA. يرجى تحديث الصفحة والمحاولة مرة أخرى.' : 'reCAPTCHA is loading. Please refresh the page and try again.');
+                payButton.disabled = false;
+                payButton.style.opacity = '1';
+                payButton.style.cursor = 'pointer';
+                payButton.innerHTML = originalButtonContent;
+                return;
             }
             
-            console.log('reCAPTCHA token generated successfully:', recaptchaToken.substring(0, 20) + '...');
-        } catch (error) {
+            try {
+                // Update button text to show reCAPTCHA is being processed
+                payButton.innerHTML = `
+                    <div class="spinner"></div>
+                    <span>${currentLanguage === 'ar' ? 'جاري التحقق...' : 'Verifying...'}</span>
+                `;
+                
+                // Execute reCAPTCHA v3 with shorter timeout for faster feedback
+                console.log('Executing reCAPTCHA v3...');
+                
+                // Execute with reduced timeout (3 seconds for faster feedback)
+                const executePromise = grecaptcha.execute(siteKey, {
+                    action: 'payment_submit'
+                });
+                
+                // Add timeout to prevent hanging - reduced to 3 seconds
+                const timeoutPromise = new Promise((_, reject) => {
+                    setTimeout(() => reject(new Error('reCAPTCHA execution timeout')), 3000);
+                });
+                
+                recaptchaToken = await Promise.race([executePromise, timeoutPromise]);
+                
+                if (!recaptchaToken || recaptchaToken.length === 0) {
+                    throw new Error('Empty token received from reCAPTCHA');
+                }
+                
+                console.log('reCAPTCHA token generated successfully:', recaptchaToken.substring(0, 20) + '...');
+                
+                // Update button to show payment is being initialized
+                payButton.innerHTML = `
+                    <div class="spinner"></div>
+                    <span>${currentLanguage === 'ar' ? 'جاري التوجيه...' : 'Redirecting...'}</span>
+                `;
+            } catch (error) {
             console.error('reCAPTCHA v3 error:', error);
             console.error('Error details:', {
                 message: error.message,
@@ -1415,36 +1440,50 @@ async function handlePaymentSubmit(e) {
             
             alert(errorMsg);
             payButton.disabled = false;
-            const currency = selectedOffer.currency || 'USD';
-            const currencySymbol = getCurrencySymbol(currency);
-            payButton.innerHTML = `
-                <span class="lock-icon">🔒</span>
-                <span>${currentLanguage === 'ar' ? 'المتابعة إلى الدفع الآمن' : 'Proceed to Secure Payment'}</span>
-                ${currencySymbol}<span id="pay-amount">${selectedOffer.price}</span>
-            `;
+            payButton.style.opacity = '1';
+            payButton.style.cursor = 'pointer';
+            payButton.innerHTML = originalButtonContent;
             return;
         }
         
-        // Initialize Lahza payment
-        const response = await fetch('/black-friday/payment/initialize/', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRFToken': getCsrfToken(),
-            },
-            body: JSON.stringify({
-                email: formData.email,
-                amount: selectedOffer.price,
-                currency: selectedOffer.currency || 'USD',
-                firstName: formData.firstName,
-                lastName: formData.lastName,
-                mobile: formData.mobile,
-                offerType: selectedOffer.type,
-                offerName: currentLanguage === 'ar' ? selectedOffer.nameAr : selectedOffer.name,
-                source: 'black_friday',
-                recaptchaToken: recaptchaToken,
-            }),
-        });
+        // Initialize Lahza payment with timeout - reduced to 10 seconds
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
+        
+        let response;
+        try {
+            response = await fetch('/black-friday/payment/initialize/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCsrfToken(),
+                },
+                body: JSON.stringify({
+                    email: formData.email,
+                    amount: selectedOffer.price,
+                    currency: selectedOffer.currency || 'USD',
+                    firstName: formData.firstName,
+                    lastName: formData.lastName,
+                    mobile: formData.mobile,
+                    offerType: selectedOffer.type,
+                    offerName: currentLanguage === 'ar' ? selectedOffer.nameAr : selectedOffer.name,
+                    source: 'black_friday',
+                    recaptchaToken: recaptchaToken,
+                }),
+                signal: controller.signal,
+            });
+            clearTimeout(timeoutId);
+        } catch (fetchError) {
+            clearTimeout(timeoutId);
+            if (fetchError.name === 'AbortError') {
+                throw new Error('Request timeout - please try again');
+            }
+            throw fetchError;
+        }
+        
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
         
         const data = await response.json();
         
@@ -1462,17 +1501,38 @@ async function handlePaymentSubmit(e) {
         } else {
             throw new Error(data.error || 'Failed to initialize payment');
         }
-    } catch (error) {
-        console.error('Payment initialization error:', error);
-        payButton.disabled = false;
-        payButton.innerHTML = `
-            <span class="lock-icon">🔒</span>
-            <span>${currentLanguage === 'ar' ? 'المتابعة إلى الدفع الآمن' : 'Proceed to Secure Payment'}</span>
-            ₪<span id="pay-amount">${selectedOffer.price}</span>
-        `;
-        alert(currentLanguage === 'ar' 
+        } catch (error) {
+            console.error('Payment initialization error:', error);
+            payButton.disabled = false;
+            payButton.style.opacity = '1';
+            payButton.style.cursor = 'pointer';
+            
+            // Restore original button content
+            const currency = selectedOffer.currency || 'USD';
+            const currencySymbol = getCurrencySymbol(currency);
+            payButton.innerHTML = `
+                <span class="lock-icon">🔒</span>
+                <span>${currentLanguage === 'ar' ? 'المتابعة إلى الدفع الآمن' : 'Proceed to Secure Payment'}</span>
+                ${currencySymbol}<span id="pay-amount">${selectedOffer.price}</span>
+            `;
+        
+        // Show user-friendly error message
+        let errorMsg = currentLanguage === 'ar' 
             ? 'حدث خطأ أثناء معالجة الدفع. يرجى المحاولة مرة أخرى.' 
-            : 'An error occurred while processing payment. Please try again.');
+            : 'An error occurred while processing payment. Please try again.';
+        
+        if (error.message && error.message.includes('timeout')) {
+            errorMsg = currentLanguage === 'ar'
+                ? 'انتهت مهلة الطلب. يرجى المحاولة مرة أخرى.'
+                : 'Request timeout. Please try again.';
+        } else if (error.message && error.message.includes('network')) {
+            errorMsg = currentLanguage === 'ar'
+                ? 'مشكلة في الاتصال. يرجى التحقق من اتصالك بالإنترنت والمحاولة مرة أخرى.'
+                : 'Network error. Please check your internet connection and try again.';
+        }
+        
+        alert(errorMsg);
+        }
     }
 }
 

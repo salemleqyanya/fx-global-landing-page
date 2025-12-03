@@ -762,6 +762,7 @@
     </section>
 
     <!-- Registration Form Section -->
+    {% if not hide_contact_form %}
     <section id="register" class="relative py-32 bg-black overflow-hidden">
         <div class="absolute inset-0 opacity-10">
             <div class="absolute top-0 right-0 w-[600px] h-[600px] bg-[#E91E8C] rounded-full blur-[120px]"></div>
@@ -865,6 +866,7 @@
             </div>
         </div>
     </section>
+    {% endif %}
 
     <!-- Trust Section -->
     <section class="relative py-24 bg-black overflow-hidden">

@@ -468,6 +468,9 @@ def initialize_lahza_payment(request):
         # Convert amount to minor units (cents for USD)
         amount_minor = int(amount * 100)
         
+        # Get recaptcha token if provided (before using it)
+        recaptcha_token = data.get('recaptchaToken', '')
+        
         # Generate reference
         import uuid
         prefix = 'PK' if source == 'packages' else ('CK' if source == 'checkout' else 'BF')
@@ -536,9 +539,6 @@ def initialize_lahza_payment(request):
             },
             callback_url=callback_url,
         )
-        
-        # Get recaptcha token if provided
-        recaptcha_token = data.get('recaptchaToken', '')
         
         # Verify reCAPTCHA Enterprise token if provided and verification is enabled
         if recaptcha_token and settings.RECAPTCHA_VERIFY_ENABLED:

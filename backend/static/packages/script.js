@@ -207,6 +207,7 @@ function setupPaymentForm() {
     const firstName = document.getElementById('payment-first-name').value.trim();
     const lastName = document.getElementById('payment-last-name').value.trim();
     const mobile = document.getElementById('payment-mobile').value.trim();
+    const email = document.getElementById('payment-email').value.trim();
     const address = document.getElementById('payment-address').value.trim();
     
     // Validate
@@ -223,6 +224,13 @@ function setupPaymentForm() {
     const mobileDigits = mobile.replace(/[^\d]/g, '');
     if (!mobile || mobileDigits.length < 8) {
       alert('يرجى إدخال رقم جوال صحيح');
+      return;
+    }
+    
+    // Validate email
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!email || !emailRegex.test(email)) {
+      alert('يرجى إدخال بريد إلكتروني صحيح');
       return;
     }
     
@@ -252,9 +260,6 @@ function setupPaymentForm() {
         currency: 'USD'
       };
       
-      // Generate a temporary email if not provided (will be updated in payment form)
-      const tempEmail = `${firstName.toLowerCase()}.${lastName.toLowerCase()}@temp.fxglobal.com`.replace(/\s+/g, '');
-      
       const response = await fetch('/checkout/payment/initialize/', {
         method: 'POST',
         headers: {
@@ -262,7 +267,7 @@ function setupPaymentForm() {
           'X-CSRFToken': getCsrfToken(),
         },
         body: JSON.stringify({
-          email: tempEmail, // Temporary email, will be updated when user completes payment
+          email: email, // User's actual email
           amount: planData.amount,
           currency: planData.currency,
           firstName: firstName,

@@ -395,6 +395,42 @@ def return_exchange_policy(request):
     return render(request, 'return_exchange_policy.html')
 
 
+def packages_page(request):
+    """Render Packages landing page."""
+    return render(request, 'packages.html')
+
+
+def serve_packages_file(request, filename):
+    """Serve CSS or JS files from the packages directory."""
+    # Get the packages directory path (one level up from backend)
+    packages_dir = BASE_DIR.parent / 'packages'
+    file_path = packages_dir / filename
+    
+    try:
+        with open(file_path, 'r', encoding='utf-8') as f:
+            content = f.read()
+        
+        # Determine content type based on file extension
+        if filename.endswith('.css'):
+            content_type = 'text/css'
+        elif filename.endswith('.js'):
+            content_type = 'application/javascript'
+        else:
+            content_type = 'text/plain'
+        
+        from django.http import HttpResponse
+        response = HttpResponse(content, content_type=content_type)
+        response['Cache-Control'] = 'public, max-age=3600'  # Cache for 1 hour
+        return response
+    except FileNotFoundError:
+        from django.http import HttpResponseNotFound
+        return HttpResponseNotFound(f'{filename} not found')
+    except Exception as e:
+        logger.error(f"[Packages] Error serving {filename}: {str(e)}", exc_info=True)
+        from django.http import HttpResponseServerError
+        return HttpResponseServerError(f'Error loading {filename}')
+
+
 @csrf_exempt
 @api_view(['POST'])
 @permission_classes([AllowAny])

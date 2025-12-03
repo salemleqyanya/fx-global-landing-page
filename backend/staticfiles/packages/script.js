@@ -148,153 +148,167 @@ function setupPricingButtons() {
         };
       }
       
-      // Open popup immediately with loading state
-      openLahzaPopupWithLoading(planData, clickedButton);
+      // Store plan data for later use
+      window.currentPlanData = planData;
+      
+      // Open popup with user info form
+      openLahzaPopupWithForm();
     });
   });
 }
 
-// Open popup immediately and load payment in background
-async function openLahzaPopupWithLoading(planData, button) {
+// Open popup with user info form
+function openLahzaPopupWithForm() {
   const popupOverlay = document.getElementById('lahza-popup-overlay');
-  const iframe = document.getElementById('lahza-checkout-iframe');
+  const userForm = document.getElementById('payment-user-form');
+  const iframeContainer = document.getElementById('payment-iframe-container');
   
-  if (!popupOverlay || !iframe) {
+  if (!popupOverlay || !userForm) {
     console.error('Popup elements not found');
     return;
   }
   
-  // Show popup immediately with loading state
-  iframe.src = 'about:blank';
-  iframe.style.background = 'linear-gradient(135deg, #1a0d2e 0%, #2d1b3d 100%)';
+  // Reset form
+  const form = document.getElementById('user-info-form');
+  if (form) {
+    form.reset();
+  }
+  
+  // Show form, hide iframe
+  userForm.style.display = 'block';
+  if (iframeContainer) {
+    iframeContainer.style.display = 'none';
+  }
+  
+  // Show popup
   popupOverlay.classList.add('active');
   document.body.style.overflow = 'hidden';
   
-  // Show loading indicator in iframe
-  const loadingHTML = `
-    <!DOCTYPE html>
-    <html dir="rtl" lang="ar">
-    <head>
-      <meta charset="UTF-8">
-      <style>
-        body {
-          margin: 0;
-          padding: 0;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          height: 100vh;
-          background: linear-gradient(135deg, #1a0d2e 0%, #2d1b3d 100%);
-          font-family: 'Cairo', sans-serif;
-        }
-        .loader {
-          text-align: center;
-          color: #fff;
-        }
-        .spinner {
-          border: 4px solid rgba(223, 46, 136, 0.3);
-          border-top: 4px solid #DF2E88;
-          border-radius: 50%;
-          width: 50px;
-          height: 50px;
-          animation: spin 1s linear infinite;
-          margin: 0 auto 20px;
-        }
-        @keyframes spin {
-          0% { transform: rotate(0deg); }
-          100% { transform: rotate(360deg); }
-        }
-        .loading-text {
-          font-size: 18px;
-          font-weight: 600;
-        }
-      </style>
-    </head>
-    <body>
-      <div class="loader">
-        <div class="spinner"></div>
-        <div class="loading-text">جاري تحميل صفحة الدفع...</div>
-      </div>
-    </body>
-    </html>
-  `;
+  // Setup form handler
+  setupPaymentForm();
+}
+
+// Setup payment form submission
+function setupPaymentForm() {
+  const form = document.getElementById('user-info-form');
+  if (!form) return;
   
-  // Create blob URL for loading page
-  const blob = new Blob([loadingHTML], { type: 'text/html' });
-  const blobUrl = URL.createObjectURL(blob);
-  iframe.src = blobUrl;
+  // Remove existing listeners
+  const newForm = form.cloneNode(true);
+  form.parentNode.replaceChild(newForm, form);
   
-  // Initialize payment in background
-  try {
-    // Get reCAPTCHA token (with shorter timeout for faster response)
-    let recaptchaToken = '';
-    const siteKey = '6Lf3vxcsAAAAAI03JSOmUJ67-DbZLh43CvnM6SAs';
+  newForm.addEventListener('submit', async function(e) {
+    e.preventDefault();
     
-    if (typeof grecaptcha !== 'undefined') {
-      try {
-        // Execute reCAPTCHA v3 with shorter timeout
-        const executePromise = grecaptcha.execute(siteKey, {
-          action: 'payment_submit'
-        });
-        
-        const timeoutPromise = new Promise((_, reject) => {
-          setTimeout(() => reject(new Error('reCAPTCHA execution timeout')), 5000);
-        });
-        
-        recaptchaToken = await Promise.race([executePromise, timeoutPromise]);
-      } catch (error) {
-        console.warn('reCAPTCHA error, proceeding without token:', error);
-        // Continue without token if reCAPTCHA fails (backend will handle)
+    const submitBtn = newForm.querySelector('.form-submit-btn');
+    const originalText = submitBtn.innerHTML;
+    
+    // Get form data
+    const firstName = document.getElementById('payment-first-name').value.trim();
+    const lastName = document.getElementById('payment-last-name').value.trim();
+    const mobile = document.getElementById('payment-mobile').value.trim();
+    const address = document.getElementById('payment-address').value.trim();
+    
+    // Validate
+    if (!firstName || firstName.length < 2) {
+      alert('يرجى إدخال اسم أول صحيح');
+      return;
+    }
+    
+    if (!lastName || lastName.length < 2) {
+      alert('يرجى إدخال اسم عائلة صحيح');
+      return;
+    }
+    
+    const mobileDigits = mobile.replace(/[^\d]/g, '');
+    if (!mobile || mobileDigits.length < 8) {
+      alert('يرجى إدخال رقم جوال صحيح');
+      return;
+    }
+    
+    // Disable button and show loading
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = '<span>جاري التحميل...</span>';
+    
+    try {
+      // Get reCAPTCHA token
+      let recaptchaToken = '';
+      const siteKey = '6Lf3vxcsAAAAAI03JSOmUJ67-DbZLh43CvnM6SAs';
+      
+      if (typeof grecaptcha !== 'undefined') {
+        try {
+          recaptchaToken = await grecaptcha.execute(siteKey, {
+            action: 'payment_submit'
+          });
+        } catch (error) {
+          console.warn('reCAPTCHA error:', error);
+        }
       }
+      
+      // Initialize payment with backend
+      const planData = window.currentPlanData || {
+        name: 'VIP Channel',
+        amount: 100,
+        currency: 'USD'
+      };
+      
+      // Generate a temporary email if not provided (will be updated in payment form)
+      const tempEmail = `${firstName.toLowerCase()}.${lastName.toLowerCase()}@temp.fxglobal.com`.replace(/\s+/g, '');
+      
+      const response = await fetch('/checkout/payment/initialize/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRFToken': getCsrfToken(),
+        },
+        body: JSON.stringify({
+          email: tempEmail, // Temporary email, will be updated when user completes payment
+          amount: planData.amount,
+          currency: planData.currency,
+          firstName: firstName,
+          lastName: lastName,
+          mobile: mobile,
+          address: address || '',
+          offerType: 'packages',
+          offerName: planData.name,
+          source: 'packages',
+          recaptchaToken: recaptchaToken || '',
+        }),
+      });
+      
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
+      }
+      
+      const data = await response.json();
+      
+      if (data.success && data.authorization_url && data.reference) {
+        // Store reference for later use
+        window.currentPaymentReference = data.reference;
+        console.log('Payment record created with reference:', data.reference);
+        
+        // Hide form, show iframe
+        const userForm = document.getElementById('payment-user-form');
+        const iframeContainer = document.getElementById('payment-iframe-container');
+        const iframe = document.getElementById('lahza-checkout-iframe');
+        
+        if (userForm) userForm.style.display = 'none';
+        if (iframeContainer) iframeContainer.style.display = 'block';
+        if (iframe) {
+          iframe.src = data.authorization_url;
+          startIframeMonitoring(iframe);
+        }
+      } else {
+        throw new Error(data.error || data.message || 'Failed to initialize payment');
+      }
+    } catch (error) {
+      console.error('Payment initialization error:', error);
+      alert('حدث خطأ أثناء تهيئة الدفع. يرجى المحاولة مرة أخرى.');
+      submitBtn.disabled = false;
+      submitBtn.innerHTML = originalText;
     }
-    
-    // Initialize payment with backend
-    const response = await fetch('/checkout/payment/initialize/', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-CSRFToken': getCsrfToken(),
-      },
-      body: JSON.stringify({
-        email: 'customer@example.com',
-        amount: planData.amount,
-        currency: planData.currency,
-        firstName: '',
-        lastName: '',
-        mobile: '',
-        offerType: 'packages',
-        offerName: planData.name,
-        source: 'packages',
-        recaptchaToken: recaptchaToken || '',
-      }),
-    });
-    
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-    
-    const data = await response.json();
-    
-    if (data.success && data.authorization_url) {
-      // Load payment URL in iframe
-      iframe.src = data.authorization_url;
-      // Clean up blob URL
-      URL.revokeObjectURL(blobUrl);
-      // Start monitoring
-      startIframeMonitoring(iframe);
-    } else {
-      throw new Error(data.error || data.message || 'Failed to initialize payment');
-    }
-  } catch (error) {
-    console.error('Payment initialization error:', error);
-    // Close popup and show error
-    closeLahzaPopup();
-    alert('حدث خطأ أثناء تهيئة الدفع. يرجى المحاولة مرة أخرى.');
-    // Clean up blob URL
-    if (blobUrl) {
-      URL.revokeObjectURL(blobUrl);
-    }
-  }
+  });
 }
 
 // Get CSRF Token
@@ -314,31 +328,40 @@ function getCsrfToken() {
   return cookieValue || '';
 }
 
-// Open Lahza Popup
+// Open Lahza Popup with payment URL (used after form submission)
 function openLahzaPopup(paymentUrl) {
   const popupOverlay = document.getElementById('lahza-popup-overlay');
   const iframe = document.getElementById('lahza-checkout-iframe');
+  const userForm = document.getElementById('payment-user-form');
+  const iframeContainer = document.getElementById('payment-iframe-container');
   
   if (!popupOverlay || !iframe) {
     console.error('Popup elements not found');
     return;
   }
   
-  // Load payment URL in iframe
-  iframe.src = paymentUrl;
+  // Hide form, show iframe
+  if (userForm) userForm.style.display = 'none';
+  if (iframeContainer) iframeContainer.style.display = 'block';
   
   // Show popup
   popupOverlay.classList.add('active');
   document.body.style.overflow = 'hidden';
   
-  // Monitor iframe for payment completion
-  startIframeMonitoring(iframe);
+  // Load payment URL in iframe
+  requestAnimationFrame(() => {
+    iframe.src = paymentUrl;
+    startIframeMonitoring(iframe);
+  });
 }
 
 // Close Lahza Popup
 function closeLahzaPopup() {
   const popupOverlay = document.getElementById('lahza-popup-overlay');
   const iframe = document.getElementById('lahza-checkout-iframe');
+  const userForm = document.getElementById('payment-user-form');
+  const iframeContainer = document.getElementById('payment-iframe-container');
+  const form = document.getElementById('user-info-form');
   
   if (popupOverlay) {
     popupOverlay.classList.remove('active');
@@ -348,6 +371,17 @@ function closeLahzaPopup() {
   if (iframe) {
     // Clear iframe src when closing
     iframe.src = '';
+  }
+  
+  // Reset form state
+  if (userForm) {
+    userForm.style.display = 'block';
+  }
+  if (iframeContainer) {
+    iframeContainer.style.display = 'none';
+  }
+  if (form) {
+    form.reset();
   }
 }
 
@@ -397,7 +431,7 @@ function startIframeMonitoring(iframe) {
 // Verify Payment
 async function verifyPayment(reference) {
   try {
-    const response = await fetch(`/checkout/payment/verify/?reference=${reference}`, {
+    const response = await fetch(`/packages/payment/verify/?reference=${reference}`, {
       method: 'GET',
       headers: {
         'X-CSRFToken': getCsrfToken(),
@@ -407,8 +441,12 @@ async function verifyPayment(reference) {
     const data = await response.json();
     
     if (data.success) {
-      alert('تم الدفع بنجاح! شكراً لك.');
-      // Optionally redirect or show success message
+      // Close popup
+      closeLahzaPopup();
+      // Show success message
+      alert('تم الدفع بنجاح! شكراً لك. سيتم إرسال إيصال الدفع إلى بريدك الإلكتروني.');
+      // Optionally reload page or show success page
+      window.location.reload();
     } else {
       alert('فشل التحقق من الدفع. يرجى الاتصال بالدعم.');
     }

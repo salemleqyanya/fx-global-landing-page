@@ -115,6 +115,7 @@ class Payment(models.Model):
     first_name = models.CharField(max_length=100, blank=True, null=True, verbose_name="First Name")
     last_name = models.CharField(max_length=100, blank=True, null=True, verbose_name="Last Name")
     mobile = models.CharField(max_length=20, blank=True, null=True, verbose_name="Mobile Number")
+    address = models.CharField(max_length=200, blank=True, null=True, verbose_name="Address")
     
     # Payment details
     amount = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Amount")

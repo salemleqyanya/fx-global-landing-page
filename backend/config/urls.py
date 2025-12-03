@@ -4,7 +4,7 @@ URL configuration for config project.
 from django.contrib import admin
 from django.conf import settings
 from django.conf.urls.static import static
-from .views import landing_page, elite_program, black_friday, lahza_checkout, initialize_lahza_payment, verify_lahza_payment, test_email, privacy_policy, terms_of_service, return_exchange_policy, get_black_friday_end_date, get_pre_black_friday_date, download_instructions_pdf, packages_page
+from .views import landing_page, elite_program, black_friday, lahza_checkout, initialize_lahza_payment, verify_lahza_payment, lahza_webhook, test_email, privacy_policy, terms_of_service, return_exchange_policy, get_black_friday_end_date, get_pre_black_friday_date, download_instructions_pdf, packages_page
 from django.urls import path, include, re_path
 from django.views.static import serve
 
@@ -18,6 +18,7 @@ urlpatterns = [
     path('nokhbeh/', elite_program, name='nokhbeh_elite'),
     path('black-friday/', black_friday, name='black_friday'),
     path('packages/', packages_page, name='packages_page'),
+    path('packages/payment/verify/', verify_lahza_payment, name='verify_packages_payment'),
     path('api/black-friday/end-date/', get_black_friday_end_date, name='get_black_friday_end_date'),
     path('api/black-friday/pre-bf-date/', get_pre_black_friday_date, name='get_pre_black_friday_date'),
     path('black-friday/payment/initialize/', initialize_lahza_payment, name='initialize_lahza_payment'),
@@ -26,6 +27,7 @@ urlpatterns = [
     path('checkout/', lahza_checkout, name='lahza_checkout'),
     path('checkout/payment/initialize/', initialize_lahza_payment, name='initialize_checkout_payment'),
     path('checkout/payment/verify/', verify_lahza_payment, name='verify_checkout_payment'),
+    path('api/lahza/webhook/', lahza_webhook, name='lahza_webhook'),
     path('test-email/', test_email, name='test_email'),
     path('instructions/<str:reference>/download/', download_instructions_pdf, name='download_instructions_pdf'),
     path('privacy-policy/', privacy_policy, name='privacy_policy'),

@@ -470,15 +470,55 @@ def initialize_lahza_payment(request):
         
         # Generate reference
         import uuid
-        prefix = 'CK' if source == 'checkout' else 'BF'
+        prefix = 'PK' if source == 'packages' else ('CK' if source == 'checkout' else 'BF')
         reference = f"{prefix}-{uuid.uuid4().hex[:12].upper()}"
+        
+        # Create payment record FIRST (before initializing with Lahza)
+        from contacts.models import Payment
+        customer_name = f"{first_name} {last_name}".strip() if (first_name or last_name) else 'Unknown'
+        
+        # Get address from form data
+        address = data.get('address', '').strip() if data.get('address') else None
+        
+        # Create payment record with pending status
+        payment = Payment.objects.create(
+            reference=reference,
+            customer_name=customer_name,
+            customer_email=email,
+            first_name=first_name if first_name else None,
+            last_name=last_name if last_name else None,
+            mobile=mobile if mobile else None,
+            address=address,
+            amount=amount,
+            currency=currency.upper(),
+            offer_type=offer_type,
+            offer_name=offer_name,
+            source=source,
+            status='pending',
+            metadata={
+                'offer_type': offer_type,
+                'source': source,
+                'offer_name': offer_name,
+                'recaptcha_token': recaptcha_token if recaptcha_token else None,
+                'form_data': {
+                    'firstName': first_name,
+                    'lastName': last_name,
+                    'mobile': mobile,
+                    'email': email,
+                    'address': address or '',
+                }
+            }
+        )
+        
+        logger.info(f"[Payment] Payment record created: {reference} for {email}, amount: {amount} {currency}")
         
         # Build callback URL based on source
         if source == 'checkout':
-            base_url = request.build_absolute_uri('/checkout/')
+            callback_url = request.build_absolute_uri(f'/checkout/payment/verify/?reference={reference}')
+        elif source == 'packages':
+            callback_url = request.build_absolute_uri(f'/packages/payment/verify/?reference={reference}')
         else:
-            base_url = request.build_absolute_uri('/black-friday/')
-        callback_url = f"{base_url}?reference={reference}"
+            callback_url = request.build_absolute_uri(f'/black-friday/payment/callback/?reference={reference}')
         
         # Initialize transaction with Lahza using the plan's currency
         transaction_data = initialize_transaction(
@@ -732,40 +772,17 @@ def initialize_lahza_payment(request):
             # Backend verification is disabled, just log it
             logger.info("[reCAPTCHA] Backend verification disabled, proceeding without verification")
         
-        # Create payment record in database with all form data
-        payment = Payment.objects.create(
-            reference=reference,
-            customer_name=customer_name,
-            customer_email=email,
-            first_name=first_name if first_name else None,
-            last_name=last_name if last_name else None,
-            mobile=mobile if mobile else None,
-            amount=amount,
-            currency=currency.upper(),  # Use the currency from the plan
-            offer_type=offer_type,
-            offer_name=offer_name,
-            source=source,
-            status='pending',
-            metadata={
-                'offer_type': offer_type,
-                'source': source,
-                'offer_name': offer_name,
-                'mobile': mobile if mobile else None,
-                'recaptcha_token': recaptcha_token if recaptcha_token else None,
-                'form_data': {
-                    'firstName': first_name,
-                    'lastName': last_name,
-                    'mobile': mobile,
-                    'email': email,
-                }
-            }
-        )
+        # Payment record was already created above, now update it with transaction data if needed
+        logger.info(f"[Payment] Payment record created: {payment.reference}, initializing with Lahza...")
         
-        logger.info(f"[Payment] Created payment record: {payment.reference}")
+        # Update payment record with transaction ID if available
+        if transaction_data.get('id'):
+            payment.transaction_id = str(transaction_data.get('id'))
+            payment.save()
         
         return Response({
             'success': True,
-            'reference': transaction_data.get('reference'),
+            'reference': reference,
             'authorization_url': transaction_data.get('authorization_url'),
             'access_code': transaction_data.get('access_code'),
         })
@@ -798,8 +815,125 @@ def initialize_lahza_payment(request):
 
 
 @csrf_exempt
-@api_view(['GET', 'POST'])
-@permission_classes([AllowAny])
+def lahza_webhook(request):
+    """Webhook endpoint for Lahza to send payment status updates."""
+    from django.http import JsonResponse
+    import json
+    
+    try:
+        # Get webhook data from request body
+        # Handle both Django HttpRequest and DRF Request
+        if hasattr(request, 'data'):
+            # DRF Request
+            webhook_data = request.data if isinstance(request.data, dict) else {}
+        else:
+            # Django HttpRequest - parse JSON body
+            try:
+                body = request.body.decode('utf-8')
+                webhook_data = json.loads(body) if body else {}
+            except (json.JSONDecodeError, UnicodeDecodeError):
+                # Try to get from POST data if JSON parsing fails
+                webhook_data = dict(request.POST) if request.method == 'POST' else {}
+                # Convert QueryDict to regular dict
+                if hasattr(webhook_data, 'dict'):
+                    webhook_data = webhook_data.dict()
+                else:
+                    webhook_data = {k: v[0] if isinstance(v, list) and len(v) == 1 else v 
+                                   for k, v in webhook_data.items()}
+        
+        # Extract reference from webhook payload
+        # Lahza may send different formats, check common fields
+        reference = (
+            webhook_data.get('reference') or 
+            webhook_data.get('data', {}).get('reference') or
+            webhook_data.get('transaction', {}).get('reference') or
+            webhook_data.get('payment', {}).get('reference')
+        )
+        
+        if not reference:
+            logger.warning(f"[Lahza Webhook] No reference found in webhook data: {webhook_data}")
+            return JsonResponse({
+                'success': False,
+                'error': 'Reference is required'
+            }, status=400)
+        
+        logger.info(f"[Lahza Webhook] Received webhook for reference: {reference}")
+        
+        # Get payment status from webhook
+        status_value = (
+            webhook_data.get('status') or
+            webhook_data.get('data', {}).get('status') or
+            webhook_data.get('transaction', {}).get('status') or
+            webhook_data.get('payment', {}).get('status') or
+            'unknown'
+        )
+        
+        # Get or create payment record
+        try:
+            payment = Payment.objects.get(reference=reference)
+        except Payment.DoesNotExist:
+            logger.warning(f"[Lahza Webhook] Payment record not found for reference: {reference}")
+            # Try to verify with Lahza API to get full transaction data
+            try:
+                transaction_data = verify_transaction(reference)
+                # Create payment record from transaction data
+                payment = Payment.objects.create(
+                    reference=reference,
+                    customer_email=transaction_data.get('customer', {}).get('email', 'unknown@example.com'),
+                    customer_name=transaction_data.get('customer', {}).get('name', 'Unknown'),
+                    amount=transaction_data.get('amount', 0) / 100 if transaction_data.get('amount', 0) > 1000 else transaction_data.get('amount', 0),
+                    currency=transaction_data.get('currency', 'ILS'),
+                    status='pending',
+                    lahza_response=transaction_data
+                )
+            except Exception as e:
+                logger.error(f"[Lahza Webhook] Error creating payment from webhook: {str(e)}")
+                return JsonResponse({
+                    'success': False,
+                    'error': f'Payment not found and could not be created: {str(e)}'
+                }, status=404)
+        
+        # Update payment status based on webhook
+        status_lower = str(status_value).lower()
+        
+        if status_lower in ['success', 'completed', 'paid', 'approved']:
+            # Verify transaction with Lahza API to get full details
+            try:
+                transaction_data = verify_transaction(reference)
+                payment.mark_as_success(transaction_data)
+                logger.info(f"[Lahza Webhook] Payment marked as success: {reference}")
+            except Exception as e:
+                logger.error(f"[Lahza Webhook] Error verifying transaction: {str(e)}")
+                payment.status = 'success'
+                from django.utils import timezone
+                if not payment.paid_at:
+                    payment.paid_at = timezone.now()
+                payment.save()
+        elif status_lower in ['failed', 'declined', 'rejected', 'cancelled']:
+            payment.mark_as_failed(f'Webhook status: {status_value}')
+            logger.info(f"[Lahza Webhook] Payment marked as failed: {reference}, status: {status_value}")
+        else:
+            # Keep as pending or update based on webhook data
+            payment.lahza_response = webhook_data
+            payment.save()
+            logger.info(f"[Lahza Webhook] Payment status updated: {reference}, status: {status_value}")
+        
+        return JsonResponse({
+            'success': True,
+            'message': 'Webhook processed successfully',
+            'reference': reference,
+            'status': status_value
+        })
+        
+    except Exception as e:
+        error_message = str(e)
+        logger.exception(f"[Lahza Webhook] Error processing webhook: {error_message}")
+        return JsonResponse({
+            'success': False,
+            'error': error_message if settings.DEBUG else 'Error processing webhook'
+        }, status=500)
+
+
 def verify_lahza_payment(request):
     """Verify a Lahza payment transaction."""
     try:

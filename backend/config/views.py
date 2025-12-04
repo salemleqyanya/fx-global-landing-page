@@ -404,6 +404,45 @@ def landing_page_no_contact(request, short_code=None, force_template=None):
     return render(request, template_name, context)
 
 
+def payment_success(request, reference=None):
+    """Display payment success page"""
+    from contacts.models import Payment
+    
+    payment = None
+    customer_name = None
+    
+    if reference:
+        try:
+            payment = Payment.objects.get(reference=reference)
+            # Get customer name from payment
+            if payment.first_name and payment.last_name:
+                customer_name = f"{payment.first_name} {payment.last_name}"
+            elif payment.customer_name:
+                customer_name = payment.customer_name
+        except Payment.DoesNotExist:
+            pass
+    
+    # If no reference provided, try to get from query params
+    if not payment:
+        reference = request.GET.get('reference')
+        if reference:
+            try:
+                payment = Payment.objects.get(reference=reference)
+                if payment.first_name and payment.last_name:
+                    customer_name = f"{payment.first_name} {payment.last_name}"
+                elif payment.customer_name:
+                    customer_name = payment.customer_name
+            except Payment.DoesNotExist:
+                pass
+    
+    context = {
+        'payment': payment,
+        'customer_name': customer_name,
+    }
+    
+    return render(request, 'payment_success.html', context)
+
+
 def elite_program(request):
     """Render Elite landing page with working form submission."""
     from contacts.models import LandingPage
@@ -623,7 +662,16 @@ def initialize_lahza_payment(request):
         # Support legacy fullName field for backward compatibility
         full_name = data.get('fullName', '')
         offer_type = data.get('offerType', 'bundle')
-        source = data.get('source', 'black_friday')
+        # Determine source from URL path if not provided in data
+        source = data.get('source', None)
+        if not source:
+            # Try to determine from request path
+            if 'packages' in request.path:
+                source = 'packages'
+            elif 'checkout' in request.path:
+                source = 'checkout'
+            else:
+                source = 'black_friday'  # Default fallback
         offer_name = data.get('offerName', '')
         
         if not email or not amount:
@@ -998,22 +1046,43 @@ def verify_lahza_payment(request):
             
             logger.info(f"[Payment] Payment verified successfully: {reference}")
             
-            # Send receipt email
+            # Send receipt email (in background to not block response)
             try:
-                send_payment_receipt_email(payment)
-                logger.info(f"[Payment] Receipt email sent to {payment.customer_email}")
+                # Import threading to send email asynchronously
+                import threading
+                
+                def send_email_async():
+                    try:
+                        send_payment_receipt_email(payment)
+                        logger.info(f"[Payment] Receipt email sent successfully to {payment.customer_email} for {payment.reference}")
+                    except Exception as e:
+                        logger.error(f"[Payment] Error sending receipt email to {payment.customer_email}: {str(e)}", exc_info=True)
+                # Start email sending in background thread
+                email_thread = threading.Thread(target=send_email_async)
+                email_thread.daemon = True
+                email_thread.start()
+                logger.info(f"[Payment] Receipt email queued for {payment.customer_email} (reference: {payment.reference})")
             except Exception as e:
-                logger.error(f"[Payment] Error sending receipt email: {str(e)}", exc_info=True)
+                logger.error(f"[Payment] Error queuing receipt email: {str(e)}", exc_info=True)
                 # Don't fail the payment verification if email fails
             
             return Response({
                 'success': True,
+                'status': 'success',
                 'message': 'Payment verified successfully',
                 'transaction_id': transaction_data.get('id') or payment.transaction_id,
                 'reference': reference,
                 'amount': float(payment.amount),
                 'currency': payment.currency,
                 'email': payment.customer_email,
+            })
+        elif transaction_status == 'pending':
+            # Payment is still pending
+            return Response({
+                'success': False,
+                'status': 'pending',
+                'message': 'Payment is still being processed',
+                'reference': reference,
             })
         else:
             # Mark payment as failed
@@ -1023,9 +1092,10 @@ def verify_lahza_payment(request):
             
             return Response({
                 'success': False,
+                'status': transaction_status,
                 'error': f'Payment status: {transaction_status}',
-                'transaction_status': transaction_status,
-            }, status=status.HTTP_400_BAD_REQUEST)
+                'reference': reference,
+            })
         
     except LahzaAPIError as e:
         logger.error(f"[Lahza] Payment verification error: {str(e)}")
@@ -1287,6 +1357,11 @@ def send_payment_receipt_email(payment):
             pdf_content = None
             pdf_filename = None
         
+        # Validate email address
+        if not payment.customer_email or '@' not in payment.customer_email:
+            logger.error(f"[Email] Invalid email address: {payment.customer_email}")
+            raise ValueError(f"Invalid email address: {payment.customer_email}")
+        
         # Create email message
         email = EmailMessage(
             subject=subject,
@@ -1302,10 +1377,33 @@ def send_payment_receipt_email(payment):
             email.attach(pdf_filename, pdf_content, 'application/pdf')
             logger.info(f"[Email] PDF attached: {pdf_filename}")
         
-        # Send email
-        email.send(fail_silently=False)
+        # Send email with detailed logging
+        logger.info(f"[Email] Attempting to send receipt email to {payment.customer_email} for payment {payment.reference}")
+        logger.info(f"[Email] From: {settings.DEFAULT_FROM_EMAIL}, SMTP: {settings.EMAIL_HOST}:{settings.EMAIL_PORT}")
         
-        logger.info(f"[Email] Receipt sent successfully to {payment.customer_email} for payment {payment.reference}")
+        try:
+            email.send(fail_silently=False)
+            logger.info(f"[Email] ✓ Receipt sent successfully to {payment.customer_email} for payment {payment.reference}")
+        except Exception as send_error:
+            logger.error(f"[Email] ✗ Failed to send email to {payment.customer_email}: {str(send_error)}", exc_info=True)
+            # Try to send without PDF as fallback
+            if pdf_content:
+                logger.info(f"[Email] Retrying without PDF attachment...")
+                try:
+                    email_without_pdf = EmailMessage(
+                        subject=subject,
+                        body=html_message,
+                        from_email=settings.DEFAULT_FROM_EMAIL,
+                        to=[payment.customer_email],
+                    )
+                    email_without_pdf.content_subtype = "html"
+                    email_without_pdf.send(fail_silently=False)
+                    logger.info(f"[Email] ✓ Receipt sent successfully (without PDF) to {payment.customer_email}")
+                except Exception as retry_error:
+                    logger.error(f"[Email] ✗ Failed to send email even without PDF: {str(retry_error)}")
+                    raise
+            else:
+                raise
         
     except Exception as e:
         logger.error(f"[Email] Error sending receipt email: {str(e)}", exc_info=True)

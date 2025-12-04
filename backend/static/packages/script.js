@@ -260,7 +260,7 @@ function setupPaymentForm() {
         currency: 'USD'
       };
       
-      const response = await fetch('/checkout/payment/initialize/', {
+      const response = await fetch('/packages/payment/initialize/', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -276,7 +276,7 @@ function setupPaymentForm() {
           address: address || '',
           offerType: 'packages',
           offerName: planData.name,
-          source: 'packages',
+          source: 'packages', // Ensure source is set to 'packages'
           recaptchaToken: recaptchaToken || '',
         }),
       });
@@ -392,44 +392,112 @@ function closeLahzaPopup() {
 
 // Monitor iframe for payment completion
 function startIframeMonitoring(iframe) {
-  try {
-    let lastUrl = iframe.src;
-    const checkInterval = setInterval(() => {
-      try {
-        const currentUrl = iframe.contentWindow.location.href;
-        if (currentUrl !== lastUrl) {
-          lastUrl = currentUrl;
-          console.log('Iframe URL changed:', currentUrl);
-          
-          // Check if URL contains callback/reference parameters
-          const url = new URL(currentUrl);
-          const reference = url.searchParams.get('reference') || url.searchParams.get('ref');
-          
-          if (reference) {
-            clearInterval(checkInterval);
-            closeLahzaPopup();
-            // Verify payment
-            verifyPayment(reference);
-          }
-        }
-      } catch (e) {
-        // Cross-origin error is expected, ignore
-      }
-    }, 500);
+  const reference = window.currentPaymentReference;
+  if (!reference) {
+    console.warn('No payment reference available for monitoring');
+    return;
+  }
+  
+  console.log('Starting payment monitoring for reference:', reference);
+  
+  // Poll payment status every 3 seconds
+  let pollCount = 0;
+  const maxPolls = 60; // 3 minutes max (60 * 3 seconds)
+  const pollInterval = setInterval(async () => {
+    pollCount++;
     
-    // Clear interval when popup closes
-    const overlay = document.getElementById('lahza-popup-overlay');
-    if (overlay) {
-      const observer = new MutationObserver(() => {
-        if (!overlay.classList.contains('active')) {
-          clearInterval(checkInterval);
-          observer.disconnect();
-        }
+    try {
+      // Check payment status via backend
+      const response = await fetch(`/packages/payment/verify/?reference=${reference}`, {
+        method: 'GET',
+        headers: {
+          'X-CSRFToken': getCsrfToken(),
+        },
       });
-      observer.observe(overlay, { attributes: true, attributeFilter: ['class'] });
+      
+      if (response.ok) {
+        const data = await response.json();
+        
+        // If payment is successful or failed, stop polling
+        if (data.success && data.status === 'success') {
+          clearInterval(pollInterval);
+          console.log('Payment successful!');
+          closeLahzaPopup();
+          // Redirect to success page
+          if (reference) {
+            window.location.href = `/packages/payment/success/${reference}/`;
+          } else {
+            window.location.href = '/packages/payment/success/';
+          }
+          return;
+        } else if (data.status === 'failed' || data.status === 'cancelled') {
+          clearInterval(pollInterval);
+          console.log('Payment failed or cancelled');
+          closeLahzaPopup();
+          alert('تم إلغاء الدفع أو فشل المعاملة.');
+          return;
+        }
+      }
+    } catch (error) {
+      console.warn('Payment status check error:', error);
     }
-  } catch (e) {
-    console.warn('Could not monitor iframe:', e);
+    
+    // Stop polling after max attempts
+    if (pollCount >= maxPolls) {
+      clearInterval(pollInterval);
+      console.log('Payment monitoring timeout');
+      // Don't close popup, let user handle it manually
+    }
+  }, 3000); // Check every 3 seconds
+  
+  // Clear interval when popup closes
+  const overlay = document.getElementById('lahza-popup-overlay');
+  if (overlay) {
+    const observer = new MutationObserver(() => {
+      if (!overlay.classList.contains('active')) {
+        clearInterval(pollInterval);
+        observer.disconnect();
+      }
+    });
+    observer.observe(overlay, { attributes: true, attributeFilter: ['class'] });
+  }
+  
+  // Also try to listen for postMessage from iframe (if Lahza supports it)
+  const messageHandler = (event) => {
+    // Only accept messages from Lahza domain
+    if (event.origin.includes('lahza.io') || event.origin.includes('pay.lahza.io')) {
+      console.log('Message from Lahza iframe:', event.data);
+      
+      // Handle payment completion
+      if (event.data && (
+        event.data.type === 'payment_success' || 
+        event.data.type === 'payment_complete' ||
+        event.data.status === 'success'
+      )) {
+        const msgReference = event.data.reference || event.data.ref || reference;
+        if (msgReference) {
+          clearInterval(pollInterval);
+          window.removeEventListener('message', messageHandler);
+          closeLahzaPopup();
+          setTimeout(() => {
+            verifyPayment(msgReference);
+          }, 300);
+        }
+      }
+    }
+  };
+  
+  window.addEventListener('message', messageHandler);
+  
+  // Clean up message listener when popup closes
+  if (overlay) {
+    const cleanupObserver = new MutationObserver(() => {
+      if (!overlay.classList.contains('active')) {
+        window.removeEventListener('message', messageHandler);
+        cleanupObserver.disconnect();
+      }
+    });
+    cleanupObserver.observe(overlay, { attributes: true, attributeFilter: ['class'] });
   }
 }
 
@@ -445,13 +513,11 @@ async function verifyPayment(reference) {
     
     const data = await response.json();
     
-    if (data.success) {
+    if (data.success && data.status === 'success') {
       // Close popup
       closeLahzaPopup();
-      // Show success message
-      alert('تم الدفع بنجاح! شكراً لك. سيتم إرسال إيصال الدفع إلى بريدك الإلكتروني.');
-      // Optionally reload page or show success page
-      window.location.reload();
+      // Redirect to success page
+      window.location.href = `/packages/payment/success/${reference}/`;
     } else {
       alert('فشل التحقق من الدفع. يرجى الاتصال بالدعم.');
     }

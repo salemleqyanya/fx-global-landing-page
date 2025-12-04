@@ -1,0 +1,143 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تم الدفع بنجاح - FX Global</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="{% static 'packages/styles.css' %}">
+    <style>
+        body {
+            font-family: 'Cairo', sans-serif;
+        }
+        .success-animation {
+            animation: scaleIn 0.5s ease-out;
+        }
+        @keyframes scaleIn {
+            from {
+                transform: scale(0.8);
+                opacity: 0;
+            }
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+        .checkmark {
+            animation: checkmarkDraw 0.6s ease-out 0.3s both;
+        }
+        @keyframes checkmarkDraw {
+            from {
+                stroke-dashoffset: 100;
+            }
+            to {
+                stroke-dashoffset: 0;
+            }
+        }
+    </style>
+</head>
+<body class="bg-black min-h-screen">
+    <div class="global-background"></div>
+    
+    <div class="min-h-screen text-white relative flex items-center justify-center py-12 px-4">
+        <div class="max-w-2xl w-full success-animation">
+            <!-- Success Card -->
+            <div class="bg-gradient-to-br from-[#1a0d2e] via-[#2d1b3d] to-[#1a0d2e] rounded-3xl p-8 md:p-12 border-2 border-[#DF2E88]/50 shadow-2xl relative overflow-hidden">
+                <!-- Animated Background -->
+                <div class="absolute inset-0 opacity-20">
+                    <div class="absolute top-0 right-0 w-64 h-64 bg-[#DF2E88] rounded-full blur-3xl"></div>
+                    <div class="absolute bottom-0 left-0 w-64 h-64 bg-[#694393] rounded-full blur-3xl"></div>
+                </div>
+                
+                <div class="relative z-10 text-center">
+                    <!-- Success Icon -->
+                    <div class="mb-6 flex justify-center">
+                        <div class="w-24 h-24 md:w-32 md:h-32 bg-gradient-to-br from-green-400 to-green-600 rounded-full flex items-center justify-center shadow-lg shadow-green-500/50">
+                            <svg class="w-16 h-16 md:w-20 md:h-20 text-white checkmark" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="3" stroke-dasharray="100" stroke-dashoffset="0">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path>
+                            </svg>
+                        </div>
+                    </div>
+                    
+                    <!-- Welcome Message -->
+                    <h1 class="text-3xl md:text-4xl lg:text-5xl font-bold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-[#DF2E88] to-[#694393]">
+                        أهلاً وسهلاً {{ customer_name|default:"عزيزي العميل" }}! 🎉
+                    </h1>
+                    
+                    <p class="text-xl md:text-2xl text-gray-300 mb-8 font-semibold">
+                        تم الدفع بنجاح
+                    </p>
+                    
+                    <!-- Payment Details -->
+                    <div class="bg-black/40 backdrop-blur-sm rounded-2xl p-6 md:p-8 mb-8 border border-[#DF2E88]/30">
+                        <div class="space-y-4">
+                            <div class="flex justify-between items-center py-3 border-b border-[#DF2E88]/20">
+                                <span class="text-gray-400 font-semibold">رقم الطلب:</span>
+                                <span class="text-white font-bold text-lg">{{ payment.reference }}</span>
+                            </div>
+                            <div class="flex justify-between items-center py-3 border-b border-[#DF2E88]/20">
+                                <span class="text-gray-400 font-semibold">المبلغ:</span>
+                                <span class="text-white font-bold text-lg">{{ payment.currency }} {{ payment.amount|floatformat:2 }}</span>
+                            </div>
+                            <div class="flex justify-between items-center py-3 border-b border-[#DF2E88]/20">
+                                <span class="text-gray-400 font-semibold">الباقة:</span>
+                                <span class="text-white font-bold text-lg">{{ payment.offer_name|default:"باقة مميزة" }}</span>
+                            </div>
+                            {% if payment.customer_email %}
+                            <div class="flex justify-between items-center py-3">
+                                <span class="text-gray-400 font-semibold">البريد الإلكتروني:</span>
+                                <span class="text-white font-bold">{{ payment.customer_email }}</span>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <!-- Next Steps -->
+                    <div class="bg-gradient-to-r from-[#DF2E88]/20 to-[#694393]/20 rounded-2xl p-6 md:p-8 mb-8 border border-[#DF2E88]/30">
+                        <h2 class="text-xl md:text-2xl font-bold mb-4 text-white">الخطوات القادمة:</h2>
+                        <div class="space-y-3 text-right">
+                            <div class="flex items-start gap-3">
+                                <span class="text-[#DF2E88] text-xl font-bold">✓</span>
+                                <p class="text-gray-300 flex-1">سيتم إرسال إيصال الدفع إلى بريدك الإلكتروني قريباً</p>
+                            </div>
+                            <div class="flex items-start gap-3">
+                                <span class="text-[#DF2E88] text-xl font-bold">✓</span>
+                                <p class="text-gray-300 flex-1">سيتواصل معك فريقنا خلال 24 ساعة لإكمال عملية التسجيل</p>
+                            </div>
+                            <div class="flex items-start gap-3">
+                                <span class="text-[#DF2E88] text-xl font-bold">✓</span>
+                                <p class="text-gray-300 flex-1">ستحصل على بيانات الدخول والوصول إلى المحتوى بعد تفعيل حسابك</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Action Buttons -->
+                    <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                        <a href="/packages/" class="px-8 py-4 bg-gradient-to-r from-[#694393] to-[#DF2E88] text-white font-bold rounded-xl hover:opacity-90 transition-opacity text-center">
+                            العودة إلى الصفحة الرئيسية
+                        </a>
+                        {% if payment.reference %}
+                        <a href="/instructions/{{ payment.reference }}/download/" class="px-8 py-4 bg-white/10 border border-white/30 text-white font-bold rounded-xl hover:bg-white/20 transition-colors text-center">
+                            تحميل التعليمات
+                        </a>
+                        {% endif %}
+                    </div>
+                    
+                    <!-- Support Info -->
+                    <div class="mt-8 pt-8 border-t border-[#DF2E88]/30">
+                        <p class="text-gray-400 text-sm mb-2">لأي استفسار، يرجى التواصل معنا:</p>
+                        <p class="text-[#DF2E88] font-bold">info@fxglobals.co</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    {% include 'includes/footer.html' %}
+</body>
+</html>
+

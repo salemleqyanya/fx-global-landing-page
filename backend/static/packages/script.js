@@ -418,10 +418,12 @@ function startIframeMonitoring(iframe) {
       if (response.ok) {
         const data = await response.json();
         
+        console.log(`[Payment Poll] Status check ${pollCount}/${maxPolls}:`, data);
+        
         // If payment is successful or failed, stop polling
         if (data.success && data.status === 'success') {
           clearInterval(pollInterval);
-          console.log('Payment successful!');
+          console.log('Payment successful! Redirecting to success page...');
           closeLahzaPopup();
           // Redirect to success page
           if (reference) {
@@ -436,10 +438,21 @@ function startIframeMonitoring(iframe) {
           closeLahzaPopup();
           alert('تم إلغاء الدفع أو فشل المعاملة.');
           return;
+        } else if (data.status === 'pending') {
+          // Payment is still pending, continue polling
+          console.log(`[Payment Poll] Payment still pending (${pollCount}/${maxPolls})`);
+        } else {
+          // Unknown status, log it
+          console.warn(`[Payment Poll] Unknown status: ${data.status}`, data);
         }
+      } else {
+        // Response not OK - log the error but continue polling
+        const errorText = await response.text().catch(() => 'Unknown error');
+        console.warn(`[Payment Poll] HTTP error ${response.status}:`, errorText);
       }
     } catch (error) {
-      console.warn('Payment status check error:', error);
+      console.warn('[Payment Poll] Network error:', error);
+      // Continue polling even on network errors (might be temporary)
     }
     
     // Stop polling after max attempts

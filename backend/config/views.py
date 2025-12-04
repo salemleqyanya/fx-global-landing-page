@@ -885,20 +885,51 @@ def lahza_webhook(request):
         
         # Update payment status based on webhook
         status_lower = str(status_value).lower()
+        logger.info(f"[Lahza Webhook] Processing webhook for reference: {reference}, status: {status_lower}")
         
-        if status_lower in ['success', 'completed', 'paid', 'approved']:
+        # Check for success status - Lahza may return: 'success', 'completed', 'paid', 'approved', 'successful'
+        success_statuses = ['success', 'completed', 'paid', 'approved', 'successful']
+        
+        if status_lower in success_statuses:
             # Verify transaction with Lahza API to get full details
             try:
                 transaction_data = verify_transaction(reference)
                 payment.mark_as_success(transaction_data)
                 logger.info(f"[Lahza Webhook] Payment marked as success: {reference}")
+                
+                # Send receipt email
+                try:
+                    logger.info(f"[Lahza Webhook] Attempting to send receipt email to {payment.customer_email}")
+                    send_payment_receipt_email(payment)
+                    logger.info(f"[Lahza Webhook] ✓ Receipt email sent successfully to {payment.customer_email}")
+                except Exception as email_error:
+                    logger.error(f"[Lahza Webhook] ✗ Error sending receipt email: {str(email_error)}", exc_info=True)
+                    # Try async as fallback
+                    try:
+                        import threading
+                        def send_email_async():
+                            try:
+                                send_payment_receipt_email(payment)
+                                logger.info(f"[Lahza Webhook] ✓ Receipt email sent (retry) to {payment.customer_email}")
+                            except Exception as retry_error:
+                                logger.error(f"[Lahza Webhook] ✗ Retry failed: {str(retry_error)}")
+                        email_thread = threading.Thread(target=send_email_async)
+                        email_thread.daemon = True
+                        email_thread.start()
+                    except Exception:
+                        pass
             except Exception as e:
-                logger.error(f"[Lahza Webhook] Error verifying transaction: {str(e)}")
+                logger.error(f"[Lahza Webhook] Error verifying transaction: {str(e)}", exc_info=True)
                 payment.status = 'success'
                 from django.utils import timezone
                 if not payment.paid_at:
                     payment.paid_at = timezone.now()
                 payment.save()
+                # Try to send email even if verification failed
+                try:
+                    send_payment_receipt_email(payment)
+                except Exception as email_error:
+                    logger.error(f"[Lahza Webhook] Could not send email after verification error: {str(email_error)}")
         elif status_lower in ['failed', 'declined', 'rejected', 'cancelled']:
             payment.mark_as_failed(f'Webhook status: {status_value}')
             logger.info(f"[Lahza Webhook] Payment marked as failed: {reference}, status: {status_value}")
@@ -924,16 +955,28 @@ def lahza_webhook(request):
         }, status=500)
 
 
+@csrf_exempt
+@api_view(['GET', 'POST'])
+@permission_classes([AllowAny])
 def verify_lahza_payment(request):
     """Verify a Lahza payment transaction."""
+    reference = None
     try:
         # Get reference from query params or request data
-        reference = request.GET.get('reference') or request.data.get('reference')
+        try:
+            reference = request.GET.get('reference')
+            if not reference and hasattr(request, 'data'):
+                reference = request.data.get('reference') if request.data else None
+        except Exception as ref_error:
+            logger.warning(f"[Payment] Error getting reference: {str(ref_error)}")
         
         if not reference:
+            logger.warning("[Payment] No reference provided in verification request")
             return Response({
                 'success': False,
-                'error': 'Payment reference is required'
+                'status': 'error',
+                'error': 'Payment reference is required',
+                'message': 'Payment reference is required'
             }, status=status.HTTP_400_BAD_REQUEST)
         
         # Get or create payment record
@@ -971,13 +1014,62 @@ def verify_lahza_payment(request):
         # Verify transaction with Lahza
         try:
             transaction_data = verify_transaction(reference)
+            logger.info(f"[Payment] Lahza verification response received for {reference}")
+        except LahzaAPIError as e:
+            error_msg = str(e)
+            logger.warning(f"[Lahza] LahzaAPIError verifying transaction (reference: {reference}): {error_msg}")
+            # Don't mark as failed immediately - might be a temporary network issue or transaction not ready
+            # Return pending status so frontend can retry
+            try:
+                return Response({
+                    'success': False,
+                    'status': 'pending',
+                    'message': 'Payment is still being processed. Please wait...',
+                    'reference': reference,
+                })
+            except Exception as resp_error:
+                logger.error(f"[Payment] Error creating Response: {str(resp_error)}")
+                from django.http import JsonResponse
+                return JsonResponse({
+                    'success': False,
+                    'status': 'pending',
+                    'message': 'Payment is still being processed. Please wait...',
+                    'reference': reference,
+                })
         except Exception as e:
-            logger.error(f"[Lahza] Error verifying transaction: {str(e)}")
-            payment.mark_as_failed(f'Verification error: {str(e)}')
-            raise
+            error_msg = str(e)
+            logger.error(f"[Lahza] Unexpected error verifying transaction (reference: {reference}): {error_msg}", exc_info=True)
+            # Return pending status so frontend can retry
+            try:
+                return Response({
+                    'success': False,
+                    'status': 'pending',
+                    'message': 'Unable to verify payment status. Please try again.',
+                    'reference': reference,
+                })
+            except Exception as resp_error:
+                logger.error(f"[Payment] Error creating Response: {str(resp_error)}")
+                from django.http import JsonResponse
+                return JsonResponse({
+                    'success': False,
+                    'status': 'pending',
+                    'message': 'Unable to verify payment status. Please try again.',
+                    'reference': reference,
+                })
         
-        # Check transaction status
+        # Check transaction status - Lahza may return different status values
         transaction_status = transaction_data.get('status', '').lower()
+        
+        # Log the full transaction data for debugging
+        logger.info(f"[Payment] Transaction status check - reference: {reference}, status: {transaction_status}")
+        logger.info(f"[Payment] Full transaction_data keys: {list(transaction_data.keys()) if isinstance(transaction_data, dict) else 'Not a dict'}")
+        
+        # Also check if status is nested in 'data' object (some API responses have nested structure)
+        if not transaction_status and isinstance(transaction_data, dict):
+            nested_status = transaction_data.get('data', {}).get('status', '') if isinstance(transaction_data.get('data'), dict) else ''
+            if nested_status:
+                transaction_status = str(nested_status).lower()
+                logger.info(f"[Payment] Found nested status: {transaction_status}")
         
         # Update payment record with Lahza response (ensure it's JSON serializable)
         try:
@@ -993,7 +1085,11 @@ def verify_lahza_payment(request):
             logger.warning(f"[Payment] Error serializing transaction_data: {str(e)}")
             payment.lahza_response = {'error': 'Could not serialize transaction data', 'raw': str(transaction_data)}
         
-        if transaction_status == 'success':
+        # Check for success status - Lahza may return: 'success', 'completed', 'paid', 'approved', 'successful'
+        success_statuses = ['success', 'completed', 'paid', 'approved', 'successful']
+        is_success = transaction_status in success_statuses
+        
+        if is_success:
             # Update payment details from transaction data if available
             try:
                 if 'amount' in transaction_data:
@@ -1046,35 +1142,45 @@ def verify_lahza_payment(request):
             
             logger.info(f"[Payment] Payment verified successfully: {reference}")
             
-            # Send receipt email (in background to not block response)
+            # Send receipt email (synchronously to ensure it's sent, but log errors)
             try:
-                # Import threading to send email asynchronously
-                import threading
-                
-                def send_email_async():
-                    try:
-                        send_payment_receipt_email(payment)
-                        logger.info(f"[Payment] Receipt email sent successfully to {payment.customer_email} for {payment.reference}")
-                    except Exception as e:
-                        logger.error(f"[Payment] Error sending receipt email to {payment.customer_email}: {str(e)}", exc_info=True)
-                # Start email sending in background thread
-                email_thread = threading.Thread(target=send_email_async)
-                email_thread.daemon = True
-                email_thread.start()
-                logger.info(f"[Payment] Receipt email queued for {payment.customer_email} (reference: {payment.reference})")
+                logger.info(f"[Payment] Attempting to send receipt email to {payment.customer_email} for {payment.reference}")
+                send_payment_receipt_email(payment)
+                logger.info(f"[Payment] ✓ Receipt email sent successfully to {payment.customer_email} for {payment.reference}")
             except Exception as e:
-                logger.error(f"[Payment] Error queuing receipt email: {str(e)}", exc_info=True)
-                # Don't fail the payment verification if email fails
+                logger.error(f"[Payment] ✗ Error sending receipt email to {payment.customer_email}: {str(e)}", exc_info=True)
+                # Don't fail the payment verification if email fails, but log it clearly
+                # Try to send email in background as fallback
+                try:
+                    import threading
+                    def send_email_async():
+                        try:
+                            send_payment_receipt_email(payment)
+                            logger.info(f"[Payment] ✓ Receipt email sent successfully (retry) to {payment.customer_email}")
+                        except Exception as retry_error:
+                            logger.error(f"[Payment] ✗ Retry failed to send email: {str(retry_error)}", exc_info=True)
+                    email_thread = threading.Thread(target=send_email_async)
+                    email_thread.daemon = True
+                    email_thread.start()
+                    logger.info(f"[Payment] Receipt email queued for retry to {payment.customer_email}")
+                except Exception as retry_error:
+                    logger.error(f"[Payment] Could not queue email retry: {str(retry_error)}")
+            
+            # Safely get amount - handle None or Decimal
+            try:
+                amount_value = float(payment.amount) if payment.amount else 0.0
+            except (TypeError, ValueError):
+                amount_value = 0.0
             
             return Response({
                 'success': True,
                 'status': 'success',
                 'message': 'Payment verified successfully',
-                'transaction_id': transaction_data.get('id') or payment.transaction_id,
+                'transaction_id': transaction_data.get('id') or payment.transaction_id or '',
                 'reference': reference,
-                'amount': float(payment.amount),
-                'currency': payment.currency,
-                'email': payment.customer_email,
+                'amount': amount_value,
+                'currency': payment.currency or 'USD',
+                'email': payment.customer_email or '',
             })
         elif transaction_status == 'pending':
             # Payment is still pending
@@ -1119,7 +1225,7 @@ def verify_lahza_payment(request):
         
         # Try to update payment record if it exists
         try:
-            reference = request.GET.get('reference') or request.data.get('reference')
+            reference = request.GET.get('reference') or (request.data.get('reference') if hasattr(request, 'data') else None)
             if reference:
                 try:
                     payment = Payment.objects.get(reference=reference)
@@ -1131,10 +1237,24 @@ def verify_lahza_payment(request):
         
         # Return more detailed error in development, generic in production
         error_detail = error_message if settings.DEBUG else 'An error occurred while verifying payment'
-        return Response({
-            'success': False,
-            'error': error_detail
-        }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        
+        # Make sure we return a proper Response even if there's an error
+        try:
+            return Response({
+                'success': False,
+                'status': 'error',
+                'error': error_detail,
+                'message': 'An error occurred while verifying payment. Please try again or contact support.',
+            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        except Exception as response_error:
+            # If Response fails, return a simple JSON response
+            logger.error(f"[Payment] Could not create Response object: {str(response_error)}")
+            from django.http import JsonResponse
+            return JsonResponse({
+                'success': False,
+                'status': 'error',
+                'error': error_detail if settings.DEBUG else 'An error occurred while verifying payment',
+            }, status=500)
 
 
 def generate_instructions_pdf(payment):
@@ -1327,11 +1447,25 @@ def send_payment_receipt_email(payment):
         plain_message = strip_tags(html_message)
         
         # Use existing PDF file instead of generating
-        pdf_path = os.path.join(BASE_DIR, 'اهم التعليمات الصادره لدورات (2).pdf')
+        # Note: Filename contains Unicode direction markers (\u200e\u2068...\u2069)
+        pdf_filename_attached = 'اهم_التعليمات_الصادرة_لقناة_التلغرام.pdf'
+        pdf_path = os.path.join(BASE_DIR, '\u200e\u2068اهم التعليمات الصادره لقناة التلغرام (1)\u2069.pdf')
         pdf_content = None
-        pdf_filename = 'اهم_التعليمات_الصادرة_لدورات.pdf'
+        pdf_filename = pdf_filename_attached
         
         try:
+            # Try the exact path first
+            if not os.path.exists(pdf_path):
+                # Fallback: search for the file by pattern
+                try:
+                    for file in os.listdir(BASE_DIR):
+                        if 'اهم التعليمات الصادره لقناة التلغرام' in file and file.endswith('.pdf'):
+                            pdf_path = os.path.join(BASE_DIR, file)
+                            logger.info(f"[Email] Found PDF file via search: {file}")
+                            break
+                except Exception as search_error:
+                    logger.warning(f"[Email] Could not search for PDF file: {str(search_error)}")
+            
             if os.path.exists(pdf_path):
                 with open(pdf_path, 'rb') as pdf_file:
                     pdf_content = pdf_file.read()
@@ -1419,7 +1553,19 @@ def download_instructions_pdf(request, reference):
         payment = get_object_or_404(Payment, reference=reference)
         
         # Use existing PDF file instead of generating
-        pdf_path = os.path.join(BASE_DIR, 'اهم التعليمات الصادره لدورات (2).pdf')
+        # Note: Filename contains Unicode direction markers (\u200e\u2068...\u2069)
+        pdf_path = os.path.join(BASE_DIR, '\u200e\u2068اهم التعليمات الصادره لقناة التلغرام (1)\u2069.pdf')
+        
+        # Try the exact path first, then search if not found
+        if not os.path.exists(pdf_path):
+            try:
+                for file in os.listdir(BASE_DIR):
+                    if 'اهم التعليمات الصادره لقناة التلغرام' in file and file.endswith('.pdf'):
+                        pdf_path = os.path.join(BASE_DIR, file)
+                        logger.info(f"[PDF] Found PDF file via search: {file}")
+                        break
+            except Exception as search_error:
+                logger.warning(f"[PDF] Could not search for PDF file: {str(search_error)}")
         
         if os.path.exists(pdf_path):
             with open(pdf_path, 'rb') as pdf_file:
@@ -1428,7 +1574,7 @@ def download_instructions_pdf(request, reference):
             # Create response
             from django.http import HttpResponse
             response = HttpResponse(pdf_content, content_type='application/pdf')
-            response['Content-Disposition'] = f'attachment; filename="اهم_التعليمات_الصادرة_لدورات.pdf"'
+            response['Content-Disposition'] = f'attachment; filename="اهم_التعليمات_الصادرة_لقناة_التلغرام.pdf"'
             
             logger.info(f"[PDF] PDF file served: {pdf_path}")
             return response

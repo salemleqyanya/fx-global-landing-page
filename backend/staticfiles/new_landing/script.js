@@ -331,9 +331,8 @@ function calculateProfit() {
   const profitElement = document.getElementById('profit-amount');
   
   if (profitElement) {
-    // Animate the number change
-    const currentValue = parseFloat(profitElement.textContent.replace(/[^0-9.-]/g, '')) || 0;
-    animateValue(profitElement, currentValue, profit, 500);
+    // Animate the number change - start from 0 like html-version
+    animateValue(profitElement, 0, profit, 500);
   }
 }
 
@@ -361,12 +360,12 @@ function animateValue(element, start, end, duration) {
     // Use cubic bezier easing matching React: [0.25, 0.1, 0.25, 1]
     const current = startValue + (end - startValue) * easeOutCubic(progress);
     
-    element.textContent = '$' + Math.floor(current).toLocaleString('en-US');
+    element.textContent = '$' + Math.floor(current).toLocaleString();
     
     if (progress < 1) {
       requestAnimationFrame(update);
     } else {
-      element.textContent = '$' + Math.floor(end).toLocaleString('en-US');
+      element.textContent = '$' + Math.floor(end).toLocaleString();
     }
   }
   

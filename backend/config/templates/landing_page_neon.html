@@ -859,11 +859,11 @@
                       lotInput.value = size;
                     }
                     
-                    // Calculate profit directly
+                    // Calculate profit directly - match html-version calculation
                     if (totalPipsInput && profitElement) {
                       const totalPipsValue = parseFloat(totalPipsInput.value.replace(/,/g, '')) || 17782;
                       const profit = totalPipsValue * (lotSizeValue * 10);
-                      profitElement.textContent = '$' + Math.floor(profit).toLocaleString('en-US');
+                      profitElement.textContent = '$' + Math.floor(profit).toLocaleString();
                     }
                     
                     // Also trigger input event in case external script wants to handle it
@@ -1008,103 +1008,16 @@
           </div>
         </section>
 
-        <!-- Live Sessions Preview -->
-        <section class="py-20 px-4 bg-gradient-to-b from-black via-[#694393]/10 to-black relative overflow-hidden">
-          <div class="floating-orb floating-orb--pink" style="top: 15%; inset-inline-start: 10%; width: 22rem; height: 22rem;"></div>
-          <div class="floating-orb floating-orb--purple" style="bottom: 15%; inset-inline-end: 15%; width: 20rem; height: 20rem;"></div>
-          <div class="max-w-7xl mx-auto relative z-10">
-            <div class="inline-flex items-center gap-3 bg-gradient-to-r from-pink-600/30 to-purple-600/30 px-6 py-3 rounded-full border-2 border-pink-500/50 mb-8 fade-up">
-              <span class="text-2xl">📻</span>
-              <h3 class="text-xl font-bold">Live Streaming</h3>
-            </div>
-
-            <div class="text-center mb-12 fade-up">
-              <h2 class="text-3xl md:text-5xl mb-6 font-bold text-glow">جلسات تداول مباشرة… بتحسسّك إنك مش لحالك.</h2>
-          
-              <p class="text-xl md:text-2xl text-pink-400 font-bold mt-6">
-                التداول مش رقم… التداول "شخصيتك".<br>
-                وإحنا هون نبنيها سوا.
-              </p>
-            </div>
-
-            <div class="grid md:grid-cols-2 gap-8 mb-12">
-              <div class="fade-up">
-                <div class="relative bg-black/40 rounded-2xl overflow-hidden border-2 border-purple-500/30">
-                  <div class="aspect-video relative">
-                    <img 
-                      src="https://images.unsplash.com/photo-1594501251795-a3147759d741?w=1080" 
-                      alt="Live Trading"
-                      class="w-full h-full object-cover"
-                    />
-                    <div class="absolute inset-0 bg-black/20"></div>
-                  </div>
-                  <div class="absolute top-4 inset-inline-start-4 flex items-center gap-2 bg-red-600 px-3 py-1.5 rounded-full">
-                    <span class="w-2 h-2 bg-white rounded-full animate-pulse"></span>
-                    <span class="text-white text-sm font-bold">LIVE</span>
-                  </div>
-                  <div class="absolute top-4 inset-inline-end-4 bg-black/80 backdrop-blur-sm px-3 py-1.5 rounded-full">
-                    <span class="text-white text-sm">342 مشاهد نشط</span>
-                  </div>
-                </div>
-              </div>
-
-              <div class="space-y-4 fade-up" style="transition-delay: 0.1s;">
-                <div class="bg-black/40 backdrop-blur-sm border-2 border-purple-500/30 rounded-xl p-6 hover:border-pink-500/50 transition-all">
-                  <div class="flex items-start gap-4">
-                    <div class="w-12 h-12 bg-gradient-to-br from-pink-500 to-purple-600 rounded-lg grid place-items-center text-2xl flex-shrink-0">📻</div>
-                    <div>
-                      <h4 class="text-xl font-bold mb-2 text-white">Trading live on screen</h4>
-                      <p class="text-gray-300">شاهد التداول مباشر على الشاشة</p>
-                    </div>
-                  </div>
-                </div>
-                <div class="bg-black/40 backdrop-blur-sm border-2 border-purple-500/30 rounded-xl p-6 hover:border-pink-500/50 transition-all">
-                  <div class="flex items-start gap-4">
-                    <div class="w-12 h-12 bg-gradient-to-br from-pink-500 to-purple-600 rounded-lg grid place-items-center text-2xl flex-shrink-0">📈</div>
-                    <div>
-                      <h4 class="text-xl font-bold mb-2 text-white">شرح كل صفقة قبل الدخول</h4>
-                      <p class="text-gray-300">تحليل كامل ومفصل</p>
-                    </div>
-                  </div>
-                </div>
-                <div class="bg-black/40 backdrop-blur-sm border-2 border-purple-500/30 rounded-xl p-6 hover:border-pink-500/50 transition-all">
-                  <div class="flex items-start gap-4">
-                    <div class="w-12 h-12 bg-gradient-to-br from-pink-500 to-purple-600 rounded-lg grid place-items-center text-2xl flex-shrink-0">🛡️</div>
-                    <div>
-                      <h4 class="text-xl font-bold mb-2 text-white">تنظيم المخاطر</h4>
-                      <p class="text-gray-300">إدارة احترافية للمخاطر</p>
-                    </div>
-                  </div>
-                </div>
-                <div class="bg-black/40 backdrop-blur-sm border-2 border-purple-500/30 rounded-xl p-6 hover:border-pink-500/50 transition-all">
-                  <div class="flex items-start gap-4">
-                    <div class="w-12 h-12 bg-gradient-to-br from-pink-500 to-purple-600 rounded-lg grid place-items-center text-2xl flex-shrink-0">📊</div>
-                    <div>
-                      <h4 class="text-xl font-bold mb-2 text-white">متداول محترف + تحليل مباشر</h4>
-                      <p class="text-gray-300">خبرة حقيقية في السوق</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div class="text-center fade-up">
-              <a href="https://info.fxglobals.co/pricing/" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-3 bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 px-8 py-4 rounded-full font-bold text-lg transition-all cta-button">
-                احضر جلسة… وخلي التجربة تحكي.
-              </a>
-            </div>
-          </div>
-        </section>
-
         <!-- Live Videos -->
         <section class="py-20 px-4 bg-gradient-to-b from-black via-[#1a0033]/50 to-black relative overflow-hidden">
           <div class="floating-orb floating-orb--purple" style="top: 10%; inset-inline-start: 15%; width: 20rem; height: 20rem;"></div>
           <div class="floating-orb floating-orb--pink" style="bottom: 10%; inset-inline-end: 20%; width: 18rem; height: 18rem;"></div>
           <div class="max-w-7xl mx-auto relative z-10">
             <div class="text-center mb-16 fade-up">
-              <h2 class="text-3xl md:text-5xl mb-4 font-bold text-glow">هكذا نتواصل مع طلابنا… في جلسات التداول المباشرة.</h2>
-              <p class="text-lg md:text-xl text-gray-300 max-w-3xl mx-auto">
-                شوف جودة التواصل بين الكوتش والطلاب… تفاعل حقيقي، شرح واضح، وإجابات فورية.
+              <h2 class="text-3xl md:text-5xl mb-6 font-bold text-glow">جلسات تداول مباشرة… بتحسسّك إنك مش لحالك.</h2>
+              <p class="text-xl md:text-2xl text-pink-400 font-bold">
+                التداول مش رقم… التداول "شخصيتك".<br>
+                وإحنا هون نبنيها سوا.
               </p>
             </div>
 
@@ -1200,6 +1113,72 @@
               <p class="text-lg md:text-xl text-gray-300 mb-6">انضم للجلسات المباشرة… وتعلم من الخبراء مباشرة.</p>
               <a href="https://info.fxglobals.co/pricing/" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-3 bg-gradient-to-r from-yellow-400 to-orange-500 hover:from-yellow-500 hover:to-orange-600 px-8 py-4 rounded-full font-bold text-lg transition-all cta-button text-black">
                 اشترك الآن واحصل على الدخول
+              </a>
+            </div>
+          </div>
+        </section>
+
+        <!-- Live Sessions Preview -->
+        <section class="py-20 px-4 bg-gradient-to-b from-black via-[#694393]/10 to-black relative overflow-hidden">
+          <div class="floating-orb floating-orb--pink" style="top: 15%; inset-inline-start: 10%; width: 22rem; height: 22rem;"></div>
+          <div class="floating-orb floating-orb--purple" style="bottom: 15%; inset-inline-end: 15%; width: 20rem; height: 20rem;"></div>
+          <div class="max-w-7xl mx-auto relative z-10">
+            <div class="inline-flex items-center gap-3 bg-gradient-to-r from-pink-600/30 to-purple-600/30 px-6 py-3 rounded-full border-2 border-pink-500/50 mb-8 fade-up">
+              <span class="text-2xl">📻</span>
+              <h3 class="text-xl font-bold">Live Streaming</h3>
+            </div>
+
+            <div class="text-center mb-12 fade-up">
+              <h2 class="text-3xl md:text-5xl mb-4 font-bold text-glow">هكذا نتواصل مع طلابنا… في جلسات التداول المباشرة.</h2>
+              <p class="text-lg md:text-xl text-gray-300 max-w-3xl mx-auto">
+                شوف جودة التواصل بين الكوتش والطلاب… تفاعل حقيقي، شرح واضح، وإجابات فورية.
+              </p>
+            </div>
+
+            <div class="grid md:grid-cols-1 gap-8 mb-12">
+              <div class="space-y-4 fade-up">
+                <div class="bg-black/40 backdrop-blur-sm border-2 border-purple-500/30 rounded-xl p-6 hover:border-pink-500/50 transition-all">
+                  <div class="flex items-start gap-4">
+                    <div class="w-12 h-12 bg-gradient-to-br from-pink-500 to-purple-600 rounded-lg grid place-items-center text-2xl flex-shrink-0">📻</div>
+                    <div>
+                      <h4 class="text-xl font-bold mb-2 text-white">Trading live on screen</h4>
+                      <p class="text-gray-300">شاهد التداول مباشر على الشاشة</p>
+                    </div>
+                  </div>
+                </div>
+                <div class="bg-black/40 backdrop-blur-sm border-2 border-purple-500/30 rounded-xl p-6 hover:border-pink-500/50 transition-all">
+                  <div class="flex items-start gap-4">
+                    <div class="w-12 h-12 bg-gradient-to-br from-pink-500 to-purple-600 rounded-lg grid place-items-center text-2xl flex-shrink-0">📈</div>
+                    <div>
+                      <h4 class="text-xl font-bold mb-2 text-white">شرح كل صفقة قبل الدخول</h4>
+                      <p class="text-gray-300">تحليل كامل ومفصل</p>
+                    </div>
+                  </div>
+                </div>
+                <div class="bg-black/40 backdrop-blur-sm border-2 border-purple-500/30 rounded-xl p-6 hover:border-pink-500/50 transition-all">
+                  <div class="flex items-start gap-4">
+                    <div class="w-12 h-12 bg-gradient-to-br from-pink-500 to-purple-600 rounded-lg grid place-items-center text-2xl flex-shrink-0">🛡️</div>
+                    <div>
+                      <h4 class="text-xl font-bold mb-2 text-white">تنظيم المخاطر</h4>
+                      <p class="text-gray-300">إدارة احترافية للمخاطر</p>
+                    </div>
+                  </div>
+                </div>
+                <div class="bg-black/40 backdrop-blur-sm border-2 border-purple-500/30 rounded-xl p-6 hover:border-pink-500/50 transition-all">
+                  <div class="flex items-start gap-4">
+                    <div class="w-12 h-12 bg-gradient-to-br from-pink-500 to-purple-600 rounded-lg grid place-items-center text-2xl flex-shrink-0">📊</div>
+                    <div>
+                      <h4 class="text-xl font-bold mb-2 text-white">متداول محترف + تحليل مباشر</h4>
+                      <p class="text-gray-300">خبرة حقيقية في السوق</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="text-center fade-up">
+              <a href="https://info.fxglobals.co/pricing/" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-3 bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 px-8 py-4 rounded-full font-bold text-lg transition-all cta-button">
+                احضر جلسة… وخلي التجربة تحكي.
               </a>
             </div>
           </div>

@@ -5,6 +5,8 @@ document.addEventListener('DOMContentLoaded', () => {
   setupVipCounter();
   setupGalleryLightbox();
   setupRegistrationForm();
+  setupProfitCalculator();
+  populateVideos();
 });
 
 function setupMobileNavigation() {
@@ -227,6 +229,11 @@ function setupRegistrationForm() {
     ].filter(Boolean);
     const composedMessage = composedMessageParts.join('\n');
 
+    const landingCode =
+      typeof window !== 'undefined' && typeof window.LANDING_PAGE_CODE === 'string'
+        ? window.LANDING_PAGE_CODE.trim()
+        : '';
+
     const payload = {
       name: userName,
       phone,
@@ -235,7 +242,7 @@ function setupRegistrationForm() {
       goal: null,
       address: null,
       city: null,
-      landing_code: window.LANDING_PAGE_CODE || null,
+      landing_code: landingCode,
     };
 
     if (!payload.name || !payload.phone) {
@@ -302,4 +309,103 @@ function getCookie(name) {
     }
   }
   return null;
+}
+
+// Profit Calculator Functions
+const totalPips = 17782;
+let lotSize = 0.1;
+
+function calculateProfit() {
+  const lot = parseFloat(lotSize) || 0;
+  const profit = totalPips * (lot * 10);
+  const profitElement = document.getElementById('profit-amount');
+  
+  if (profitElement) {
+    // Animate the number change
+    animateValue(profitElement, 0, profit, 500);
+  }
+}
+
+function setLotSize(size) {
+  lotSize = parseFloat(size);
+  const lotInput = document.getElementById('lot-size');
+  if (lotInput) {
+    lotInput.value = size;
+    calculateProfit();
+  }
+}
+
+function easeOutCubic(t) {
+  return 1 - Math.pow(1 - t, 3);
+}
+
+function animateValue(element, start, end, duration) {
+  const startTime = performance.now();
+  const startValue = parseFloat(element.textContent.replace(/[^0-9.-]/g, '')) || start;
+  
+  function update(currentTime) {
+    const elapsed = currentTime - startTime;
+    const progress = Math.min(elapsed / duration, 1);
+    // Use cubic bezier easing matching React: [0.25, 0.1, 0.25, 1]
+    const current = startValue + (end - startValue) * easeOutCubic(progress);
+    
+    element.textContent = '$' + Math.floor(current).toLocaleString('en-US');
+    
+    if (progress < 1) {
+      requestAnimationFrame(update);
+    } else {
+      element.textContent = '$' + Math.floor(end).toLocaleString('en-US');
+    }
+  }
+  
+  requestAnimationFrame(update);
+}
+
+function setupProfitCalculator() {
+  const lotInput = document.getElementById('lot-size');
+  if (lotInput) {
+    lotInput.addEventListener('input', function() {
+      lotSize = parseFloat(this.value) || 0;
+      calculateProfit();
+    });
+    calculateProfit();
+  }
+}
+
+// Make setLotSize available globally for onclick handlers
+window.setLotSize = setLotSize;
+
+// Live Videos
+const videos = [
+  { id: '1144929057', title: 'إدارة المخاطر - درس عملي' },
+  { id: '1144928950', title: 'تداول مباشر - جلسة لندن' },
+  { id: '1144928883', title: 'استراتيجية الاختراق - EUR/USD' },
+  { id: '1144928735', title: 'جلسة تداول مباشرة - الذهب' },
+  { id: '1145244454', title: 'جلسة تداول مباشرة' },
+  { id: '1145244416', title: 'جلسة تداول مباشرة' },
+  { id: '1145244362', title: 'جلسة تداول مباشرة' },
+  { id: '1145244298', title: 'جلسة تداول مباشرة' },
+  { id: '1145244272', title: 'جلسة تداول مباشرة' },
+  { id: '1145244242', title: 'جلسة تداول مباشرة' },
+  { id: '1145243920', title: 'جلسة تداول مباشرة' },
+  { id: '1145243900', title: 'جلسة تداول مباشرة' }
+];
+
+function populateVideos() {
+  const videosGrid = document.getElementById('videos-grid');
+  if (!videosGrid) return;
+  
+  videos.forEach(video => {
+    const videoItem = document.createElement('div');
+    videoItem.className = 'video-item';
+    videoItem.innerHTML = `
+      <iframe
+        src="https://player.vimeo.com/video/${video.id}?title=0&byline=0&portrait=0&loop=1"
+        frameborder="0"
+        allow="autoplay; fullscreen; picture-in-picture"
+        allowfullscreen
+      ></iframe>
+    `;
+    videosGrid.appendChild(videoItem);
+  });
 }

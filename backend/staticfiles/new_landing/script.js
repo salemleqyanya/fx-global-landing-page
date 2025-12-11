@@ -404,9 +404,16 @@ const videos = [
 
 function populateVideos() {
   try {
+    // Check if inline script already populated videos
     const videosGrid = document.getElementById('videos-grid');
     if (!videosGrid) {
       console.warn('Videos grid element not found');
+      return;
+    }
+    
+    // If videos are already populated by inline script, skip
+    if (videosGrid.children.length > 0 && videosGrid.querySelector('.video-item')) {
+      console.log('Videos already populated by inline script');
       return;
     }
     
@@ -428,6 +435,7 @@ function populateVideos() {
       if (loadingMsg) {
         loadingMsg.style.display = 'block';
         loadingMsg.innerHTML = '<p>لا توجد فيديوهات متاحة حالياً</p>';
+        videosGrid.appendChild(loadingMsg);
       }
       return;
     }
@@ -451,6 +459,8 @@ function populateVideos() {
       }
     });
     
+    console.log('Videos populated by main script:', videos.length);
+    
     // Ensure the section is visible
     const videosSection = videosGrid.closest('section');
     if (videosSection) {
@@ -459,5 +469,10 @@ function populateVideos() {
     }
   } catch (error) {
     console.error('Error populating videos:', error);
+    // Fallback to inline script if available
+    if (typeof window.populateVideosInline === 'function') {
+      console.log('Falling back to inline script');
+      window.populateVideosInline();
+    }
   }
 }

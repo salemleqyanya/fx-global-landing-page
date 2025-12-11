@@ -1042,6 +1042,87 @@
                 <p>جاري تحميل الفيديوهات...</p>
               </div>
             </div>
+            <script>
+              // Ensure videos are populated - fallback if main script fails
+              (function() {
+                const videos = [
+                  { id: '1144929057', title: 'إدارة المخاطر - درس عملي' },
+                  { id: '1144928950', title: 'تداول مباشر - جلسة لندن' },
+                  { id: '1144928883', title: 'استراتيجية الاختراق - EUR/USD' },
+                  { id: '1144928735', title: 'جلسة تداول مباشرة - الذهب' },
+                  { id: '1145244454', title: 'جلسة تداول مباشرة' },
+                  { id: '1145244416', title: 'جلسة تداول مباشرة' },
+                  { id: '1145244362', title: 'جلسة تداول مباشرة' },
+                  { id: '1145244298', title: 'جلسة تداول مباشرة' },
+                  { id: '1145244272', title: 'جلسة تداول مباشرة' },
+                  { id: '1145244242', title: 'جلسة تداول مباشرة' },
+                  { id: '1145243920', title: 'جلسة تداول مباشرة' },
+                  { id: '1145243900', title: 'جلسة تداول مباشرة' }
+                ];
+                
+                function populateVideosInline() {
+                  try {
+                    const videosGrid = document.getElementById('videos-grid');
+                    if (!videosGrid) {
+                      console.warn('Videos grid not found');
+                      return;
+                    }
+                    
+                    // Hide loading message
+                    const loadingMsg = document.getElementById('videos-loading');
+                    if (loadingMsg) {
+                      loadingMsg.style.display = 'none';
+                    }
+                    
+                    // Clear existing content
+                    videosGrid.innerHTML = '';
+                    
+                    if (!videos || videos.length === 0) {
+                      if (loadingMsg) {
+                        loadingMsg.style.display = 'block';
+                        loadingMsg.innerHTML = '<p>لا توجد فيديوهات متاحة حالياً</p>';
+                        videosGrid.appendChild(loadingMsg);
+                      }
+                      return;
+                    }
+                    
+                    videos.forEach((video, index) => {
+                      try {
+                        const videoItem = document.createElement('div');
+                        videoItem.className = 'video-item';
+                        videoItem.innerHTML = `
+                          <iframe
+                            src="https://player.vimeo.com/video/${video.id}?title=0&byline=0&portrait=0&loop=1"
+                            frameborder="0"
+                            allow="autoplay; fullscreen; picture-in-picture"
+                            allowfullscreen
+                            loading="lazy"
+                          ></iframe>
+                        `;
+                        videosGrid.appendChild(videoItem);
+                      } catch (error) {
+                        console.error('Error creating video item ' + index + ':', error);
+                      }
+                    });
+                    
+                    console.log('Videos populated successfully:', videos.length);
+                  } catch (error) {
+                    console.error('Error in populateVideosInline:', error);
+                  }
+                }
+                
+                // Try to populate immediately if DOM is ready
+                if (document.readyState === 'loading') {
+                  document.addEventListener('DOMContentLoaded', populateVideosInline);
+                } else {
+                  // DOM already loaded, call immediately
+                  populateVideosInline();
+                }
+                
+                // Also expose to window in case main script wants to use it
+                window.populateVideosInline = populateVideosInline;
+              })();
+            </script>
 
             <div class="text-center fade-up">
               <p class="text-lg md:text-xl text-gray-300 mb-6">انضم للجلسات المباشرة… وتعلم من الخبراء مباشرة.</p>

@@ -1426,7 +1426,7 @@ body {
     border: 2px solid rgba(105, 67, 147, 0.5);
     border-radius: 1rem;
     padding: 1.25rem;
-    overflow: hidden;
+    overflow: visible;
     box-shadow: 0 15px 40px rgba(105, 67, 147, 0.3);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
     animation: fadeInUp 0.6s ease-out;
@@ -1459,95 +1459,13 @@ body {
     background: linear-gradient(to bottom right, var(--color-primary), #7C4FA3, var(--color-secondary));
     border: 3px solid rgba(255, 215, 0, 0.4);
     box-shadow: 0 20px 60px rgba(223, 46, 136, 0.4), 0 0 80px rgba(255, 215, 0, 0.2);
-    animation: popularPulse 3s ease-in-out infinite;
 }
 
-.card-sparkle {
-    position: absolute;
-    color: rgba(255, 215, 0, 0.7);
-    font-size: 1rem;
-    z-index: 20;
-    animation: sparkleRotate 4s linear infinite;
-}
 
-@media (min-width: 768px) {
-    .card-sparkle {
-        font-size: 1.25rem;
-    }
-}
-
-.card-sparkle-top-right {
-    top: 0.75rem;
-    right: 0.75rem;
-}
-
-@media (min-width: 768px) {
-    .card-sparkle-top-right {
-        top: 1rem;
-        right: 1rem;
-    }
-}
-
-.card-sparkle-bottom-left {
-    bottom: 0.75rem;
-    left: 0.75rem;
-    animation-direction: reverse;
-}
-
-@media (min-width: 768px) {
-    .card-sparkle-bottom-left {
-        bottom: 1rem;
-        left: 1rem;
-    }
-}
-
-@keyframes sparkleRotate {
-    0% {
-        transform: rotate(0deg) scale(1);
-    }
-    50% {
-        transform: rotate(180deg) scale(1.2);
-    }
-    100% {
-        transform: rotate(360deg) scale(1);
-    }
-}
-
-.pricing-card.popular::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: radial-gradient(circle at 50% 50%, rgba(255, 215, 0, 0.3), transparent 70%);
-    opacity: 0.2;
-    animation: popularGlow 3s ease-in-out infinite;
-    pointer-events: none;
-}
-
-@keyframes popularPulse {
-    0%, 100% {
-        transform: scale(1);
-        box-shadow: 0 20px 60px rgba(223, 46, 136, 0.4), 0 0 80px rgba(255, 215, 0, 0.2);
-    }
-    50% {
-        transform: scale(1.02);
-        box-shadow: 0 25px 70px rgba(223, 46, 136, 0.5), 0 0 100px rgba(255, 215, 0, 0.3);
-    }
-}
-
-@keyframes popularGlow {
-    0%, 100% {
-        opacity: 0.1;
-        transform: scale(1);
-    }
-    50% {
-        opacity: 0.3;
-        transform: scale(1.2);
-    }
-}
 
 .popular-badge {
     position: absolute;
-    top: -1rem;
+    top: -1.5rem;
     left: 50%;
     transform: translateX(-50%);
     background: linear-gradient(to right, var(--color-gold), #FFC700, var(--color-gold));
@@ -1556,8 +1474,37 @@ body {
     border-radius: 9999px;
     font-weight: bold;
     font-size: 0.875rem;
-    box-shadow: 0 4px 20px rgba(255, 215, 0, 0.5);
-    z-index: 20;
+    box-shadow: 0 4px 20px rgba(255, 215, 0, 0.5), 0 0 0 3px rgba(0, 0, 0, 0.3);
+    z-index: 30;
+    white-space: nowrap;
+}
+
+.popular-badge-left {
+    left: 50%;
+    top: -1.5rem;
+    transform: translateX(-50%);
+}
+
+.popular-badge-right {
+    left: 50%;
+    top: -1.5rem;
+    transform: translateX(-50%);
+}
+
+@media (max-width: 767px) {
+    .popular-badge {
+        top: -1.25rem;
+        padding: 0.4rem 1rem;
+        font-size: 0.75rem;
+    }
+    
+    .popular-badge-left {
+        top: -1.25rem;
+    }
+    
+    .popular-badge-right {
+        top: -1.25rem;
+    }
 }
 
 .card-badge {
@@ -1574,6 +1521,7 @@ body {
 .card-content {
     position: relative;
     z-index: 10;
+    overflow: hidden;
 }
 
 .card-title {

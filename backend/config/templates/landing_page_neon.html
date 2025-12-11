@@ -17,6 +17,209 @@
     />
     <script src="https://cdn.tailwindcss.com?plugins=forms,typography"></script>
     <link rel="stylesheet" href="{% static 'new_landing/custom.css' %}" />
+    <style>
+      /* Footer Styles - Override Tailwind for Neon Landing Page */
+      .site-footer {
+        background: #000 !important;
+        border-top: 2px solid rgba(105, 67, 147, 0.3) !important;
+        padding: 3rem 0 1.5rem !important;
+        margin-top: 4rem !important;
+        width: 100% !important;
+      }
+      
+      .footer-container {
+        max-width: 1280px !important;
+        margin: 0 auto !important;
+        padding: 0 1rem !important;
+      }
+      
+      .footer-content {
+        display: grid !important;
+        grid-template-columns: 1fr !important;
+        gap: 2.5rem !important;
+        margin-bottom: 2rem !important;
+      }
+      
+      @media (min-width: 768px) {
+        .footer-content {
+          grid-template-columns: repeat(2, 1fr) !important;
+        }
+      }
+      
+      @media (min-width: 1024px) {
+        .footer-content {
+          grid-template-columns: repeat(4, 1fr) !important;
+        }
+      }
+      
+      .footer-section {
+        display: flex !important;
+        flex-direction: column !important;
+      }
+      
+      .footer-title {
+        background: linear-gradient(to right, #DF2E88, #694393) !important;
+        -webkit-background-clip: text !important;
+        -webkit-text-fill-color: transparent !important;
+        background-clip: text !important;
+        color: transparent !important;
+        font-size: 1.5rem !important;
+        font-weight: 800 !important;
+        margin-bottom: 0.75rem !important;
+      }
+      
+      .footer-description {
+        color: rgba(255, 255, 255, 0.7) !important;
+        font-size: 0.95rem !important;
+        line-height: 1.6 !important;
+      }
+      
+      .footer-heading {
+        color: #fff !important;
+        font-size: 1.1rem !important;
+        font-weight: 700 !important;
+        margin-bottom: 1rem !important;
+      }
+      
+      .footer-contact p,
+      .footer-links {
+        margin-bottom: 0.75rem !important;
+        color: rgba(255, 255, 255, 0.8) !important;
+        font-size: 0.9rem !important;
+        line-height: 1.8 !important;
+      }
+      
+      .footer-contact a,
+      .footer-links a {
+        color: rgba(255, 255, 255, 0.8) !important;
+        text-decoration: none !important;
+        transition: color 0.3s ease !important;
+      }
+      
+      .footer-contact a:hover,
+      .footer-links a:hover {
+        color: #DF2E88 !important;
+      }
+      
+      .footer-links {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 0.5rem !important;
+      }
+      
+      .footer-bottom {
+        border-top: 1px solid rgba(255, 255, 255, 0.1) !important;
+        padding-top: 1.5rem !important;
+        margin-top: 2rem !important;
+      }
+      
+      .footer-bottom-content {
+        text-align: center !important;
+      }
+      
+      .footer-copyright {
+        color: rgba(255, 255, 255, 0.6) !important;
+        font-size: 0.875rem !important;
+      }
+      
+      /* Force small payment icons in footer - override Tailwind */
+      .site-footer .payment-logos,
+      footer .payment-logos,
+      .footer-section .payment-logos {
+        display: flex !important;
+        gap: 0.75rem !important;
+        flex-wrap: wrap !important;
+        align-items: center !important;
+      }
+      
+      .site-footer .payment-logo,
+      footer .payment-logo,
+      .footer-section .payment-logo,
+      .site-footer .payment-logo.mastercard-logo,
+      footer .payment-logo.mastercard-logo,
+      .site-footer .payment-logo.visa-logo,
+      footer .payment-logo.visa-logo {
+        width: 35px !important;
+        height: 22px !important;
+        max-width: 35px !important;
+        max-height: 22px !important;
+        min-width: 35px !important;
+        min-height: 22px !important;
+        border-radius: 0.375rem !important;
+        overflow: hidden !important;
+        transition: transform 0.3s ease !important;
+        flex-shrink: 0 !important;
+      }
+      
+      .site-footer .payment-logo:hover,
+      footer .payment-logo:hover {
+        transform: scale(1.05) !important;
+      }
+      
+      .site-footer .payment-logo svg,
+      footer .payment-logo svg,
+      .footer-section .payment-logo svg {
+        width: 100% !important;
+        height: 100% !important;
+        max-width: 100% !important;
+        max-height: 100% !important;
+        object-fit: contain !important;
+        display: block !important;
+      }
+      
+      /* Video Section Styles */
+      .scrollbar-hide {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+      }
+      
+      .scrollbar-hide::-webkit-scrollbar {
+        display: none;
+      }
+      
+      /* Video Grid and Item Styles - Match html-version exactly */
+      .videos-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1rem;
+        margin-bottom: 3rem;
+      }
+      
+      @media (min-width: 768px) {
+        .videos-grid {
+          grid-template-columns: repeat(3, 1fr);
+          gap: 1.5rem;
+        }
+      }
+      
+      @media (min-width: 1024px) {
+        .videos-grid {
+          grid-template-columns: repeat(4, 1fr);
+        }
+      }
+      
+      .video-item {
+        overflow: hidden;
+        background: #111827;
+        border: 2px solid rgba(168, 85, 247, 0.3);
+        border-radius: 0.75rem;
+        transition: all 0.3s ease;
+        cursor: pointer;
+      }
+      
+      .video-item:hover {
+        border-color: rgba(168, 85, 247, 0.6);
+        transform: scale(1.05) translateY(-5px);
+        box-shadow: 0 10px 25px rgba(168, 85, 247, 0.3);
+        transition: all 0.3s ease;
+      }
+      
+      .video-item iframe {
+        width: 100%;
+        aspect-ratio: 9 / 16;
+        border: none;
+      }
+    </style>
     <script>
       const rawLandingCode = "{{ landing_page.short_code|default_if_none:'' }}";
       window.LANDING_PAGE_CODE = rawLandingCode ? rawLandingCode.trim() : '';
@@ -133,19 +336,7 @@
           </div>
 
           <div class="relative z-10 w-full max-w-7xl mx-auto">
-            <div class="flex justify-center mb-8">
-              <a
-                href="#pricing"
-                class="inline-flex items-center gap-3 bg-gradient-to-r from-red-600/30 via-orange-500/30 to-red-600/30 px-8 py-3 rounded-full border-2 border-red-500/60 backdrop-blur-sm cursor-pointer hover:border-red-400 transition-all fade-up glow-pulse"
-              >
-                <span class="text-2xl">🔥</span>
-                <span class="text-lg md:text-xl">
-                  <span class="text-red-400">عرض محدود:</span>
-                  <span class="text-white">وفّر حتى 200$ - الأماكن محدودة!</span>
-                </span>
-                <span class="text-2xl">⏳</span>
-              </a>
-            </div>
+
 
             <div class="flex justify-center mb-12">
               <div class="inline-flex items-center gap-2 bg-gradient-to-r from-pink-600/30 to-purple-600/30 px-6 py-3 rounded-full border-2 border-pink-500/50 badge-glow fade-up glow-pulse">
@@ -159,10 +350,9 @@
                 <header class="space-y-4">
                   <h1 class="text-3xl md:text-4xl lg:text-5xl leading-tight font-black fade-up">
                     <span class="block text-white mb-3 leading-relaxed">
-                      عارف الشعور لما تحس إنك قريب من النجاح...
-                    </span>
+                      تداول معنا … على المكشوف                    </span>
                     <span class="block bg-gradient-to-r from-[#DF2E88] via-[#C93AA8] to-[#694393] bg-clip-text text-transparent text-glow">
-                      بس ناقصك التوجيه الصح؟
+                      قدّام عيونك … لحظة بلحظة.
                     </span>
                   </h1>
                   <p class="text-xl md:text-2xl text-gray-300 leading-relaxed font-bold fade-up">
@@ -176,21 +366,21 @@
                     <div class="w-10 h-10 mx-auto mb-2 rounded-full bg-gradient-to-br from-green-500 to-emerald-500 grid place-items-center text-white text-lg glow-pulse" data-color="green">
                       📈
                     </div>
-                    <div class="text-2xl font-black text-white">+6,953</div>
+                    <div class="text-2xl font-black text-white">+17,782</div>
                     <div class="text-xs text-gray-400">Pips</div>
                   </article>
                   <article class="card-hover bg-black/50 backdrop-blur-sm border-2 border-purple-500/30 rounded-xl p-4 fade-up" style="transition-delay: 0.1s;">
                     <div class="w-10 h-10 mx-auto mb-2 rounded-full bg-gradient-to-br from-yellow-500 to-orange-500 grid place-items-center text-white text-lg glow-pulse" data-color="yellow">
                       🎯
                     </div>
-                    <div class="text-2xl font-black text-white">85.9%</div>
+                    <div class="text-2xl font-black text-white">84.7%</div>
                     <div class="text-xs text-gray-400">نسبة النجاح</div>
                   </article>
                   <article class="card-hover bg-black/50 backdrop-blur-sm border-2 border-purple-500/30 rounded-xl p-4 fade-up" style="transition-delay: 0.2s;">
                     <div class="w-10 h-10 mx-auto mb-2 rounded-full bg-gradient-to-br from-pink-500 to-purple-500 grid place-items-center text-white text-lg glow-pulse">
                       ⚡
                     </div>
-                    <div class="text-2xl font-black text-white">56</div>
+                    <div class="text-2xl font-black text-white">160</div>
                     <div class="text-xs text-gray-400">صفقة</div>
                   </article>
                 </div>
@@ -221,7 +411,7 @@
                 <div class="absolute -inset-4 bg-gradient-to-r from-pink-500 to-purple-600 rounded-3xl blur-2xl opacity-40"></div>
                 <div class="relative aspect-video bg-gradient-to-br from-[#694393]/40 to-[#DF2E88]/40 rounded-2xl overflow-hidden border-4 border-pink-500/50 shadow-2xl" data-video-container>
                   <iframe
-                    src="https://player.vimeo.com/video/1135403327?autoplay=1&loop=1&muted=0&title=0&byline=0&portrait=0"
+                    src="https://player.vimeo.com/video/1145252640?title=0&byline=0&portrait=0&loop=1&muted=0"
                     title="FX Global Trading"
                     allow="autoplay; fullscreen; picture-in-picture; clipboard-write"
                     referrerpolicy="strict-origin"
@@ -262,7 +452,7 @@
 
           <div class="max-w-7xl mx-auto px-4 relative z-10">
             <header class="text-center mb-12 fade-up">
-              <h3 class="text-3xl md:text-4xl mb-4 text-white text-glow">🔥 نتائج أكتوبر الفعلية</h3>
+              <h3 class="text-3xl md:text-4xl mb-4 text-white text-glow">🔥  نتائج أكتوبر و سبتمبر الفعلية في قناة التوصيات و البث المباشر</h3>
               <p class="text-gray-400 text-lg">أرقام حقيقية • نتائج موثقة • شفافية عالية</p>
             </header>
 
@@ -273,7 +463,7 @@
                   📈
                 </div>
                 <div class="text-3xl md:text-4xl font-bold mb-2 bg-gradient-to-r from-green-400 to-emerald-500 bg-clip-text text-transparent text-center">
-                  +6,953
+                  +17,782
                 </div>
                 <p class="text-sm md:text-base font-bold text-gray-300 text-center">Pips صافي</p>
                 <div class="absolute -top-2 -right-2 w-8 h-8 bg-gradient-to-br from-green-400 to-emerald-500 rounded-full grid place-items-center text-xs font-bold shadow-lg border-2 border-white/30">
@@ -287,7 +477,7 @@
                   🎯
                 </div>
                 <div class="text-3xl md:text-4xl font-bold mb-2 bg-gradient-to-r from-pink-400 to-pink-600 bg-clip-text text-transparent text-center">
-                  56
+                  160
                 </div>
                 <p class="text-sm md:text-base font-bold text-gray-300 text-center">صفقة ناجحة</p>
                 <div class="absolute -top-2 -right-2 w-8 h-8 bg-gradient-to-br from-pink-400 to-pink-600 rounded-full grid place-items-center text-xs font-bold shadow-lg border-2 border-white/30">
@@ -325,7 +515,7 @@
             </div>
 
             <p class="text-center mt-12 text-xl md:text-2xl text-pink-400 fade-up">
-              ✨ هذه نتائج شهر واحد فقط... تخيل شو ممكن تحقق معنا!
+              ✨ هذه نتائج شهرين  فقط... تخيل شو ممكن تحقق معنا!
             </p>
           </div>
         </section>
@@ -351,7 +541,7 @@
               </p>
               <div class="inline-flex items-center gap-3 bg-gradient-to-r from-yellow-400/20 to-orange-400/20 border-2 border-yellow-400/50 rounded-full px-8 py-4 backdrop-blur-sm fade-up">
                 <span class="text-3xl">📸</span>
-                <span class="text-yellow-400 text-lg md:text-xl">16 صفقة موثقة بالكامل - مرر لتشوف الكل</span>
+                <span class="text-yellow-400 text-lg md:text-xl">  نتائج صفقاتنا على البث و على توصيات </span>
                 <span class="text-3xl">👈</span>
               </div>
             </header>
@@ -526,8 +716,8 @@
                 تداول حقيقي و نتائج مثبتة
               </h2>
               <p class="text-xl text-gray-300 max-w-3xl mx-auto leading-relaxed">
-                خلال شهر أكتوبر 2025، نفّذ فريق FX Global
-                <span class="text-pink-400 font-bold text-2xl block mt-2">56 صفقة تداول حقيقية</span>
+                خلال شهر أكتوبر وسبتمبر 2025، نفّذ فريق FX Global
+                <span class="text-pink-400 font-bold text-2xl block mt-2">160 صفقة تداول حقيقية</span>
                 في الأسواق المالية.
               </p>
             </header>
@@ -537,11 +727,11 @@
                 <div class="flex items-center gap-4 mb-4">
                   <div class="w-16 h-16 rounded-full bg-green-500 grid place-items-center text-3xl">✅</div>
                   <div>
-                    <div class="text-5xl font-black text-green-400">33</div>
+                    <div class="text-5xl font-black text-green-400">160</div>
                     <div class="text-lg text-gray-300">صفقة ناجحة</div>
                   </div>
                 </div>
-                <p class="text-3xl font-bold text-green-300">+7,878 Pips</p>
+                <p class="text-3xl font-bold text-green-300">+19682 Pips</p>
                 <p class="text-sm text-gray-400 mt-2">إجمالي الأرباح</p>
               </article>
 
@@ -549,11 +739,11 @@
                 <div class="flex items-center gap-4 mb-4">
                   <div class="w-16 h-16 rounded-full bg-red-500 grid place-items-center text-3xl">❌</div>
                   <div>
-                    <div class="text-5xl font-black text-red-400">23</div>
+                    <div class="text-5xl font-black text-red-400">54</div>
                     <div class="text-lg text-gray-300">صفقة خاسرة</div>
                   </div>
                 </div>
-                <p class="text-3xl font-bold text-red-300">-925 Pips</p>
+                <p class="text-3xl font-bold text-red-300">-1900 Pips</p>
                 <p class="text-sm text-gray-400 mt-2">إجمالي الخسائر</p>
               </article>
             </div>
@@ -565,57 +755,95 @@
               </div>
               <div class="flex items-center justify-center gap-4 mb-4">
                 <span class="text-4xl md:text-5xl text-green-400">📈</span>
-                <span class="text-6xl md:text-8xl lg:text-9xl font-black bg-gradient-to-r from-green-400 via-yellow-400 to-green-400 bg-clip-text text-transparent text-glow" data-color="yellow" data-counter data-target="6953">
+                <span class="text-6xl md:text-8xl lg:text-9xl font-black bg-gradient-to-r from-green-400 via-yellow-400 to-green-400 bg-clip-text text-transparent text-glow" data-color="yellow" data-counter data-target="17782">
                   +0
                 </span>
                 <span class="text-3xl md:text-4xl text-white font-bold">Pips</span>
               </div>
-              <p class="text-2xl md:text-3xl text-gray-300 font-bold text-center mb-6">نتيجة شهر أكتوبر 2025 الصافية</p>
+              <p class="text-2xl md:text-3xl text-gray-300 font-bold text-center mb-6">نتيجة  أكتوبر و سبتمبر 2025 الصافية</p>
               <div class="progress-bar glow-pulse" data-color="green">
                 <div class="progress-bar__fill" data-progress-bar></div>
                 <div class="progress-bar__shine"></div>
               </div>
               <p class="text-center mt-4 text-xl font-bold text-yellow-400" data-progress-label>0% مكتمل</p>
             </div>
-
-            <div class="mt-12 mb-12 glass-panel rounded-3xl border-2 border-yellow-500/50 p-8 md:p-12 fade-up">
-              <header class="text-center mb-8">
-                <h3 class="text-3xl md:text-4xl font-bold text-yellow-400 mb-3">💰 كم كنت راح تربح لو دخلت معانا؟</h3>
-                <p class="text-xl text-gray-300">هاي هي الأرباح الحقيقية بناءً على حجم اللوت</p>
-              </header>
-              <div class="vip-cards">
-                <article class="vip-card">
-                  <div class="text-5xl mb-3">📊</div>
-                  <p class="text-gray-300 mb-2">حساب صغير</p>
-                  <p class="text-2xl font-bold text-white mb-3">Lot 0.01</p>
-                  <div class="h-px bg-white/30 mb-3"></div>
-                  <p class="text-4xl md:text-5xl font-black text-green-400">$695.3</p>
-                  <p class="text-sm text-gray-400 mt-2">ربح أكتوبر</p>
-                </article>
-                <article class="vip-card">
-                  <div class="text-5xl mb-3">💎</div>
-                  <p class="text-gray-300 mb-2">حساب متوسط</p>
-                  <p class="text-2xl font-bold text-white mb-3">Lot 0.1</p>
-                  <div class="h-px bg-white/30 mb-3"></div>
-                  <p class="text-4xl md:text-5xl font-black text-green-400">$6,953</p>
-                  <p class="text-sm text-gray-400 mt-2">ربح أكتوبر</p>
-                </article>
-                <article class="vip-card">
-                  <div class="text-5xl mb-3">👑</div>
-                  <p class="text-gray-300 mb-2">حساب كبير</p>
-                  <p class="text-2xl font-bold text-white mb-3">Lot 1</p>
-                  <div class="h-px bg-white/30 mb-3"></div>
-                  <p class="text-4xl md:text-5xl font-black text-green-400">$69,530</p>
-                  <p class="text-sm text-gray-400 mt-2">ربح أكتوبر</p>
-                </article>
-              </div>
-              <p class="text-center text-base md:text-lg text-yellow-200">⚠️ النتائج الماضية لا تضمن نتائج مستقبلية • التداول ينطوي على مخاطر</p>
-            </div>
             <p class="text-center text-base md:text-lg text-yellow-200">⚠️ النتائج الماضية لا تضمن نتائج مستقبلية • التداول ينطوي على مخاطر</p>
           </div>
           <div class="text-center space-y-4 fade-up">
-            <p class="text-2xl md:text-3xl text-pink-300 font-bold">📊 هاي هي أرقام FX Global لشهر أكتوبر — واللي جاي أقوى 🚀</p>
+            <p class="text-2xl md:text-3xl text-pink-300 font-bold">📊 هاي هي أرقام FX Global لشهر أكتوبر و سبتمبر — واللي جاي أقوى 🚀</p>
             <a href="#registration-form" class="inline-flex items-center gap-3 px-10 py-4 rounded-full btn-primary-neon font-bold text-lg">⚡ انضم الآن واحصل على نفس النتائج</a>
+          </div>
+        </section>
+
+        <!-- Profit Calculator -->
+        <section id="profit-calculator" class="py-20 px-4 bg-gradient-to-b from-black via-[#1a0033]/50 to-black relative overflow-hidden">
+          <div class="floating-orb floating-orb--purple" style="top: 10%; inset-inline-start: 15%; width: 20rem; height: 20rem;"></div>
+          <div class="floating-orb floating-orb--pink" style="bottom: 10%; inset-inline-end: 20%; width: 18rem; height: 18rem;"></div>
+          <div class="max-w-6xl mx-auto relative z-10">
+            <div class="text-center mb-12 fade-up">
+              <h3 class="text-3xl md:text-5xl mb-4 font-bold text-glow">أحسبها… وتخيّل حالك كنت جزء من هالنتائج.</h3>
+              <p class="text-xl text-gray-300 max-w-3xl mx-auto">
+                حط اللوت اللي بناسبك ...  وشوف رقم يمكن يهزّك<br>
+                رقم يخليك تقول: "ليش ما بلشت قبل؟"
+              </p>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
+              <div class="bg-gradient-to-br from-black/80 to-black/40 backdrop-blur-sm border-2 border-purple-500/30 rounded-2xl p-6 md:p-8 fade-up">
+                <div class="space-y-6">
+                  <div>
+                    <label class="block text-gray-300 mb-2 text-lg">Total Pips</label>
+                    <input 
+                      type="text" 
+                      id="total-pips" 
+                      value="17,782" 
+                      readonly
+                      class="w-full px-4 py-3 bg-black/50 border border-purple-500/50 rounded-lg text-white text-center text-2xl font-bold"
+                    />
+                  </div>
+                  <div>
+                    <label class="block text-gray-300 mb-2 text-lg">Lot Size</label>
+                    <input 
+                      type="number" 
+                      id="lot-size" 
+                      step="0.01" 
+                      value="0.1" 
+                      placeholder="0.1"
+                      class="w-full px-4 py-3 bg-black/50 border border-purple-500/50 rounded-lg text-white text-center text-2xl font-bold focus:outline-none focus:ring-2 focus:ring-pink-500/50"
+                    />
+                    <div class="flex gap-2 mt-3">
+                      <button onclick="setLotSize('0.01')" class="flex-1 px-3 py-2 bg-purple-500/20 border border-purple-500/50 rounded-lg text-sm hover:bg-purple-500/30 transition-colors">0.01</button>
+                      <button onclick="setLotSize('0.1')" class="flex-1 px-3 py-2 bg-purple-500/20 border border-purple-500/50 rounded-lg text-sm hover:bg-purple-500/30 transition-colors">0.1</button>
+                      <button onclick="setLotSize('0.5')" class="flex-1 px-3 py-2 bg-purple-500/20 border border-purple-500/50 rounded-lg text-sm hover:bg-purple-500/30 transition-colors">0.5</button>
+                      <button onclick="setLotSize('1.0')" class="flex-1 px-3 py-2 bg-purple-500/20 border border-purple-500/50 rounded-lg text-sm hover:bg-purple-500/30 transition-colors">1.0</button>
+                    </div>
+                  </div>
+                  <div class="pt-6 border-t border-purple-500/30">
+                    <p class="text-gray-300 mb-3 text-lg">الربح المحتمل:</p>
+                    <div class="text-4xl md:text-5xl font-black bg-gradient-to-r from-green-400 via-emerald-400 to-green-500 bg-clip-text text-transparent text-center" id="profit-amount">$0</div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="space-y-4 fade-up" style="transition-delay: 0.1s;">
+                <h4 class="text-xl font-bold text-gray-300 mb-4">أمثلة:</h4>
+                <div onclick="setLotSize('0.01')" class="bg-black/40 backdrop-blur-sm border-2 border-purple-500/30 rounded-xl p-4 cursor-pointer hover:border-pink-500/50 transition-all flex justify-between items-center">
+                  <span class="text-gray-300 font-semibold">LOT 0.01</span>
+                  <span class="text-2xl font-black bg-gradient-to-r from-green-400 to-emerald-500 bg-clip-text text-transparent">$1,778</span>
+                </div>
+                <div onclick="setLotSize('0.1')" class="bg-black/40 backdrop-blur-sm border-2 border-purple-500/30 rounded-xl p-4 cursor-pointer hover:border-pink-500/50 transition-all flex justify-between items-center">
+                  <span class="text-gray-300 font-semibold">LOT 0.1</span>
+                  <span class="text-2xl font-black bg-gradient-to-r from-green-400 to-emerald-500 bg-clip-text text-transparent">$17,782</span>
+                </div>
+                <div onclick="setLotSize('1.0')" class="bg-black/40 backdrop-blur-sm border-2 border-purple-500/30 rounded-xl p-4 cursor-pointer hover:border-pink-500/50 transition-all flex justify-between items-center">
+                  <span class="text-gray-300 font-semibold">LOT 1.0</span>
+                  <span class="text-2xl font-black bg-gradient-to-r from-green-400 to-emerald-500 bg-clip-text text-transparent">$177,820</span>
+                </div>
+                <div class="mt-6 p-4 bg-gradient-to-r from-purple-500/20 to-pink-500/20 border border-purple-500/30 rounded-xl">
+                  <p class="text-center text-lg text-gray-200 font-semibold">الأرباح مش حلم… هي قرار.</p>
+                </div>
+              </div>
+            </div>
           </div>
         </section>
 
@@ -680,117 +908,122 @@
           </div>
         </section>
 
-        <!-- Pricing -->
-        <section id="pricing" class="py-20 px-4 bg-gradient-to-b from-black via-[#1a0033]/50 to-black relative overflow-hidden">
-          <div class="floating-orb floating-orb--pink" style="top: 10%; inset-inline-start: 15%; width: 20rem; height: 20rem; --orb-duration: 18s;"></div>
-          <div class="floating-orb floating-orb--purple" style="bottom: 5%; inset-inline-end: 18%; width: 22rem; height: 22rem; --orb-duration: 20s;"></div>
+        <!-- Live Sessions Preview -->
+        <section class="py-20 px-4 bg-gradient-to-b from-black via-[#694393]/10 to-black relative overflow-hidden">
+          <div class="floating-orb floating-orb--pink" style="top: 15%; inset-inline-start: 10%; width: 22rem; height: 22rem;"></div>
+          <div class="floating-orb floating-orb--purple" style="bottom: 15%; inset-inline-end: 15%; width: 20rem; height: 20rem;"></div>
+          <div class="max-w-7xl mx-auto relative z-10">
+            <div class="inline-flex items-center gap-3 bg-gradient-to-r from-pink-600/30 to-purple-600/30 px-6 py-3 rounded-full border-2 border-pink-500/50 mb-8 fade-up">
+              <span class="text-2xl">📻</span>
+              <h3 class="text-xl font-bold">Live Streaming</h3>
+            </div>
 
-          <div class="max-w-6xl mx-auto relative z-10 space-y-16">
-            <header class="text-center space-y-6 fade-up">
-              <div class="inline-flex items-center gap-3 bg-gradient-to-r from-red-500/20 to-orange-500/20 border-2 border-red-500/50 rounded-full px-8 py-3 backdrop-blur-sm badge-glow glow-pulse">
-                <span class="text-red-400 text-lg">🔥 عرض لفترة محدودة - اشترك الآن</span>
+            <div class="text-center mb-12 fade-up">
+              <h2 class="text-3xl md:text-5xl mb-6 font-bold text-glow">جلسات تداول مباشرة… بتحسسّك إنك مش لحالك.</h2>
+              <p class="text-lg md:text-xl text-gray-300 max-w-4xl mx-auto leading-relaxed space-y-2">
+                <span class="block">في كل جلسة…</span>
+                <span class="block">بتحس إنك قاعد جنب المتداول نفسه.</span>
+                <span class="block">بتسأل، بتناقش، بتتعلّم، وبتدخل الصفقات بثقة لأول مرة.</span>
+                <span class="block">ويمكن… تكتشف نسخة منك ما كنت تعرفها:</span>
+                <span class="block">نسخة واعية، هادية، مسيطرة…</span>
+                <span class="block">بتعرف ليش دخلت الصفقة، وكيف خرجت منها.</span>
+              </p>
+              <p class="text-xl md:text-2xl text-pink-400 font-bold mt-6">
+                التداول مش رقم… التداول "شخصيتك".<br>
+                وإحنا هون نبنيها سوا.
+              </p>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-8 mb-12">
+              <div class="fade-up">
+                <div class="relative bg-black/40 rounded-2xl overflow-hidden border-2 border-purple-500/30">
+                  <div class="aspect-video relative">
+                    <img 
+                      src="https://images.unsplash.com/photo-1594501251795-a3147759d741?w=1080" 
+                      alt="Live Trading"
+                      class="w-full h-full object-cover"
+                    />
+                    <div class="absolute inset-0 bg-black/20"></div>
+                  </div>
+                  <div class="absolute top-4 inset-inline-start-4 flex items-center gap-2 bg-red-600 px-3 py-1.5 rounded-full">
+                    <span class="w-2 h-2 bg-white rounded-full animate-pulse"></span>
+                    <span class="text-white text-sm font-bold">LIVE</span>
+                  </div>
+                  <div class="absolute top-4 inset-inline-end-4 bg-black/80 backdrop-blur-sm px-3 py-1.5 rounded-full">
+                    <span class="text-white text-sm">342 مشاهد نشط</span>
+                  </div>
+                </div>
               </div>
-              <h2 class="text-3xl md:text-5xl text-white font-bold text-glow">
-                اختر باقتك وابدأ رحلة أرباحك <span class="text-pink-400">اليوم</span>
-              </h2>
-              <p class="text-xl text-gray-400">الأسعار الحالية متاحة لفترة محدودة فقط!</p>
-            </header>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-7xl mx-auto">
-              <article class="relative p-6 rounded-3xl border-3 bg-gradient-to-br from-[#694393]/20 to-[#DF2E88]/20 border-purple-500/40 backdrop-blur-lg card-hover fade-up">
-                <div class="text-center border-b border-purple-500/30 pb-4 mb-4">
-                  <h3 class="text-2xl md:text-3xl">👑 باقة نصف سنوية</h3>
-                </div>
-                <div class="bg-black/40 rounded-2xl p-5 border border-pink-500/30 mb-5">
-                  <div class="text-center mb-4">
-                    <div class="flex items-center justify-center gap-2 mb-2">
-                      <span class="text-red-400 text-sm">السعر الأصلي</span>
-                    </div>
-                    <div class="text-4xl md:text-5xl font-black text-gray-500 line-through opacity-60">$900</div>
-                  </div>
-                  <div class="relative my-4">
-                    <div class="absolute inset-0 flex items-center"><div class="w-full border-t-2 border-dashed border-pink-500/30"></div></div>
-                    <div class="relative flex justify-center">
-                      <span class="bg-gradient-to-r from-pink-500 to-purple-600 px-4 py-1.5 rounded-full text-sm">خصم حصري</span>
+
+              <div class="space-y-4 fade-up" style="transition-delay: 0.1s;">
+                <div class="bg-black/40 backdrop-blur-sm border-2 border-purple-500/30 rounded-xl p-6 hover:border-pink-500/50 transition-all">
+                  <div class="flex items-start gap-4">
+                    <div class="w-12 h-12 bg-gradient-to-br from-pink-500 to-purple-600 rounded-lg grid place-items-center text-2xl flex-shrink-0">📻</div>
+                    <div>
+                      <h4 class="text-xl font-bold mb-2 text-white">Trading live on screen</h4>
+                      <p class="text-gray-300">شاهد التداول مباشر على الشاشة</p>
                     </div>
                   </div>
-                  <div class="text-center">
-                    <div class="flex items-center justify-center gap-2 mb-3">
-                      <span class="text-green-400 text-base">السعر الآن فقط</span>
+                </div>
+                <div class="bg-black/40 backdrop-blur-sm border-2 border-purple-500/30 rounded-xl p-6 hover:border-pink-500/50 transition-all">
+                  <div class="flex items-start gap-4">
+                    <div class="w-12 h-12 bg-gradient-to-br from-pink-500 to-purple-600 rounded-lg grid place-items-center text-2xl flex-shrink-0">📈</div>
+                    <div>
+                      <h4 class="text-xl font-bold mb-2 text-white">شرح كل صفقة قبل الدخول</h4>
+                      <p class="text-gray-300">تحليل كامل ومفصل</p>
                     </div>
-                    <div class="text-5xl md:text-6xl font-black bg-gradient-to-r from-green-400 via-emerald-400 to-green-500 bg-clip-text text-transparent inline-block mb-3">$500</div>
-                    <div class="inline-block bg-gradient-to-r from-yellow-400/20 to-orange-400/20 border-2 border-yellow-400/50 rounded-full px-5 py-2 text-yellow-400 text-base glow-pulse" data-color="yellow">🎉 وفّر $400 - أفضل قيمة</div>
                   </div>
                 </div>
-                <ul class="space-y-3 text-gray-200 text-base mb-5">
-                  <li class="flex items-start gap-3"><span class="text-green-400 text-xl">✔</span> توصيات يومية مدروسة</li>
-                  <li class="flex items-start gap-3"><span class="text-green-400 text-xl">✔</span> متابعة أداء أسبوعية</li>
-                  <li class="flex items-start gap-3"><span class="text-green-400 text-xl">✔</span> قناة تيليجرام خاصة</li>
-                  <li class="flex items-start gap-3"><span class="text-green-400 text-xl">✔</span> دعم مباشر على التيليجرام</li>
-                  <li class="flex items-start gap-3"><span class="text-green-400 text-xl">✔</span> توفير $400 عن السعر الأصلي</li>
-                </ul>
-                <a href="#registration-form" class="inline-flex justify-center w-full py-4 rounded-full bg-gradient-to-r from-purple-500 via-purple-600 to-pink-500 text-lg font-bold hover:from-purple-600 hover:via-purple-700 hover:to-pink-600 transition-all cta-button glow-pulse">🔥 اشترك الآن – $500 فقط</a>
-              </article>
-              <article class="relative p-6 rounded-3xl border-3 bg-gradient-to-br from-[#694393]/40 to-[#DF2E88]/40 border-pink-500 shadow-2xl shadow-pink-500/30 backdrop-blur-lg card-hover fade-up" style="transition-delay:0.1s;">
-                <div class="absolute -top-4 inset-inline-start-1/2 -translate-x-1/2 bg-gradient-to-r from-pink-500 to-purple-600 px-4 py-1.5 rounded-full text-xs shadow-2xl z-20 border-2 border-yellow-400/50">⭐ الأكثر طلباً</div>
-                <div class="text-center border-b border-purple-500/30 pb-4 mb-4">
-                  <h3 class="text-2xl md:text-3xl">💎 الباقة الشهرية</h3>
-                </div>
-                <div class="bg-black/40 rounded-2xl p-5 border border-pink-500/30 mb-5">
-                  <div class="text-center mb-4">
-                    <div class="flex items-center justify-center gap-2 mb-2">
-                      <span class="text-red-400 text-sm">السعر الأصلي</span>
+                <div class="bg-black/40 backdrop-blur-sm border-2 border-purple-500/30 rounded-xl p-6 hover:border-pink-500/50 transition-all">
+                  <div class="flex items-start gap-4">
+                    <div class="w-12 h-12 bg-gradient-to-br from-pink-500 to-purple-600 rounded-lg grid place-items-center text-2xl flex-shrink-0">🛡️</div>
+                    <div>
+                      <h4 class="text-xl font-bold mb-2 text-white">تنظيم المخاطر</h4>
+                      <p class="text-gray-300">إدارة احترافية للمخاطر</p>
                     </div>
-                    <div class="text-4xl md:text-5xl font-black text-gray-500 line-through opacity-60">$150</div>
-                  </div>
-                  <div class="relative my-4">
-                    <div class="absolute inset-0 flex items-center"><div class="w-full border-t-2 border-dashed border-pink-500/30"></div></div>
-                    <div class="relative flex justify-center"><span class="bg-gradient-to-r from-pink-500 to-purple-600 px-4 py-1.5 rounded-full text-sm">خصم حصري</span></div>
-                  </div>
-                  <div class="text-center">
-                    <div class="flex items-center justify-center gap-2 mb-3"><span class="text-green-400 text-base">السعر الآن فقط</span></div>
-                    <div class="text-5xl md:text-6xl font-black bg-gradient-to-r from-green-400 via-emerald-400 to-green-500 bg-clip-text text-transparent inline-block mb-3">$100</div>
-                    <div class="inline-block bg-gradient-to-r from-yellow-400/20 to-orange-400/20 border-2 border-yellow-400/50 rounded-full px-5 py-2 text-yellow-400 text-base glow-pulse" data-color="yellow">🎉 وفّر $50 اليوم</div>
                   </div>
                 </div>
-                <ul class="space-y-3 text-gray-200 text-base mb-5">
-                  <li class="flex items-start gap-3"><span class="text-green-400 text-xl">✔</span> توصيات يومية مدروسة</li>
-                  <li class="flex items-start gap-3"><span class="text-green-400 text-xl">✔</span> متابعة أداء أسبوعية</li>
-                  <li class="flex items-start gap-3"><span class="text-green-400 text-xl">✔</span> قناة تيليجرام خاصة</li>
-                  <li class="flex items-start gap-3"><span class="text-green-400 text-xl">✔</span> دعم مباشر على التيليجرام</li>
-                  <li class="flex items-start gap-3"><span class="text-green-400 text-xl">✔</span> توفير $50 عن السعر الأصلي</li>
-                </ul>
-                <a href="#registration-form" class="inline-flex justify-center w-full py-4 rounded-full bg-gradient-to-r from-pink-500 via-pink-600 to-purple-600 text-lg font-bold hover:from-pink-600 hover:via-pink-700 hover:to-purple-700 transition-all cta-button glow-pulse">⚡ اشترك الآن – $100 فقط</a>
-              </article>
-              <article class="relative p-6 rounded-3xl border-3 bg-gradient-to-br from-[#694393]/20 to-[#DF2E88]/20 border-purple-500/40 backdrop-blur-lg card-hover fade-up" style="transition-delay:0.2s;">
-                <div class="text-center border-b border-purple-500/30 pb-4 mb-4">
-                  <h3 class="text-2xl md:text-3xl">🚀 باقة 3 أشهر</h3>
-                </div>
-                <div class="bg-black/40 rounded-2xl p-5 border border-pink-500/30 mb-5">
-                  <div class="text-center mb-4">
-                    <div class="flex items-center justify-center gap-2 mb-2">
-                      <span class="text-red-400 text-sm">السعر الأصلي</span>
+                <div class="bg-black/40 backdrop-blur-sm border-2 border-purple-500/30 rounded-xl p-6 hover:border-pink-500/50 transition-all">
+                  <div class="flex items-start gap-4">
+                    <div class="w-12 h-12 bg-gradient-to-br from-pink-500 to-purple-600 rounded-lg grid place-items-center text-2xl flex-shrink-0">📊</div>
+                    <div>
+                      <h4 class="text-xl font-bold mb-2 text-white">متداول محترف + تحليل مباشر</h4>
+                      <p class="text-gray-300">خبرة حقيقية في السوق</p>
                     </div>
-                    <div class="text-4xl md:text-5xl font-black text-gray-500 line-through opacity-60">$450</div>
-                  </div>
-                  <div class="relative my-4">
-                    <div class="absolute inset-0 flex items-center"><div class="w-full border-t-2 border-dashed border-pink-500/30"></div></div>
-                    <div class="relative flex justify-center"><span class="bg-gradient-to-r from-pink-500 to-purple-600 px-4 py-1.5 rounded-full text-sm">خصم حصري</span></div>
-                  </div>
-                  <div class="text-center">
-                    <div class="flex items-center justify-center gap-2 mb-3"><span class="text-green-400 text-base">السعر الآن فقط</span></div>
-                    <div class="text-5xl md:text-6xl font-black bg-gradient-to-r from-green-400 via-emerald-400 to-green-500 bg-clip-text text-transparent inline-block mb-3">$250</div>
-                    <div class="inline-block bg-gradient-to-r from-yellow-400/20 to-orange-400/20 border-2 border-yellow-400/50 rounded-full px-5 py-2 text-yellow-400 text-base glow-pulse" data-color="yellow">🎉 وفّر $200 - صفقة العمر</div>
                   </div>
                 </div>
-                <ul class="space-y-3 text-gray-200 text-base mb-5">
-                  <li class="flex items-start gap-3"><span class="text-green-400 text-xl">✔</span> توصيات يومية مدروسة</li>
-                  <li class="flex items-start gap-3"><span class="text-green-400 text-xl">✔</span> متابعة أداء أسبوعية</li>
-                  <li class="flex items-start gap-3"><span class="text-green-400 text-xl">✔</span> قناة تيليجرام خاصة</li>
-                  <li class="flex items-start gap-3"><span class="text-green-400 text-xl">✔</span> دعم مباشر على التيليجرام</li>
-                  <li class="flex items-start gap-3"><span class="text-green-400 text-xl">✔</span> توفير $200 عن السعر الأصلي</li>
-                </ul>
-                <a href="#registration-form" class="inline-flex justify-center w-full py-4 rounded-full bg-gradient-to-r from-purple-500 via-purple-600 to-pink-500 text-lg font-bold hover:from-purple-600 hover:via-purple-700 hover:to-pink-600 transition-all cta-button glow-pulse">🔥 اشترك الآن – $250 فقط</a>
-              </article>
+              </div>
+            </div>
+
+            <div class="text-center fade-up">
+              <a href="#registration-form" class="inline-flex items-center gap-3 bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 px-8 py-4 rounded-full font-bold text-lg transition-all cta-button">
+                احضر جلسة… وخلي التجربة تحكي.
+              </a>
+            </div>
+          </div>
+        </section>
+
+        <!-- Live Videos -->
+        <section class="py-20 px-4 bg-gradient-to-b from-black via-[#1a0033]/50 to-black relative overflow-hidden">
+          <div class="floating-orb floating-orb--purple" style="top: 10%; inset-inline-start: 15%; width: 20rem; height: 20rem;"></div>
+          <div class="floating-orb floating-orb--pink" style="bottom: 10%; inset-inline-end: 20%; width: 18rem; height: 18rem;"></div>
+          <div class="max-w-7xl mx-auto relative z-10">
+            <div class="text-center mb-16 fade-up">
+              <h2 class="text-3xl md:text-5xl mb-4 font-bold text-glow">هكذا نتواصل مع طلابنا… في جلسات التداول المباشرة.</h2>
+              <p class="text-lg md:text-xl text-gray-300 max-w-3xl mx-auto">
+                شوف جودة التواصل بين الكوتش والطلاب… تفاعل حقيقي، شرح واضح، وإجابات فورية.
+              </p>
+            </div>
+
+            <div class="videos-grid mb-12" id="videos-grid">
+              <!-- Videos will be populated by JavaScript -->
+            </div>
+
+            <div class="text-center fade-up">
+              <p class="text-lg md:text-xl text-gray-300 mb-6">انضم للجلسات المباشرة… وتعلم من الخبراء مباشرة.</p>
+              <a href="https://info.fxglobals.co/packages/" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-3 bg-gradient-to-r from-yellow-400 to-orange-500 hover:from-yellow-500 hover:to-orange-600 px-8 py-4 rounded-full font-bold text-lg transition-all cta-button text-black">
+                اشترك الآن واحصل على الدخول
+              </a>
             </div>
           </div>
         </section>
@@ -908,13 +1141,6 @@
           </div>
         </section>
       </main>
-
-      <footer class="px-4 py-6 border-t border-white/10 bg-black/80 backdrop-blur">
-        <div class="max-w-4xl mx-auto text-center text-sm text-gray-400">
-          <p>© 2025 FX Global. جميع الحقوق محفوظة.</p>
-          <p class="mt-2">التداول ينطوي على مخاطر وقد يؤدي إلى خسارة رأس المال. تأكد من فهمك الكامل قبل الاشتراك.</p>
-        </div>
-      </footer>
 
       <!-- Floating Telegram -->
       <div class="floating-telegram">

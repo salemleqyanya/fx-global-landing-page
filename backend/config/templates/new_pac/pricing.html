@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>أكاديمية FX Global للتداول | تعلم التداول من الصفر حتى الاحتراف</title>
+    <meta name="description" content="أكاديمية FX Global للتداول المرخصة في فلسطين. احصل على VIP Channel، Live Trading، والباقة الأقوى. تعلم التداول من الصفر حتى الاحتراف مع عرض السنة الجديدة 2025!">
+    <meta name="keywords" content="تداول، فوركس، أكاديمية تداول، FX Global، تعليم تداول، تداول مباشر، VIP Channel، Live Trading، فلسطين">
+    <meta name="theme-color" content="#694393">
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'new_pac/styles.css' %}">
+    <script>
+        // Set static URL for assets-config.js
+        window.STATIC_URL = '{% static "" %}';
+    </script>
+    <script src="{% static 'new_pac/assets-config.js' %}"></script>
+</head>
+<body>
+    <!-- SEO Meta Tags Script -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "EducationalOrganization",
+      "name": "FX Global Trading Academy",
+      "description": "أكاديمية تداول مرخصة في فلسطين",
+      "offers": [
+        {"@type": "Offer", "name": "VIP Channel", "price": "370", "priceCurrency": "ILS"},
+        {"@type": "Offer", "name": "Live Trading", "price": "555", "priceCurrency": "ILS"},
+        {"@type": "Offer", "name": "الباقة الأقوى", "price": "666", "priceCurrency": "ILS"},
+        {"@type": "Offer", "name": "العضوية التعليمية", "price": "1850", "priceCurrency": "ILS"}
+      ]
+    }
+    </script>
+
+    <div class="app">
+        <!-- Background Effects - Hidden on Mobile for Performance -->
+        <div class="background-effects desktop-only">
+            <div class="snowfall-container" id="snowfall"></div>
+            <div class="christmas-lights-container" id="christmasLights"></div>
+            <div class="falling-gifts-container" id="fallingGifts"></div>
+            <div class="christmas-stars-container" id="christmasStars"></div>
+            <div class="floating-money-container" id="floatingMoney"></div>
+            <div class="trading-candles-container" id="tradingCandles"></div>
+        </div>
+
+        <!-- New Year Sale Banner -->
+        <div class="new-year-banner" id="newYearBanner">
+            <div class="banner-dots-background"></div>
+            <div class="banner-snowflakes" id="bannerSnowflakes"></div>
+            <div class="banner-content">
+                <!-- Left Icons -->
+                <div class="banner-icons-left desktop-only">
+                    <div class="banner-icon gift-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                            <rect x="3" y="8" width="18" height="12" rx="2"/>
+                            <path d="M12 8v12M3 14h18M8 8V6a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                        </svg>
+                    </div>
+                    <div class="banner-icon star-icon">
+                        <svg viewBox="0 0 24 24" fill="currentColor">
+                            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                        </svg>
+                    </div>
+                </div>
+                
+                <!-- Main Text -->
+                <div class="banner-text" dir="rtl">
+                    <h3>⭐ عرض نهاية السنة! ⭐</h3>
+                    <p class="banner-subtitle">✨ تخفيضات ضخمة - فرصة لن تتكرر! ✨</p>
+                </div>
+                
+                <!-- Countdown Timer -->
+                <div class="countdown-timer-wrapper">
+                    <div class="countdown-timer">
+                        <div class="timer-box">
+                            <div class="timer-value" id="days">00</div>
+                            <div class="timer-label">يوم</div>
+                        </div>
+                        <div class="timer-box">
+                            <div class="timer-value" id="hours">00</div>
+                            <div class="timer-label">ساعة</div>
+                        </div>
+                        <div class="timer-box">
+                            <div class="timer-value" id="minutes">00</div>
+                            <div class="timer-label">دقيقة</div>
+                        </div>
+                        <div class="timer-box">
+                            <div class="timer-value" id="seconds">00</div>
+                            <div class="timer-label">ثانية</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Right Icons -->
+                <div class="banner-icons-right desktop-only">
+                    <div class="banner-icon star-icon">
+                        <svg viewBox="0 0 24 24" fill="currentColor">
+                            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                        </svg>
+                    </div>
+                    <div class="banner-icon sparkles-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                            <path d="M12 2v4M12 18v4M2 12h4M18 12h4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+            <div class="banner-sparkle-line"></div>
+        </div>
+
+        <!-- Hero Section -->
+        <section class="hero-section">
+            <div class="hero-background">
+                <div class="blob blob-1"></div>
+                <div class="blob blob-2"></div>
+            </div>
+            <div class="hero-content">
+                <div class="logo-container">
+                    <div class="logo-circle">
+                        <svg class="trending-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                            <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline>
+                            <polyline points="17 6 23 6 23 12"></polyline>
+                        </svg>
+                    </div>
+                </div>
+                <h1 class="hero-title">
+                    <span class="title-main">FX Global Academy</span>
+                    <span class="title-subtitle">أكادمية التداول الأولى في فلسطين</span>
+                </h1>
+                <p class="hero-subtitle">
+                    تداول احترافي، تدريب عملي، نتائج حقيقية. انضم الآن وابدأ رحلتك نحو الحرية المالية!
+                </p>
+                <div class="hero-buttons">
+                    <button class="btn-primary" onclick="scrollToPricing()">
+                        🎄 اشترك الآن - عرض محدود
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Pricing Section -->
+        <section class="pricing-section" id="pricing">
+            <div class="pricing-background"></div>
+            <div class="pricing-container">
+                <div class="pricing-header">
+                    <h2>اختر الخطة اللي تناسبك</h2>
+                    <p class="pricing-subtitle">معظم المتداولين اختاروا الباقة الأقوى</p>
+                </div>
+
+                <!-- Desktop Grid Row 1 -->
+                <div class="pricing-grid desktop-only">
+                    <div class="pricing-card">
+                        <div class="card-content">
+                            <h3 class="card-title">VIP CHANNEL</h3>
+                            <div class="card-price">370₪/شهر</div>
+                            <div class="card-original-price">555₪/شهر</div>
+                            <ul class="card-features">
+                                <li>
+                                    <svg class="check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                                        <polyline points="20 6 9 17 4 12"></polyline>
+                                    </svg>
+                                    <span>توصيات يومية جاهزة</span>
+                                </li>
+                                <li>
+                                    <svg class="check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                                        <polyline points="20 6 9 17 4 12"></polyline>
+                                    </svg>
+                                    <span>نقاط دخول/خروج محددة</span>
+                                </li>
+                                <li>
+                                    <svg class="check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                                        <polyline points="20 6 9 17 4 12"></polyline>
+                                    </svg>
+                                    <span>إدارة مخاطر محسوبة</span>
+                                </li>
+                                <li>
+                                    <svg class="check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                                        <polyline points="20 6 9 17 4 12"></polyline>
+                                    </svg>
+                                    <span>تحديثات لحظية</span>
+                                </li>
+                                <li>
+                                    <svg class="check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                                        <polyline points="20 6 9 17 4 12"></polyline>
+                                    </svg>
+                                    <span>نتائج شفافة منشورة</span>
+                                </li>
+                            </ul>
+                            <button class="card-button" onclick="openPayment('vip', 370, 'VIP CHANNEL')">اشترك في VIP الآن</button>
+                        </div>
+                    </div>
+
+                    <div class="pricing-card popular">
+                        <div class="popular-badge">🔥 وفّر 70₪</div>
+                        <div class="card-sparkle card-sparkle-top-right">✨</div>
+                        <div class="card-sparkle card-sparkle-bottom-left">✨</div>
+                        <div class="card-content">
+                            <h3 class="card-title">الباقة الأقوى</h3>
+                            <p class="card-description">VIP Channel + Live Trading</p>
+                            <div class="card-price">666₪/شهر</div>
+                            <div class="card-original-price">925₪/شهر</div>
+                            <ul class="card-features popular-features">
+                                <li>
+                                    <svg class="check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                                        <polyline points="20 6 9 17 4 12"></polyline>
+                                    </svg>
+                                    <span>كل مزايا VIP</span>
+                                </li>
+                                <li>
+                                    <svg class="check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                                        <polyline points="20 6 9 17 4 12"></polyline>
+                                    </svg>
+                                    <span>كل مزايا LIVE</span>
+                                </li>
+                                <li>
+                                    <svg class="check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                                        <polyline points="20 6 9 17 4 12"></polyline>
+                                    </svg>
+                                    <span>دخول مجتمع FX كامل</span>
+                                </li>
+                                <li>
+                                    <svg class="check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                                        <polyline points="20 6 9 17 4 12"></polyline>
+                                    </svg>
+                                    <span>أولوية في الدعم</span>
+                                </li>
+                                <li>
+                                    <svg class="check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                                        <polyline points="20 6 9 17 4 12"></polyline>
+                                    </svg>
+                                    <span>افضل سعر</span>
+                                </li>
+                            </ul>
+                            <button class="card-button popular-btn" onclick="openPayment('bundle', 666, 'الباقة الأقوى')">احجز الباندل الآن</button>
+                        </div>
+                    </div>
+
+                    <div class="pricing-card">
+                        <div class="card-content">
+                            <div class="card-badge">⚡ عرض خاص</div>
+                            <h3 class="card-title">LIVE TRADING</h3>
+                            <p class="card-description">تدريب عملي مباشر</p>
+                            <div class="card-price">555₪/شهر</div>
+                            <ul class="card-features">
+                                <li>
+                                    <svg class="check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                                        <polyline points="20 6 9 17 4 12"></polyline>
+                                    </svg>
+                                    <span>بث مباشر يومي 3 ساعات</span>
+                                </li>
+                                <li>
+                                    <svg class="check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                                        <polyline points="20 6 9 17 4 12"></polyline>
+                                    </svg>
+                                    <span>تداول حي أمامك</span>
+                                </li>
+                                <li>
+                                    <svg class="check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                                        <polyline points="20 6 9 17 4 12"></polyline>
+                                    </svg>
+                                    <span>أسئلة وأجوبة مباشرة</span>
+                                </li>
+                                <li>
+                                    <svg class="check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                                        <polyline points="20 6 9 17 4 12"></polyline>
+                                    </svg>
+                                    <span>تحليل السوق لحظياً</span>
+                                </li>
+                                <li>
+                                    <svg class="check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                                        <polyline points="20 6 9 17 4 12"></polyline>
+                                    </svg>
+                                    <span>حماية من الأخطاء</span>
+                                </li>
+                            </ul>
+                            <button class="card-button" onclick="openPayment('live', 555, 'LIVE TRADING')">ادخل البث الآن</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Desktop Grid Row 2 - Educational Membership -->
+                <div class="pricing-grid desktop-only pricing-grid-row-2">
+                    <div></div>
+                    <div class="pricing-card membership">
+                        <div class="card-content">
+                            <div class="card-badge">🎓 الأفضل للمبتدئين</div>
+                            <h3 class="card-title">العضوية التعليمية</h3>
+                            <p class="card-description">تعلم من الصفر + تدريب مجاني</p>
+                            <div class="card-price">1850₪</div>
+                            <div class="card-original-price">3000₪</div>
+                            <ul class="card-features">
+                                <li>
+                                    <svg class="check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                                        <polyline points="20 6 9 17 4 12"></polyline>
+                                    </svg>
+                                    <span>📚 شهرين تعليم كامل</span>
+                                </li>
+                                <li>
+                                    <svg class="check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                                        <polyline points="20 6 9 17 4 12"></polyline>
+                                    </svg>
+                                    <span>💡 أساسيات سوق الفوركس</span>
+                                </li>
+                                <li>
+                                    <svg class="check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                                        <polyline points="20 6 9 17 4 12"></polyline>
+                                    </svg>
+                                    <span>🎥 3 شهور Live Trading مجاناً</span>
+                                </li>
+                                <li>
+                                    <svg class="check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                                        <polyline points="20 6 9 17 4 12"></polyline>
+                                    </svg>
+                                    <span>📊 استراتيجيات مضمونة</span>
+                                </li>
+                                <li>
+                                    <svg class="check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                                        <polyline points="20 6 9 17 4 12"></polyline>
+                                    </svg>
+                                    <span>🎯 ابدأ من الصفر للاحتراف</span>
+                                </li>
+                            </ul>
+                            <button class="card-button" onclick="openPayment('education', 1850, 'العضوية التعليمية')">ابدأ رحلتك التعليمية</button>
+                            <button class="card-button-secondary" onclick="openMembershipModal()">📚 شاهد المحتوى التعليمي</button>
+                        </div>
+                    </div>
+                    <div></div>
+                </div>
+
+                <!-- Mobile Grid -->
+                <div class="pricing-grid mobile-only">
+                    <div class="pricing-card popular">
+                        <div class="popular-badge">🔥 وفّر 70₪</div>
+                        <div class="card-sparkle card-sparkle-top-right">✨</div>
+                        <div class="card-sparkle card-sparkle-bottom-left">✨</div>
+                        <div class="card-content">
+                            <h3 class="card-title">الباقة الأقوى</h3>
+                            <p class="card-description">VIP Channel + Live Trading</p>
+                            <div class="card-price">666₪/شهر</div>
+                            <div class="card-original-price">925₪/شهر</div>
+                            <ul class="card-features popular-features">
+                                <li>
+                                    <svg class="check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                                        <polyline points="20 6 9 17 4 12"></polyline>
+                                    </svg>
+                                    <span>كل مزايا VIP</span>
+                                </li>
+                                <li>
+                                    <svg class="check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                                        <polyline points="20 6 9 17 4 12"></polyline>
+                                    </svg>
+                                    <span>كل مزايا LIVE</span>
+                                </li>
+                                <li>
+                                    <svg class="check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                                        <polyline points="20 6 9 17 4 12"></polyline>
+                                    </svg>
+                                    <span>دخول مجتمع FX كامل</span>
+                                </li>
+                                <li>
+                                    <svg class="check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                                        <polyline points="20 6 9 17 4 12"></polyline>
+                                    </svg>
+                                    <span>أولوية في الدعم</span>
+                                </li>
+                                <li>
+                                    <svg class="check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                                        <polyline points="20 6 9 17 4 12"></polyline>
+                                    </svg>
+                                    <span>افضل سعر</span>
+                                </li>
+                            </ul>
+                            <button class="card-button popular-btn" onclick="openPayment('bundle', 666, 'الباقة الأقوى')">احجز الباندل الآن</button>
+                        </div>
+                    </div>
+
+                    <div class="pricing-card">
+                        <div class="card-content">
+                            <h3 class="card-title">VIP CHANNEL</h3>
+                            <div class="card-price">370₪/شهر</div>
+                            <div class="card-original-price">555₪/شهر</div>
+                            <ul class="card-features">
+                                <li>
+                                    <svg class="check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                                        <polyline points="20 6 9 17 4 12"></polyline>
+                                    </svg>
+                                    <span>توصيات يومية جاهزة</span>
+                                </li>
+                                <li>
+                                    <svg class="check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                                        <polyline points="20 6 9 17 4 12"></polyline>
+                                    </svg>
+                                    <span>نقاط دخول/خروج محددة</span>
+                                </li>
+                                <li>
+                                    <svg class="check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                                        <polyline points="20 6 9 17 4 12"></polyline>
+                                    </svg>
+                                    <span>إدارة مخاطر محسوبة</span>
+                                </li>
+                                <li>
+                                    <svg class="check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                                        <polyline points="20 6 9 17 4 12"></polyline>
+                                    </svg>
+                                    <span>تحديثات لحظية</span>
+                                </li>
+                                <li>
+                                    <svg class="check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                                        <polyline points="20 6 9 17 4 12"></polyline>
+                                    </svg>
+                                    <span>نتائج شفافة منشورة</span>
+                                </li>
+                            </ul>
+                            <button class="card-button" onclick="openPayment('vip', 370, 'VIP CHANNEL')">اشترك في VIP الآن</button>
+                        </div>
+                    </div>
+
+                    <div class="pricing-card">
+                        <div class="card-content">
+                            <div class="card-badge">⚡ عرض خاص</div>
+                            <h3 class="card-title">LIVE TRADING</h3>
+                            <p class="card-description">تدريب عملي مباشر</p>
+                            <div class="card-price">555₪/شهر</div>
+                            <ul class="card-features">
+                                <li>
+                                    <svg class="check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                                        <polyline points="20 6 9 17 4 12"></polyline>
+                                    </svg>
+                                    <span>بث مباشر يومي 3 ساعات</span>
+                                </li>
+                                <li>
+                                    <svg class="check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                                        <polyline points="20 6 9 17 4 12"></polyline>
+                                    </svg>
+                                    <span>تداول حي أمامك</span>
+                                </li>
+                                <li>
+                                    <svg class="check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                                        <polyline points="20 6 9 17 4 12"></polyline>
+                                    </svg>
+                                    <span>أسئلة وأجوبة مباشرة</span>
+                                </li>
+                                <li>
+                                    <svg class="check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                                        <polyline points="20 6 9 17 4 12"></polyline>
+                                    </svg>
+                                    <span>تحليل السوق لحظياً</span>
+                                </li>
+                                <li>
+                                    <svg class="check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                                        <polyline points="20 6 9 17 4 12"></polyline>
+                                    </svg>
+                                    <span>حماية من الأخطاء</span>
+                                </li>
+                            </ul>
+                            <button class="card-button" onclick="openPayment('live', 555, 'LIVE TRADING')">ادخل البث الآن</button>
+                        </div>
+                    </div>
+
+                    <div class="pricing-card membership">
+                        <div class="card-content">
+                            <div class="card-badge">🎓 الأفضل للمبتدئين</div>
+                            <h3 class="card-title">العضوية التعليمية</h3>
+                            <p class="card-description">تعلم من الصفر + تدرب مجاني</p>
+                            <div class="card-price">1850₪</div>
+                            <div class="card-original-price">3000₪</div>
+                            <ul class="card-features">
+                                <li>
+                                    <svg class="check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                                        <polyline points="20 6 9 17 4 12"></polyline>
+                                    </svg>
+                                    <span>📚 شهرين تعليم كامل</span>
+                                </li>
+                                <li>
+                                    <svg class="check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                                        <polyline points="20 6 9 17 4 12"></polyline>
+                                    </svg>
+                                    <span>💡 أساسيات سوق الفوركس</span>
+                                </li>
+                                <li>
+                                    <svg class="check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                                        <polyline points="20 6 9 17 4 12"></polyline>
+                                    </svg>
+                                    <span>🎥 3 شهور Live Trading مجاناً</span>
+                                </li>
+                                <li>
+                                    <svg class="check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                                        <polyline points="20 6 9 17 4 12"></polyline>
+                                    </svg>
+                                    <span>📊 استراتيجيات مضمونة</span>
+                                </li>
+                                <li>
+                                    <svg class="check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                                        <polyline points="20 6 9 17 4 12"></polyline>
+                                    </svg>
+                                    <span>🎯 ابدأ من الصفر للاحتراف</span>
+                                </li>
+                            </ul>
+                            <button class="card-button" onclick="openPayment('education', 1850, 'العضوية التعليمية')">ابدأ رحلتك التعليمية</button>
+                            <button class="card-button-secondary" onclick="openMembershipModal()">📚 شاهد المحتوى التعليمي</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Social Proof -->
+                <div class="social-proof">
+                    <div class="proof-item">
+                        <div class="proof-value">85%</div>
+                        <div class="proof-label">متوسط العائد</div>
+                    </div>
+                    <div class="proof-item">
+                        <div class="proof-value">89%</div>
+                        <div class="proof-label">نسبة النجاح</div>
+                    </div>
+                    <div class="proof-item">
+                        <div class="proof-value">3247</div>
+                        <div class="proof-label">متداول نشط</div>
+                    </div>
+                    <div class="proof-item">
+                        <div class="proof-value">4.9/5</div>
+                        <div class="proof-label">تقييم الطلاب</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Final CTA -->
+        <section class="final-cta">
+            <div class="cta-content">
+                <h2>خطوتك الجدية اليوم… بتغي مستقبلك المالي بكرة</h2>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>© 2024 FX Global • مرخصة من وزرة التربية والتعليم الفلسطينية</p>
+        </footer>
+    </div>
+
+    <!-- Membership Modal -->
+    <div class="modal-overlay" id="membershipModal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeMembershipModal()">×</button>
+            <div class="modal-header">
+                <h2>🎓 محتوى العضوية التعليمية 📚</h2>
+                <p>تعلم من الصفر حتى الاحتراف في شهرين + 3 شهور تدريب عملي مجاناً</p>
+            </div>
+            <div class="modal-carousel">
+                <div class="carousel-container">
+                    <div class="carousel-slide active" data-slide="0">
+                        <img src="{% static 'new_pac/assets/565d8b9a48d1045d47ada6198ca92b488b64bd45.png' %}" alt="محتوى تعليمي 1">
+                        <div class="slide-content">
+                            <div class="slide-icon">📚</div>
+                            <h3>ابدأ رحلتك بثقة في عالم التداول</h3>
+                            <p>تعلم الأساسيات وتفهم كيف يتحرك السوق وتبني استراتيجية تداولك</p>
+                            <button class="view-full-btn" onclick="openLightbox(0)">🔍 عرض الصورة بالحجم الكامل</button>
+                        </div>
+                        <div class="slide-number">1 / 3</div>
+                    </div>
+                    <div class="carousel-slide" data-slide="1">
+                        <img src="{% static 'new_pac/assets/9c6be425213edb200602a4ea1d7c8b169100070f.png' %}" alt="محتوى تعليمي 2">
+                        <div class="slide-content">
+                            <div class="slide-icon">📈</div>
+                            <h3>أساسيات التداول و أقسام الأسواق المالية - الجزء الأول</h3>
+                            <p>الوسطاء، حساب النقاط، إدارة رأس المال، وبرامج التدول</p>
+                            <button class="view-full-btn" onclick="openLightbox(1)">🔍 عرض الصورة بالحجم الكامل</button>
+                        </div>
+                        <div class="slide-number">2 / 3</div>
+                    </div>
+                    <div class="carousel-slide" data-slide="2">
+                        <img src="{% static 'new_pac/assets/5f05bd6817ebd94cc6afcc3126c3b643395b1f00.png' %}" alt="محتوى تعليمي 3">
+                        <div class="slide-content">
+                            <div class="slide-icon">🎯</div>
+                            <h3>أساسيات التداول و أقسام الأسواق المالية - الجزء الثاني</h3>
+                            <p>الفجوات السعرية، الأوردرات، مناطق الطلب، والتأكيدات</p>
+                            <button class="view-full-btn" onclick="openLightbox(2)">🔍 عرض الصورة بالحجم الكامل</button>
+                        </div>
+                        <div class="slide-number">3 / 3</div>
+                    </div>
+                </div>
+                <button class="carousel-nav prev" onclick="prevSlide()">‹</button>
+                <button class="carousel-nav next" onclick="nextSlide()">›</button>
+                <div class="carousel-dots">
+                    <span class="dot active" onclick="goToSlide(0)"></span>
+                    <span class="dot" onclick="goToSlide(1)"></span>
+                    <span class="dot" onclick="goToSlide(2)"></span>
+                </div>
+            </div>
+            <div class="modal-cta">
+                <p>🎯 ابدأ رحلتك التعليمية الآن!</p>
+                <div class="modal-price">
+                    <span class="price-current">1850₪</span>
+                    <span class="price-original">3000₪</span>
+                </div>
+                <button class="modal-button" onclick="openPayment('education', 1850, 'العضوية التعليمية')">اشترك الآن - عرض محدود! 🚀</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Image Lightbox -->
+    <div class="lightbox-overlay" id="lightbox">
+        <button class="lightbox-close" onclick="closeLightbox()">×</button>
+        <div class="lightbox-counter" id="lightboxCounter">1 / 3</div>
+        <button class="lightbox-nav prev" onclick="lightboxPrev()">‹</button>
+        <button class="lightbox-nav next" onclick="lightboxNext()">›</button>
+        <div class="lightbox-image-container">
+            <img id="lightboxImage" src="" alt="صورة">
+        </div>
+    </div>
+
+    <!-- Payment Modal -->
+    <div class="modal-overlay" id="paymentModal">
+        <div class="modal-content" style="max-width: 500px;">
+            <button class="modal-close" onclick="closePaymentModal()">×</button>
+            <div class="modal-header">
+                <h2>💳 الدفع الآمن</h2>
+                <p>أدخل معلوماتك لإتمام عملية الدفع</p>
+            </div>
+            <form id="paymentForm" class="payment-form-modal">
+                <div class="form-group">
+                    <label for="payment-name">الاسم الكامل <span class="required">*</span></label>
+                    <input type="text" id="payment-name" name="fullName" required placeholder="أدخل اسمك الكامل">
+                </div>
+                <div class="form-group">
+                    <label for="payment-email">البريد الإلكتروني <span class="required">*</span></label>
+                    <input type="email" id="payment-email" name="email" required placeholder="example@email.com">
+                    <p class="form-hint">سنرسل الإيصال وتفاصيل الاشتراك إلى هذا البريد</p>
+                </div>
+                <div class="form-group">
+                    <label for="payment-phone">رقم الجوال (اختياري)</label>
+                    <input type="tel" id="payment-phone" name="phone" placeholder="0599123456">
+                </div>
+                <div class="payment-summary">
+                    <div class="summary-row">
+                        <span>الخطة:</span>
+                        <span id="selected-plan-name">-</span>
+                    </div>
+                    <div class="summary-row">
+                        <span>المبلغ:</span>
+                        <span id="selected-plan-price" class="price-highlight">-</span>
+                    </div>
+                </div>
+                <button type="submit" id="submit-payment-btn" class="modal-button">
+                    <span id="payment-btn-text">🔒 ادفع الآن</span>
+                    <span id="payment-btn-amount"></span>
+                </button>
+                <div class="security-note">
+                    <span class="security-icon">🔒</span>
+                    <p>جميع المعاملات مشفرة ومحمية بتقنية SSL 256-بت</p>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="{% static 'new_pac/script.js' %}"></script>
+</body>
+</html>
+

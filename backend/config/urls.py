@@ -4,7 +4,7 @@ URL configuration for config project.
 from django.contrib import admin
 from django.conf import settings
 from django.conf.urls.static import static
-from .views import landing_page, landing_page_no_contact, elite_program, black_friday, lahza_checkout, initialize_lahza_payment, verify_lahza_payment, lahza_webhook, test_email, privacy_policy, terms_of_service, return_exchange_policy, get_black_friday_end_date, get_pre_black_friday_date, download_instructions_pdf, packages_page, payment_success
+from .views import landing_page, landing_page_no_contact, elite_program, black_friday, lahza_checkout, initialize_lahza_payment, verify_lahza_payment, lahza_webhook, test_email, privacy_policy, terms_of_service, return_exchange_policy, get_black_friday_end_date, get_pre_black_friday_date, download_instructions_pdf, packages_page, payment_success, pricing_page
 from django.urls import path, include, re_path
 from django.views.static import serve
 
@@ -22,6 +22,11 @@ urlpatterns = [
     path('packages/payment/verify/', verify_lahza_payment, name='verify_packages_payment'),
     path('packages/payment/success/', payment_success, name='payment_success'),
     path('packages/payment/success/<str:reference>/', payment_success, name='payment_success_with_ref'),
+    path('pricing/', pricing_page, name='pricing_page'),
+    path('pricing/payment/initialize/', initialize_lahza_payment, name='initialize_pricing_payment'),
+    path('pricing/payment/verify/', verify_lahza_payment, name='verify_pricing_payment'),
+    path('pricing/payment/success/', payment_success, name='pricing_payment_success'),
+    path('pricing/payment/success/<str:reference>/', payment_success, name='pricing_payment_success_with_ref'),
     path('sales/', landing_page_no_contact, name='landing_page_no_contact'),
     path('api/black-friday/end-date/', get_black_friday_end_date, name='get_black_friday_end_date'),
     path('api/black-friday/pre-bf-date/', get_pre_black_friday_date, name='get_pre_black_friday_date'),

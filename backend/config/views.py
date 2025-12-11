@@ -646,6 +646,42 @@ def serve_packages_file(request, filename):
         return HttpResponseServerError(f'Error loading {filename}')
 
 
+def pricing_page(request):
+    """Render Pricing page from templates/new_pac directory."""
+    return render(request, 'new_pac/pricing.html')
+
+
+def serve_new_pac_file(request, filename):
+    """Serve CSS or JS files from the new-pac directory."""
+    # Get the new-pac directory path (one level up from backend)
+    new_pac_dir = BASE_DIR.parent / 'new-pac'
+    file_path = new_pac_dir / filename
+    
+    try:
+        with open(file_path, 'r', encoding='utf-8') as f:
+            content = f.read()
+        
+        # Determine content type based on file extension
+        if filename.endswith('.css'):
+            content_type = 'text/css'
+        elif filename.endswith('.js'):
+            content_type = 'application/javascript'
+        else:
+            content_type = 'text/plain'
+        
+        from django.http import HttpResponse
+        response = HttpResponse(content, content_type=content_type)
+        response['Cache-Control'] = 'public, max-age=3600'  # Cache for 1 hour
+        return response
+    except FileNotFoundError:
+        from django.http import HttpResponseNotFound
+        return HttpResponseNotFound(f'{filename} not found')
+    except Exception as e:
+        logger.error(f"[New-Pac] Error serving {filename}: {str(e)}", exc_info=True)
+        from django.http import HttpResponseServerError
+        return HttpResponseServerError(f'Error loading {filename}')
+
+
 @csrf_exempt
 @api_view(['POST'])
 @permission_classes([AllowAny])
@@ -670,6 +706,8 @@ def initialize_lahza_payment(request):
                 source = 'packages'
             elif 'checkout' in request.path:
                 source = 'checkout'
+            elif 'pricing' in request.path:
+                source = 'pricing'
             else:
                 source = 'black_friday'  # Default fallback
         offer_name = data.get('offerName', '')
@@ -697,7 +735,14 @@ def initialize_lahza_payment(request):
         
         # Generate reference
         import uuid
-        prefix = 'PK' if source == 'packages' else ('CK' if source == 'checkout' else 'BF')
+        if source == 'packages':
+            prefix = 'PK'
+        elif source == 'checkout':
+            prefix = 'CK'
+        elif source == 'pricing':
+            prefix = 'PR'
+        else:
+            prefix = 'BF'
         reference = f"{prefix}-{uuid.uuid4().hex[:12].upper()}"
         
         # Create payment record FIRST (before initializing with Lahza)
@@ -744,6 +789,8 @@ def initialize_lahza_payment(request):
             callback_url = request.build_absolute_uri(f'/checkout/payment/verify/?reference={reference}')
         elif source == 'packages':
             callback_url = request.build_absolute_uri(f'/packages/payment/verify/?reference={reference}')
+        elif source == 'pricing':
+            callback_url = request.build_absolute_uri(f'/pricing/payment/verify/?reference={reference}')
         else:
             callback_url = request.build_absolute_uri(f'/black-friday/payment/callback/?reference={reference}')
         

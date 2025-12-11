@@ -375,6 +375,24 @@ function animateValue(element, start, end, duration) {
 function setupProfitCalculator() {
   const lotInput = document.getElementById('lot-size');
   if (lotInput) {
+    // Check if inline script already set up the calculator
+    if (typeof window.calculateProfitInline === 'function') {
+      // Inline script is handling it, just sync the lotSize variable
+      lotInput.addEventListener('input', function() {
+        lotSize = parseFloat(this.value) || 0;
+        if (window.calculateProfitInline) {
+          window.calculateProfitInline();
+        } else {
+          calculateProfit();
+        }
+      });
+      // Sync initial value
+      lotSize = parseFloat(lotInput.value) || 0.1;
+      // Let inline script handle initial calculation
+      return;
+    }
+    
+    // Otherwise, use our own implementation
     lotInput.addEventListener('input', function() {
       lotSize = parseFloat(this.value) || 0;
       calculateProfit();

@@ -845,25 +845,38 @@
         <!-- Profit Calculator -->
         <section id="profit-calculator" class="py-20 px-4 bg-gradient-to-b from-black via-[#1a0033]/50 to-black relative overflow-hidden">
           <script>
-            // Ensure setLotSize is available immediately for onclick handlers
+            // Ensure setLotSize and calculateProfit are available immediately for onclick handlers
             (function() {
+              // Helper function to calculate profit
+              function calculateProfitInline() {
+                try {
+                  const totalPipsInput = document.getElementById('total-pips');
+                  const lotInput = document.getElementById('lot-size');
+                  const profitElement = document.getElementById('profit-amount');
+                  
+                  if (!totalPipsInput || !lotInput || !profitElement) return;
+                  
+                  const totalPipsValue = parseFloat(totalPipsInput.value.replace(/,/g, '')) || 17782;
+                  const lotSizeValue = parseFloat(lotInput.value) || 0.1;
+                  const profit = totalPipsValue * (lotSizeValue * 10);
+                  
+                  profitElement.textContent = '$' + Math.floor(profit).toLocaleString();
+                } catch (e) {
+                  console.error('Error in calculateProfitInline:', e);
+                }
+              }
+              
+              // Define setLotSize if not already defined
               if (typeof window.setLotSize === 'undefined') {
                 window.setLotSize = function(size) {
                   try {
                     const lotSizeValue = parseFloat(size);
                     const lotInput = document.getElementById('lot-size');
-                    const totalPipsInput = document.getElementById('total-pips');
-                    const profitElement = document.getElementById('profit-amount');
                     
                     if (lotInput) {
                       lotInput.value = size;
-                    }
-                    
-                    // Calculate profit directly - match html-version calculation
-                    if (totalPipsInput && profitElement) {
-                      const totalPipsValue = parseFloat(totalPipsInput.value.replace(/,/g, '')) || 17782;
-                      const profit = totalPipsValue * (lotSizeValue * 10);
-                      profitElement.textContent = '$' + Math.floor(profit).toLocaleString();
+                      // Calculate profit immediately
+                      calculateProfitInline();
                     }
                     
                     // Also trigger input event in case external script wants to handle it
@@ -875,6 +888,30 @@
                   }
                 };
               }
+              
+              // Initialize calculator when DOM is ready
+              function initCalculator() {
+                const lotInput = document.getElementById('lot-size');
+                if (lotInput) {
+                  // Add input event listener
+                  lotInput.addEventListener('input', function() {
+                    calculateProfitInline();
+                  });
+                  
+                  // Calculate initial profit
+                  calculateProfitInline();
+                }
+              }
+              
+              // Run initialization
+              if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', initCalculator);
+              } else {
+                initCalculator();
+              }
+              
+              // Expose calculateProfitInline globally
+              window.calculateProfitInline = calculateProfitInline;
             })();
           </script>
           <div class="floating-orb floating-orb--purple" style="top: 10%; inset-inline-start: 15%; width: 20rem; height: 20rem;"></div>

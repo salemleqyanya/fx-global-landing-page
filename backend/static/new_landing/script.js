@@ -312,17 +312,28 @@ function getCookie(name) {
 }
 
 // Profit Calculator Functions
-const totalPips = 17782;
 let lotSize = 0.1;
 
+function getTotalPips() {
+  const totalPipsInput = document.getElementById('total-pips');
+  if (totalPipsInput) {
+    // Remove commas and parse the value
+    const value = totalPipsInput.value.replace(/,/g, '');
+    return parseFloat(value) || 17782;
+  }
+  return 17782; // fallback
+}
+
 function calculateProfit() {
+  const totalPips = getTotalPips();
   const lot = parseFloat(lotSize) || 0;
   const profit = totalPips * (lot * 10);
   const profitElement = document.getElementById('profit-amount');
   
   if (profitElement) {
     // Animate the number change
-    animateValue(profitElement, 0, profit, 500);
+    const currentValue = parseFloat(profitElement.textContent.replace(/[^0-9.-]/g, '')) || 0;
+    animateValue(profitElement, currentValue, profit, 500);
   }
 }
 
@@ -334,6 +345,9 @@ function setLotSize(size) {
     calculateProfit();
   }
 }
+
+// Make setLotSize available globally immediately
+window.setLotSize = setLotSize;
 
 function easeOutCubic(t) {
   return 1 - Math.pow(1 - t, 3);
@@ -368,12 +382,11 @@ function setupProfitCalculator() {
       lotSize = parseFloat(this.value) || 0;
       calculateProfit();
     });
+    // Initialize with current value
+    lotSize = parseFloat(lotInput.value) || 0.1;
     calculateProfit();
   }
 }
-
-// Make setLotSize available globally for onclick handlers
-window.setLotSize = setLotSize;
 
 // Live Videos
 const videos = [
@@ -392,20 +405,61 @@ const videos = [
 ];
 
 function populateVideos() {
-  const videosGrid = document.getElementById('videos-grid');
-  if (!videosGrid) return;
-  
-  videos.forEach(video => {
-    const videoItem = document.createElement('div');
-    videoItem.className = 'video-item';
-    videoItem.innerHTML = `
-      <iframe
-        src="https://player.vimeo.com/video/${video.id}?title=0&byline=0&portrait=0&loop=1"
-        frameborder="0"
-        allow="autoplay; fullscreen; picture-in-picture"
-        allowfullscreen
-      ></iframe>
-    `;
-    videosGrid.appendChild(videoItem);
-  });
+  try {
+    const videosGrid = document.getElementById('videos-grid');
+    if (!videosGrid) {
+      console.warn('Videos grid element not found');
+      return;
+    }
+    
+    // Hide loading message if it exists
+    const loadingMsg = document.getElementById('videos-loading');
+    if (loadingMsg) {
+      loadingMsg.style.display = 'none';
+    }
+    
+    // Clear any existing content (but keep loading message structure)
+    const loadingElement = videosGrid.querySelector('#videos-loading');
+    videosGrid.innerHTML = '';
+    if (loadingElement) {
+      videosGrid.appendChild(loadingElement);
+    }
+    
+    if (!videos || videos.length === 0) {
+      console.warn('No videos to display');
+      if (loadingMsg) {
+        loadingMsg.style.display = 'block';
+        loadingMsg.innerHTML = '<p>لا توجد فيديوهات متاحة حالياً</p>';
+      }
+      return;
+    }
+    
+    videos.forEach((video, index) => {
+      try {
+        const videoItem = document.createElement('div');
+        videoItem.className = 'video-item';
+        videoItem.innerHTML = `
+          <iframe
+            src="https://player.vimeo.com/video/${video.id}?title=0&byline=0&portrait=0&loop=1"
+            frameborder="0"
+            allow="autoplay; fullscreen; picture-in-picture"
+            allowfullscreen
+            loading="lazy"
+          ></iframe>
+        `;
+        videosGrid.appendChild(videoItem);
+      } catch (error) {
+        console.error(`Error creating video item ${index}:`, error);
+      }
+    });
+    
+    // Ensure the section is visible
+    const videosSection = videosGrid.closest('section');
+    if (videosSection) {
+      videosSection.style.display = '';
+      videosSection.style.visibility = '';
+    }
+  } catch (error) {
+    console.error('Error populating videos:', error);
+  }
 }

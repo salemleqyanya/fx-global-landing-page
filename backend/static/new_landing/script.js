@@ -337,17 +337,15 @@ function calculateProfit() {
   }
 }
 
-function setLotSize(size) {
+// Define setLotSize and make it available globally immediately
+window.setLotSize = function setLotSize(size) {
   lotSize = parseFloat(size);
   const lotInput = document.getElementById('lot-size');
   if (lotInput) {
     lotInput.value = size;
     calculateProfit();
   }
-}
-
-// Make setLotSize available globally immediately
-window.setLotSize = setLotSize;
+};
 
 function easeOutCubic(t) {
   return 1 - Math.pow(1 - t, 3);

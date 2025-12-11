@@ -772,6 +772,39 @@
 
         <!-- Profit Calculator -->
         <section id="profit-calculator" class="py-20 px-4 bg-gradient-to-b from-black via-[#1a0033]/50 to-black relative overflow-hidden">
+          <script>
+            // Ensure setLotSize is available immediately for onclick handlers
+            (function() {
+              if (typeof window.setLotSize === 'undefined') {
+                window.setLotSize = function(size) {
+                  try {
+                    const lotSizeValue = parseFloat(size);
+                    const lotInput = document.getElementById('lot-size');
+                    const totalPipsInput = document.getElementById('total-pips');
+                    const profitElement = document.getElementById('profit-amount');
+                    
+                    if (lotInput) {
+                      lotInput.value = size;
+                    }
+                    
+                    // Calculate profit directly
+                    if (totalPipsInput && profitElement) {
+                      const totalPipsValue = parseFloat(totalPipsInput.value.replace(/,/g, '')) || 17782;
+                      const profit = totalPipsValue * (lotSizeValue * 10);
+                      profitElement.textContent = '$' + Math.floor(profit).toLocaleString('en-US');
+                    }
+                    
+                    // Also trigger input event in case external script wants to handle it
+                    if (lotInput) {
+                      lotInput.dispatchEvent(new Event('input', { bubbles: true }));
+                    }
+                  } catch (e) {
+                    console.error('Error in setLotSize:', e);
+                  }
+                };
+              }
+            })();
+          </script>
           <div class="floating-orb floating-orb--purple" style="top: 10%; inset-inline-start: 15%; width: 20rem; height: 20rem;"></div>
           <div class="floating-orb floating-orb--pink" style="bottom: 10%; inset-inline-end: 20%; width: 18rem; height: 18rem;"></div>
           <div class="max-w-6xl mx-auto relative z-10">

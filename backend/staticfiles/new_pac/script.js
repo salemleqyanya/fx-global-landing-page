@@ -355,25 +355,41 @@ if (modalOverlay) {
 }
 
 // Image Lightbox - Using assets from assets-config.js
-const images = window.ASSETS ? window.ASSETS.lightboxImages : [
-    'src/assets/565d8b9a48d1045d47ada6198ca92b488b64bd45.png',
-    'src/assets/9c6be425213edb200602a4ea1d7c8b169100070f.png',
-    'src/assets/5f05bd6817ebd94cc6afcc3126c3b643395b1f00.png'
-];
+// Get images from educational carousel slides ONLY (to avoid duplicates from modal)
+function getCarouselImages() {
+    // Only get images from the educational carousel section, specifically those with the clickable class
+    const educationalCarousel = document.querySelector('.educational-content-section .educational-carousel');
+    if (educationalCarousel) {
+        const slides = educationalCarousel.querySelectorAll('.carousel-slide img.carousel-image-clickable');
+        if (slides.length > 0) {
+            // Get exactly 3 images in order
+            const images = Array.from(slides).slice(0, 3).map(img => img.src);
+            // Remove any duplicates
+            const uniqueImages = [...new Set(images)];
+            return uniqueImages.length === 3 ? uniqueImages : images.slice(0, 3);
+        }
+    }
+    // Fallback: return empty array or default paths
+    return [];
+}
 
 let currentImageIndex = 0;
 
 function openLightbox(index) {
-    currentImageIndex = index;
-    const lightbox = document.getElementById('lightbox');
-    const lightboxImage = document.getElementById('lightboxImage');
-    const lightboxCounter = document.getElementById('lightboxCounter');
-    
-    if (lightbox && lightboxImage && lightboxCounter) {
-        lightboxImage.src = images[index];
-        lightboxCounter.textContent = `${index + 1} / ${images.length}`;
-        lightbox.classList.add('active');
-        document.body.style.overflow = 'hidden';
+    // Refresh images array in case DOM has changed - only from educational carousel
+    const carouselImages = getCarouselImages();
+    if (carouselImages.length > 0 && index >= 0 && index < carouselImages.length) {
+        currentImageIndex = index;
+        const lightbox = document.getElementById('lightbox');
+        const lightboxImage = document.getElementById('lightboxImage');
+        const lightboxCounter = document.getElementById('lightboxCounter');
+
+        if (lightbox && lightboxImage && lightboxCounter) {
+            lightboxImage.src = carouselImages[index];
+            lightboxCounter.textContent = `${index + 1} / ${carouselImages.length}`;
+            lightbox.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
     }
 }
 
@@ -386,22 +402,36 @@ function closeLightbox() {
 }
 
 function lightboxNext() {
-    currentImageIndex = (currentImageIndex + 1) % images.length;
-    updateLightbox();
+    const carouselImages = getCarouselImages();
+    if (carouselImages.length > 0) {
+        currentImageIndex = (currentImageIndex + 1) % carouselImages.length;
+        updateLightbox();
+    }
 }
 
 function lightboxPrev() {
-    currentImageIndex = (currentImageIndex - 1 + images.length) % images.length;
-    updateLightbox();
+    const carouselImages = getCarouselImages();
+    if (carouselImages.length > 0) {
+        currentImageIndex = (currentImageIndex - 1 + carouselImages.length) % carouselImages.length;
+        updateLightbox();
+    }
 }
 
 function updateLightbox() {
+    const carouselImages = getCarouselImages();
     const lightboxImage = document.getElementById('lightboxImage');
     const lightboxCounter = document.getElementById('lightboxCounter');
     
-    if (lightboxImage && lightboxCounter) {
-        lightboxImage.src = images[currentImageIndex];
-        lightboxCounter.textContent = `${currentImageIndex + 1} / ${images.length}`;
+    if (lightboxImage && lightboxCounter && carouselImages.length > 0) {
+        // Ensure index is within bounds
+        if (currentImageIndex >= carouselImages.length) {
+            currentImageIndex = 0;
+        }
+        if (currentImageIndex < 0) {
+            currentImageIndex = carouselImages.length - 1;
+        }
+        lightboxImage.src = carouselImages[currentImageIndex];
+        lightboxCounter.textContent = `${currentImageIndex + 1} / ${carouselImages.length}`;
     }
 }
 

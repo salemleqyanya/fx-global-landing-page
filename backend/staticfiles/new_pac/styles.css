@@ -1964,6 +1964,10 @@ body {
     width: 100%;
     height: 400px;
     overflow: hidden;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    transform: translateZ(0);
+    will-change: transform;
 }
 
 @media (min-width: 768px) {
@@ -2001,7 +2005,40 @@ body {
     width: 100%;
     height: 100%;
     object-fit: contain;
+    object-position: center;
     background: var(--color-black);
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: crisp-edges;
+    image-rendering: high-quality;
+    -webkit-backface-visibility: hidden;
+    -moz-backface-visibility: hidden;
+    -webkit-transform: translateZ(0);
+    -moz-transform: translateZ(0);
+    transform: translateZ(0);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    will-change: transform;
+}
+
+.carousel-image-clickable {
+    cursor: pointer;
+    transition: transform 0.2s ease;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.carousel-image-clickable:hover {
+    transform: scale(1.02);
+}
+
+.carousel-image-clickable:active {
+    transform: scale(0.98);
+}
+
+@media (max-width: 767px) {
+    .carousel-image-clickable {
+        cursor: pointer;
+        -webkit-tap-highlight-color: rgba(223, 46, 136, 0.3);
+    }
 }
 
 .slide-content {
@@ -2014,6 +2051,7 @@ body {
     padding: 1rem;
     padding-bottom: 4rem;
     background: linear-gradient(to top, var(--color-black), transparent);
+    direction: rtl;
 }
 
 @media (min-width: 768px) {
@@ -2049,9 +2087,14 @@ body {
     font-weight: bold;
     font-size: 1rem;
     color: var(--color-white);
-    text-align: center;
+    text-align: right; /* RTL: right-aligned for Arabic */
     margin-bottom: 0.5rem;
     text-shadow: 0 0 30px rgba(0, 0, 0, 1);
+    direction: rtl;
+    width: 100%;
+    max-width: 90%;
+    margin-right: auto;
+    margin-left: auto;
 }
 
 @media (min-width: 768px) {
@@ -2064,9 +2107,14 @@ body {
 .slide-content p {
     color: rgba(255, 255, 255, 0.9);
     font-size: 0.875rem;
-    text-align: center;
+    text-align: right; /* RTL: right-aligned for Arabic */
     margin-bottom: 1rem;
     text-shadow: 0 0 20px rgba(0, 0, 0, 1);
+    direction: rtl;
+    width: 100%;
+    max-width: 90%;
+    margin-right: auto;
+    margin-left: auto;
 }
 
 @media (min-width: 768px) {
@@ -2087,6 +2135,11 @@ body {
     cursor: pointer;
     transition: all 0.3s ease;
     box-shadow: 0 0 40px rgba(223, 46, 136, 0.9), 0 0 20px rgba(255, 215, 0, 0.6);
+    direction: rtl;
+    text-align: center;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
 }
 
 @media (min-width: 768px) {
@@ -2103,7 +2156,7 @@ body {
 .slide-number {
     position: absolute;
     top: 0.75rem;
-    left: 0.75rem;
+    right: 0.75rem; /* RTL: slide number on the right */
     background: linear-gradient(to bottom right, var(--color-primary), var(--color-secondary));
     padding: 0.5rem 1.5rem;
     border-radius: 9999px;
@@ -2117,7 +2170,7 @@ body {
 @media (min-width: 768px) {
     .slide-number {
         top: 1.5rem;
-        left: 1.5rem;
+        right: 1.5rem; /* RTL: slide number on the right */
         padding: 0.75rem 1.5rem;
         font-size: 1.25rem;
     }
@@ -2130,12 +2183,12 @@ body {
     background: linear-gradient(to bottom right, var(--color-primary), var(--color-secondary));
     border: 2px solid var(--color-gold);
     color: var(--color-white);
-    width: 3rem;
-    height: 3rem;
+    width: 2.5rem;
+    height: 2.5rem;
     border-radius: 50%;
-    font-size: 2rem;
+    font-size: 1.5rem;
     cursor: pointer;
-    display: none;
+    display: flex; /* Visible on all devices including mobile */
     align-items: center;
     justify-content: center;
     z-index: 10;
@@ -2145,7 +2198,9 @@ body {
 
 @media (min-width: 768px) {
     .carousel-nav {
-        display: flex;
+        width: 3rem;
+        height: 3rem;
+        font-size: 2rem;
     }
 }
 
@@ -2154,11 +2209,11 @@ body {
 }
 
 .carousel-nav.prev {
-    left: 1rem;
+    right: 1rem; /* RTL: previous is on the right */
 }
 
 .carousel-nav.next {
-    right: 1rem;
+    left: 1rem; /* RTL: next is on the left */
 }
 
 .carousel-dots {
@@ -2973,10 +3028,28 @@ html {
 
 /* Educational Content Section (Inline) */
 .educational-content-section {
-    padding: 3rem 1rem;
+    display: block !important; /* Always visible on all devices */
+    visibility: visible !important;
+    opacity: 1 !important;
+    padding: 2rem 1rem;
     background: linear-gradient(to bottom, rgba(0, 0, 0, 0.95), rgba(18, 9, 31, 0.98));
     position: relative;
     overflow: hidden;
+    width: 100%;
+}
+
+@media (max-width: 767px) {
+    .educational-content-section {
+        display: block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+    }
+}
+
+@media (min-width: 768px) {
+    .educational-content-section {
+        padding: 3rem 1rem;
+    }
 }
 
 .educational-content-wrapper {
@@ -2984,30 +3057,57 @@ html {
     margin: 0 auto;
     position: relative;
     z-index: 1;
+    display: block !important;
+    visibility: visible !important;
+}
+
+@media (max-width: 767px) {
+    .educational-content-wrapper,
+    .educational-content-header,
+    .educational-content-header h2,
+    .educational-content-header p {
+        display: block !important;
+        visibility: visible !important;
+    }
 }
 
 .educational-content-header {
     text-align: center;
     margin-bottom: 2.5rem;
+    direction: rtl;
 }
 
 .educational-content-header h2 {
-    font-size: 2rem;
+    font-size: 1.5rem;
     color: var(--color-white);
     font-weight: 700;
     margin-bottom: 0.75rem;
     text-shadow: 0 2px 10px rgba(223, 46, 136, 0.3);
 }
 
+@media (min-width: 768px) {
+    .educational-content-header h2 {
+        font-size: 2rem;
+    }
+}
+
 .educational-content-header p {
-    font-size: 1.125rem;
+    font-size: 1rem;
     color: rgba(255, 255, 255, 0.7);
+}
+
+@media (min-width: 768px) {
+    .educational-content-header p {
+        font-size: 1.125rem;
+    }
 }
 
 .educational-carousel {
     position: relative;
     width: 100%;
     margin-bottom: 2rem;
+    display: block !important;
+    visibility: visible !important;
 }
 
 .educational-carousel .carousel-container {
@@ -3015,6 +3115,16 @@ html {
     background: rgba(0, 0, 0, 0.6);
     border: 2px solid rgba(105, 67, 147, 0.3);
     overflow: hidden;
+    display: block !important;
+    visibility: visible !important;
+}
+
+@media (max-width: 767px) {
+    .educational-carousel,
+    .educational-carousel .carousel-container {
+        display: block !important;
+        visibility: visible !important;
+    }
 }
 
 .educational-cta {

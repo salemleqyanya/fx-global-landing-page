@@ -349,10 +349,60 @@
                                 </li>
                             </ul>
                             <button class="card-button" onclick="openPayment('education', 1850, 'العضوية التعليمية')">ابدأ رحلتك التعليمية</button>
-                            <button class="card-button-secondary" onclick="openMembershipModal()">📚 شاهد المحتوى التعليمي</button>
                         </div>
                     </div>
                     <div></div>
+                </div>
+
+                <!-- Educational Content Section (Inline) -->
+                <div class="educational-content-section desktop-only">
+                    <div class="educational-content-wrapper">
+                        <div class="educational-content-header">
+                            <h2>🎓 محتوى العضوية التعليمية 📚</h2>
+                            <p>تعلم من الصفر حتى الاحتراف في شهرين + 3 شهور تدريب عملي مجاناً</p>
+                        </div>
+                        <div class="educational-carousel">
+                            <div class="carousel-container">
+                                <div class="carousel-slide active" data-slide="0">
+                                    <img src="{% static 'new_pac/assets/565d8b9a48d1045d47ada6198ca92b488b64bd45.png' %}" alt="محتوى تعليمي 1">
+                                    <div class="slide-content">
+                                        <div class="slide-icon">📚</div>
+                                        <h3>ابدأ رحلتك بثقة في عالم التداول</h3>
+                                        <p>تعلم الأساسيات وتفهم كيف يتحرك السوق وتبني استراتيجية تداولك</p>
+                                        <button class="view-full-btn" onclick="openLightbox(0)">🔍 عرض الصورة بالحجم الكامل</button>
+                                    </div>
+                                    <div class="slide-number">1 / 3</div>
+                                </div>
+                                <div class="carousel-slide" data-slide="1">
+                                    <img src="{% static 'new_pac/assets/9c6be425213edb200602a4ea1d7c8b169100070f.png' %}" alt="محتوى تعليمي 2">
+                                    <div class="slide-content">
+                                        <div class="slide-icon">📈</div>
+                                        <h3>أساسيات التداول و أقسام الأسواق المالية - الجزء الأول</h3>
+                                        <p>الوسطاء، حساب النقاط، إدارة رأس المال، وبرامج التدول</p>
+                                        <button class="view-full-btn" onclick="openLightbox(1)">🔍 عرض الصورة بالحجم الكامل</button>
+                                    </div>
+                                    <div class="slide-number">2 / 3</div>
+                                </div>
+                                <div class="carousel-slide" data-slide="2">
+                                    <img src="{% static 'new_pac/assets/5f05bd6817ebd94cc6afcc3126c3b643395b1f00.png' %}" alt="محتوى تعليمي 3">
+                                    <div class="slide-content">
+                                        <div class="slide-icon">🎯</div>
+                                        <h3>أساسيات التداول و أقسام الأسواق المالية - الجزء الثاني</h3>
+                                        <p>الفجوات السعرية، الأوردرات، مناطق الطلب، والتأكيدات</p>
+                                        <button class="view-full-btn" onclick="openLightbox(2)">🔍 عرض الصورة بالحجم الكامل</button>
+                                    </div>
+                                    <div class="slide-number">3 / 3</div>
+                                </div>
+                            </div>
+                            <button class="carousel-nav prev" onclick="prevSlide()">‹</button>
+                            <button class="carousel-nav next" onclick="nextSlide()">›</button>
+                            <div class="carousel-dots">
+                                <span class="dot active" onclick="goToSlide(0)"></span>
+                                <span class="dot" onclick="goToSlide(1)"></span>
+                                <span class="dot" onclick="goToSlide(2)"></span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- Mobile Grid -->
@@ -553,7 +603,6 @@
                                 </li>
                             </ul>
                             <button class="card-button" onclick="openPayment('education', 1850, 'العضوية التعليمية')">ابدأ رحلتك التعليمية</button>
-                            <button class="card-button-secondary" onclick="openMembershipModal()">📚 شاهد المحتوى التعليمي</button>
                         </div>
                     </div>
                 </div>
@@ -584,6 +633,80 @@
         <section class="final-cta">
             <div class="cta-content">
                 <h2>خطوتك الجدية اليوم… بتغي مستقبلك المالي بكرة</h2>
+            </div>
+        </section>
+
+        <!-- Contact Form Section -->
+        <section class="contact-section" id="contact">
+            <div class="contact-stars-background"></div>
+            <div class="contact-container">
+                <div class="contact-header">
+                    <h2 class="contact-title">
+                        <span class="contact-title-icon">💬</span>
+                        اذا عندك اي استفسار اتركلنا رقمك و فريقنا رح يتواصل معك فورا
+                    </h2>
+                    <p class="contact-subtitle">
+                        <span class="contact-subtitle-icon">👤</span>
+                        نحن هنا لمساعدتك في كل خطوة من رحلتك في التداول
+                    </p>
+                </div>
+                <div class="contact-form-wrapper">
+                    <form id="contactForm" class="contact-form">
+                        <div class="form-row">
+                            <div class="form-group-wrapper">
+                                <label for="contact-name" class="form-label">
+                                    <span class="label-icon">👤</span>
+                                    <span>الاسم الكامل <span class="required">*</span></span>
+                                </label>
+                                <input type="text" id="contact-name" name="name" required placeholder="ادخل اسمك الكامل" class="form-input">
+                            </div>
+                            <div class="form-group-wrapper">
+                                <label for="contact-mobile" class="form-label">
+                                    <span class="label-icon">📱</span>
+                                    <span>رقم الجوال <span class="required">*</span></span>
+                                </label>
+                                <input type="tel" id="contact-mobile" name="mobile" required placeholder="0599123456" class="form-input">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group-wrapper">
+                                <label for="contact-email" class="form-label">
+                                    <span class="label-icon">✉️</span>
+                                    <span>البريد الإلكتروني <span class="required">*</span></span>
+                                </label>
+                                <input type="email" id="contact-email" name="email" required placeholder="example@email.com" class="form-input">
+                            </div>
+                            <div class="form-group-wrapper">
+                                <label for="contact-address" class="form-label">
+                                    <span class="label-icon">📍</span>
+                                    <span>العنوان <span class="required">*</span></span>
+                                </label>
+                                <input type="text" id="contact-address" name="address" required placeholder="ادخل عنوانك الكامل" class="form-input">
+                            </div>
+                        </div>
+                        <div class="form-group-wrapper form-group-full">
+                            <label for="contact-message" class="form-label">
+                                <span class="label-icon">💭</span>
+                                <span>الرسالة <span class="required">*</span></span>
+                            </label>
+                            <textarea id="contact-message" name="message" rows="5" required placeholder="اكتب رسالتك هنا..." class="form-input form-textarea"></textarea>
+                        </div>
+                        <button type="submit" class="contact-submit-btn">
+                            <span class="btn-text">أرسل الرسالة</span>
+                            <span class="btn-arrow">→</span>
+                        </button>
+                        <div class="contact-note">
+                            <span class="contact-note-icon">💬</span>
+                            <p class="contact-note-text">فريقنا رح يتواصل معك خلال أقل من 24 ساعة</p>
+                        </div>
+                    </form>
+                    <div id="contactMessage" class="contact-message" style="display: none;">
+                        <div class="message-content">
+                            <span class="message-icon"></span>
+                            <p class="message-text"></p>
+                        </div>
+                    </div>
+                </div>
             </div>
         </section>
 

@@ -651,6 +651,78 @@ def pricing_page(request):
     return render(request, 'new_pac/pricing.html')
 
 
+@csrf_exempt
+@api_view(['POST'])
+@permission_classes([AllowAny])
+def pricing_contact(request):
+    """Handle contact form submission from pricing page."""
+    from django.http import JsonResponse
+    from contacts.models import CustomerContact
+    
+    try:
+        data = request.data
+        
+        # Extract form data
+        name = data.get('name', '').strip()
+        mobile = data.get('mobile', '').strip()
+        email = data.get('email', '').strip()
+        address = data.get('address', '').strip()
+        message = data.get('message', '').strip()
+        
+        # Validate required fields
+        if not name:
+            return JsonResponse({
+                'success': False,
+                'error': 'الاسم مطلوب'
+            }, status=400)
+        
+        if not mobile:
+            return JsonResponse({
+                'success': False,
+                'error': 'رقم الجوال مطلوب'
+            }, status=400)
+        
+        if not email:
+            return JsonResponse({
+                'success': False,
+                'error': 'البريد الإلكتروني مطلوب'
+            }, status=400)
+        
+        if not message:
+            return JsonResponse({
+                'success': False,
+                'error': 'الرسالة مطلوبة'
+            }, status=400)
+        
+        # Create contact record
+        # Store email in message field if needed, or use notes field
+        full_message = f"البريد الإلكتروني: {email}\n\n{message}"
+        
+        contact = CustomerContact.objects.create(
+            name=name,
+            phone=mobile,
+            whatsapp=mobile,  # Use mobile as whatsapp if not provided separately
+            address=address,
+            message=full_message,
+            notes=f"Email: {email}",  # Store email in notes field
+            landing_page=None  # Not associated with a specific landing page
+        )
+        
+        logger.info(f"[Pricing Contact] New contact created: {name} - {mobile}")
+        
+        return JsonResponse({
+            'success': True,
+            'message': 'تم إرسال رسالتك بنجاح. فريقنا رح يتواصل معك قريباً.'
+        })
+        
+    except Exception as e:
+        logger.error(f"[Pricing Contact] Error processing contact form: {str(e)}", exc_info=True)
+        return JsonResponse({
+            'success': False,
+            'error': 'حدث خطأ أثناء إرسال الرسالة. يرجى المحاولة مرة أخرى.'
+        }, status=500)
+
+
 def serve_new_pac_file(request, filename):
     """Serve CSS or JS files from the new-pac directory."""
     # Get the new-pac directory path (one level up from backend)

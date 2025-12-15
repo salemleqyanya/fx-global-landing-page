@@ -880,6 +880,143 @@ function initPaymentForm() {
     }
 }
 
+// Contact Form Handler
+async function handleContactSubmit(e) {
+    e.preventDefault();
+    
+    const form = e.target;
+    const submitBtn = form.querySelector('.contact-submit-btn');
+    const originalText = submitBtn.innerHTML;
+    
+    // Disable button and show loading
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = '<span>⏳ جاري الإرسال...</span>';
+    
+    // Get form data
+    const formData = new FormData(form);
+    const data = {
+        name: formData.get('name'),
+        mobile: formData.get('mobile'),
+        email: formData.get('email'),
+        address: formData.get('address'),
+        message: formData.get('message')
+    };
+    
+    try {
+        // Send to backend
+        const response = await fetch('/pricing/contact/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCookie('csrftoken')
+            },
+            body: JSON.stringify(data)
+        });
+        
+        const result = await response.json();
+        
+        if (result.success) {
+            // Success
+            submitBtn.innerHTML = '<span>✅ تم الإرسال بنجاح!</span>';
+            form.reset();
+            
+            // Show success message inline
+            showContactMessage('success', 'شكراً لك! فريقنا رح يتواصل معك خلال أقل من 24 ساعة.');
+            
+            // Reset button after 3 seconds
+            setTimeout(() => {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalText;
+            }, 3000);
+        } else {
+            throw new Error(result.error || 'حدث خطأ أثناء الإرسال');
+        }
+    } catch (error) {
+        console.error('Contact form error:', error);
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = originalText;
+        showContactMessage('error', 'حدث خطأ أثناء إرسال الرسالة. يرجى المحاولة مرة أخرى أو التواصل معنا مباشرة.');
+    }
+}
+
+function showContactMessage(type, message) {
+    const messageEl = document.getElementById('contactMessage');
+    if (!messageEl) return;
+    
+    const messageIcon = messageEl.querySelector('.message-icon');
+    const messageText = messageEl.querySelector('.message-text');
+    
+    if (!messageIcon || !messageText) return;
+    
+    // Clear any previous show class
+    messageEl.classList.remove('show');
+    
+    // Set message content
+    messageText.textContent = message;
+    
+    // Set icon and styling based on type
+    if (type === 'success') {
+        messageIcon.textContent = '✅';
+        messageEl.className = 'contact-message contact-message-success';
+    } else {
+        messageIcon.textContent = '⚠️';
+        messageEl.className = 'contact-message contact-message-error';
+    }
+    
+    // Show message with animation
+    messageEl.style.display = 'block';
+    
+    // Force reflow for animation
+    messageEl.offsetHeight;
+    
+    setTimeout(() => {
+        messageEl.classList.add('show');
+        
+        // Scroll message into view smoothly
+        messageEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }, 10);
+    
+    // Auto-hide success messages after 5 seconds
+    if (type === 'success') {
+        setTimeout(() => {
+            hideContactMessage();
+        }, 5000);
+    }
+}
+
+function hideContactMessage() {
+    const messageEl = document.getElementById('contactMessage');
+    if (messageEl) {
+        messageEl.classList.remove('show');
+        setTimeout(() => {
+            messageEl.style.display = 'none';
+        }, 300);
+    }
+}
+
+function initContactForm() {
+    const contactForm = document.getElementById('contactForm');
+    if (contactForm) {
+        contactForm.addEventListener('submit', handleContactSubmit);
+    }
+}
+
+// Helper function to get CSRF token
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
 // Initialize on page load
 function initializeApp() {
     console.log('Initializing app...');
@@ -892,6 +1029,8 @@ function initializeApp() {
     initBackgroundEffects();
     initBannerSnowflakes();
     initPaymentForm();
+    initContactForm();
+    updateCarousel(); // Initialize educational carousel
     
     // Test after a short delay
     setTimeout(() => {

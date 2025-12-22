@@ -1303,7 +1303,7 @@ body {
 .pricing-section {
     position: relative;
     margin-top: -2rem;
-    padding: 2rem 0;
+    padding: 1.5rem 0;
 }
 
 .pricing-background {
@@ -1332,21 +1332,24 @@ body {
 
 .pricing-header {
     text-align: center;
-    margin-bottom: 1rem;
+    margin-bottom: 1.5rem;
     animation: fadeInUp 0.6s ease-out 0.3s both;
+    padding: 0 0.5rem;
 }
 
 @media (min-width: 768px) {
     .pricing-header {
         margin-bottom: 2rem;
+        padding: 0;
     }
 }
 
 .pricing-header h2 {
     color: var(--color-white);
     margin-bottom: 1rem;
-    font-size: 1.5rem;
+    font-size: 1.375rem;
     padding: 0 1rem;
+    line-height: 1.3;
 }
 
 @media (min-width: 768px) {
@@ -1358,8 +1361,9 @@ body {
 .pricing-subtitle {
     color: var(--color-secondary);
     font-weight: bold;
-    font-size: 0.875rem;
+    font-size: 0.8125rem;
     padding: 0 1rem;
+    line-height: 1.4;
 }
 
 @media (min-width: 768px) {
@@ -1371,10 +1375,17 @@ body {
 .pricing-grid {
     display: grid;
     grid-template-columns: 1fr;
-    gap: 2rem;
+    gap: 2.5rem;
     max-width: 1280px;
     margin: 0 auto;
-    padding: 2rem 1rem;
+    padding: 1.5rem 1rem;
+}
+
+@media (min-width: 768px) {
+    .pricing-grid {
+        gap: 2rem;
+        padding: 2rem 1rem;
+    }
 }
 
 @media (min-width: 768px) {
@@ -1411,10 +1422,392 @@ body {
     grid-template-columns: 1fr 1fr 1fr !important;
     margin-top: 2rem;
 }
+
+/* Educational Membership Section - Redesigned */
+.educational-membership-section {
+    margin-top: 4rem;
+    padding: 3rem 1rem;
+    position: relative;
+}
+
+.educational-membership-header {
+    text-align: center;
+    margin-bottom: 3rem;
+    position: relative;
+}
+
+.section-main-title {
+    font-size: 2.5rem;
+    font-weight: 800;
+    background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 50%, var(--color-gold) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    text-shadow: 0 0 40px rgba(223, 46, 136, 0.3);
+}
+
+.title-icon {
+    font-size: 2rem;
+    filter: drop-shadow(0 0 10px rgba(255, 215, 0, 0.6));
+    animation: iconFloat 3s ease-in-out infinite;
+}
+
+.title-icon:nth-child(3) {
+    animation-delay: 0.5s;
+}
+
+@keyframes iconFloat {
+    0%, 100% {
+        transform: translateY(0) rotate(0deg);
+    }
+    50% {
+        transform: translateY(-10px) rotate(5deg);
+    }
+}
+
+.section-subtitle {
+    font-size: 1.125rem;
+    color: rgba(255, 255, 255, 0.8);
+    font-weight: 500;
+    max-width: 800px;
+    margin: 0 auto;
+    line-height: 1.6;
+}
+
+/* Educational Membership Wrapper - Side by Side Layout */
+.educational-membership-wrapper {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2.5rem;
+    max-width: 1400px;
+    margin: 0 auto;
+    align-items: start;
+}
+
+@media (max-width: 1023px) {
+    .educational-membership-wrapper {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+    }
+}
+
+/* Redesigned Membership Card */
+.pricing-card.membership.redesigned {
+    position: relative;
+    background: linear-gradient(135deg, rgba(105, 67, 147, 0.15) 0%, rgba(223, 46, 136, 0.15) 100%);
+    border: 2px solid transparent;
+    border-radius: 1.5rem;
+    padding: 2rem;
+    overflow: visible;
+    box-shadow: 
+        0 20px 60px rgba(105, 67, 147, 0.3),
+        0 0 0 1px rgba(105, 67, 147, 0.5),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.pricing-card.membership.redesigned::before {
+    content: '';
+    position: absolute;
+    inset: -2px;
+    border-radius: 1.5rem;
+    padding: 2px;
+    background: linear-gradient(135deg, var(--color-primary), var(--color-secondary), var(--color-gold));
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    opacity: 0.6;
+    animation: borderGlow 3s ease-in-out infinite;
+}
+
+@keyframes borderGlow {
+    0%, 100% {
+        opacity: 0.6;
+        filter: blur(0px);
+    }
+    50% {
+        opacity: 1;
+        filter: blur(2px);
+    }
+}
+
+.membership-card-glow {
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(223, 46, 136, 0.2) 0%, transparent 70%);
+    pointer-events: none;
+    animation: glowPulse 4s ease-in-out infinite;
+}
+
+@keyframes glowPulse {
+    0%, 100% {
+        opacity: 0.3;
+        transform: scale(1);
+    }
+    50% {
+        opacity: 0.6;
+        transform: scale(1.1);
+    }
+}
+
+.premium-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: linear-gradient(135deg, var(--color-gold) 0%, #FFC700 100%);
+    color: var(--color-black);
+    padding: 0.625rem 1.25rem;
+    border-radius: 9999px;
+    font-size: 0.875rem;
+    font-weight: 800;
+    margin-bottom: 1.5rem;
+    box-shadow: 
+        0 4px 20px rgba(255, 215, 0, 0.5),
+        0 0 0 3px rgba(0, 0, 0, 0.3);
+    text-align: center;
+    width: 100%;
+    justify-content: center;
+    animation: badgeShine 3s ease-in-out infinite;
+}
+
+@keyframes badgeShine {
+    0%, 100% {
+        box-shadow: 0 4px 20px rgba(255, 215, 0, 0.5), 0 0 0 3px rgba(0, 0, 0, 0.3);
+    }
+    50% {
+        box-shadow: 0 4px 30px rgba(255, 215, 0, 0.8), 0 0 0 3px rgba(0, 0, 0, 0.3);
+    }
+}
+
+.badge-icon {
+    font-size: 1.125rem;
+    animation: iconRotate 3s ease-in-out infinite;
+}
+
+@keyframes iconRotate {
+    0%, 100% {
+        transform: rotate(0deg);
+    }
+    25% {
+        transform: rotate(-10deg);
+    }
+    75% {
+        transform: rotate(10deg);
+    }
+}
+
+.pricing-card.membership.redesigned .card-title {
+    font-size: 2rem;
+    margin-bottom: 0.75rem;
+    background: linear-gradient(135deg, var(--color-white) 0%, var(--color-secondary) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.pricing-card.membership.redesigned .card-description {
+    font-size: 1rem;
+    color: rgba(255, 255, 255, 0.9);
+    margin-bottom: 2rem;
+}
+
+.features-container {
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 1rem;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+    border: 1px solid rgba(105, 67, 147, 0.2);
+}
+
+.pricing-card.membership.redesigned .card-features li {
+    font-size: 0.9375rem;
+    margin-bottom: 0.875rem;
+    padding: 0.5rem 0;
+    transition: transform 0.2s ease;
+}
+
+.pricing-card.membership.redesigned .card-features li:hover {
+    transform: translateX(-5px);
+}
+
+.pricing-card.membership.redesigned .check-icon {
+    width: 1.5rem;
+    height: 1.5rem;
+    color: var(--color-secondary);
+    filter: drop-shadow(0 0 8px rgba(223, 46, 136, 0.6));
+}
+
+.card-button.membership-contact-btn.redesigned-btn {
+    width: 100%;
+    padding: 1.25rem 2rem;
+    background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%);
+    border: 2px solid rgba(255, 215, 0, 0.3);
+    border-radius: 1rem;
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: var(--color-white);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 
+        0 10px 40px rgba(223, 46, 136, 0.4),
+        0 0 0 0 rgba(223, 46, 136, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.card-button.membership-contact-btn.redesigned-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    transition: left 0.5s;
+}
+
+.card-button.membership-contact-btn.redesigned-btn:hover::before {
+    left: 100%;
+}
+
+.card-button.membership-contact-btn.redesigned-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 
+        0 15px 50px rgba(223, 46, 136, 0.6),
+        0 0 0 4px rgba(223, 46, 136, 0.3);
+    border-color: rgba(255, 215, 0, 0.6);
+}
+
+.btn-arrow {
+    font-size: 1.5rem;
+    transition: transform 0.3s ease;
+}
+
+.card-button.membership-contact-btn.redesigned-btn:hover .btn-arrow {
+    transform: translateX(5px);
+}
+
+/* Redesigned Content Preview Card */
+.educational-content-inline.redesigned {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.content-preview-card {
+    background: linear-gradient(135deg, rgba(0, 0, 0, 0.8) 0%, rgba(18, 9, 31, 0.9) 100%);
+    border: 2px solid rgba(105, 67, 147, 0.4);
+    border-radius: 1.5rem;
+    padding: 2rem;
+    box-shadow: 
+        0 20px 60px rgba(105, 67, 147, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    overflow: hidden;
+}
+
+.content-preview-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--color-primary), var(--color-secondary), var(--color-gold));
+    opacity: 0.8;
+}
+
+.preview-header {
+    text-align: center;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid rgba(105, 67, 147, 0.3);
+}
+
+.preview-header h3 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--color-white);
+    margin-bottom: 0.5rem;
+    background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.preview-header p {
+    font-size: 0.875rem;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.educational-content-inline.redesigned .educational-carousel {
+    position: relative;
+    width: 100%;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.educational-content-inline.redesigned .educational-carousel .carousel-container {
+    height: 100%;
+    min-height: 500px;
+    border-radius: 1rem;
+    background: rgba(0, 0, 0, 0.4);
+    border: 1px solid rgba(105, 67, 147, 0.3);
+    overflow: hidden;
+    flex: 1;
+}
+
+@media (max-width: 1023px) {
+    .educational-membership-section {
+        margin-top: 2rem;
+        padding: 2rem 1rem;
+    }
+    
+    .section-main-title {
+        font-size: 1.75rem;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    
+    .title-icon {
+        font-size: 1.5rem;
+    }
+    
+    .section-subtitle {
+        font-size: 1rem;
+    }
+    
+    .educational-content-inline.redesigned .educational-carousel .carousel-container {
+        min-height: 400px;
+    }
+}
 }
 
 .pricing-grid.mobile-only {
     display: grid;
+    grid-template-columns: 1fr;
+    gap: 2.5rem;
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 1.5rem 1rem;
 }
 
 @media (min-width: 768px) {
@@ -1428,12 +1821,13 @@ body {
     background: linear-gradient(to bottom right, rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.9));
     border: 2px solid rgba(105, 67, 147, 0.5);
     border-radius: 1rem;
-    padding: 1.25rem;
+    padding: 1.5rem 1rem;
     overflow: visible;
     box-shadow: 0 15px 40px rgba(105, 67, 147, 0.3);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
     animation: fadeInUp 0.6s ease-out;
     animation-fill-mode: both;
+    margin-bottom: 2rem;
 }
 
 .pricing-card:nth-child(1) {
@@ -1451,6 +1845,7 @@ body {
 @media (min-width: 768px) {
     .pricing-card {
         padding: 2rem;
+        margin-bottom: 0;
     }
 }
 
@@ -1462,6 +1857,40 @@ body {
     background: linear-gradient(to bottom right, var(--color-primary), #7C4FA3, var(--color-secondary));
     border: 3px solid rgba(255, 215, 0, 0.4);
     box-shadow: 0 20px 60px rgba(223, 46, 136, 0.4), 0 0 80px rgba(255, 215, 0, 0.2);
+}
+
+@media (max-width: 767px) {
+    .pricing-card.popular {
+        border-width: 2px;
+        box-shadow: 0 15px 40px rgba(223, 46, 136, 0.3), 0 0 60px rgba(255, 215, 0, 0.15);
+    }
+}
+
+.pricing-card.membership {
+    /* Special styling for membership card */
+}
+
+@media (max-width: 767px) {
+    .pricing-card.membership {
+        padding: 1.5rem 1rem;
+    }
+    
+    .pricing-card.membership .card-features {
+        margin-bottom: 1.5rem;
+    }
+    
+    .pricing-card.membership .card-features li {
+        font-size: 0.8125rem;
+        margin-bottom: 0.625rem;
+    }
+    
+    .pricing-card.membership .card-price {
+        display: none !important;
+    }
+    
+    .pricing-card.membership .card-original-price {
+        display: none !important;
+    }
 }
 
 
@@ -1496,17 +1925,24 @@ body {
 
 @media (max-width: 767px) {
     .popular-badge {
-        top: -1.25rem;
-        padding: 0.4rem 1rem;
-        font-size: 0.75rem;
+        top: -1rem;
+        padding: 0.375rem 1rem;
+        font-size: 0.6875rem;
+        left: 50%;
+        transform: translateX(-50%);
+        white-space: nowrap;
     }
     
     .popular-badge-left {
-        top: -1.25rem;
+        top: -1rem;
+        left: 50%;
+        transform: translateX(-50%);
     }
     
     .popular-badge-right {
-        top: -1.25rem;
+        top: -1rem;
+        left: 50%;
+        transform: translateX(-50%);
     }
 }
 
@@ -1514,11 +1950,22 @@ body {
     display: inline-block;
     background: rgba(255, 215, 0, 0.2);
     color: var(--color-gold);
-    padding: 0.25rem 0.75rem;
+    padding: 0.375rem 0.875rem;
     border-radius: 0.5rem;
     font-size: 0.75rem;
     font-weight: bold;
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.75rem;
+    text-align: center;
+    width: 100%;
+}
+
+@media (min-width: 768px) {
+    .card-badge {
+        padding: 0.25rem 0.75rem;
+        margin-bottom: 0.5rem;
+        width: auto;
+        display: inline-block;
+    }
 }
 
 .card-content {
@@ -1527,17 +1974,25 @@ body {
     overflow: hidden;
 }
 
+@media (max-width: 767px) {
+    .card-content {
+        padding: 0;
+    }
+}
+
 .card-title {
     text-align: center;
     margin-bottom: 0.75rem;
     font-weight: bold;
-    font-size: 1.25rem;
+    font-size: 1.125rem;
     color: var(--color-secondary);
+    line-height: 1.3;
 }
 
 @media (min-width: 768px) {
     .card-title {
         font-size: 1.5rem;
+        margin-bottom: 0.75rem;
     }
 }
 
@@ -1549,13 +2004,26 @@ body {
     text-align: center;
     font-weight: bold;
     font-size: 0.75rem;
-    margin-bottom: 0.75rem;
+    margin-bottom: 1rem;
     color: var(--color-gray-400);
+    line-height: 1.4;
+}
+
+.card-description strong {
+    font-size: 1.125rem !important;
+    display: block;
+    margin-top: 0.25rem;
+    line-height: 1.3;
 }
 
 @media (min-width: 768px) {
     .card-description {
         font-size: 0.875rem;
+        margin-bottom: 0.75rem;
+    }
+    
+    .card-description strong {
+        font-size: 2em !important;
     }
 }
 
@@ -1566,14 +2034,16 @@ body {
 .card-price {
     text-align: center;
     font-weight: bold;
-    font-size: 1.875rem;
-    margin-bottom: 0.25rem;
+    font-size: 1.75rem;
+    margin-bottom: 0.5rem;
     color: var(--color-white);
+    line-height: 1.2;
 }
 
 @media (min-width: 768px) {
     .card-price {
         font-size: 2.25rem;
+        margin-bottom: 0.25rem;
     }
 }
 
@@ -1582,29 +2052,50 @@ body {
     color: var(--color-gray-400);
     text-decoration: line-through;
     font-weight: bold;
-    font-size: 1rem;
-    margin-bottom: 1rem;
+    font-size: 0.875rem;
+    margin-bottom: 1.25rem;
+}
+
+@media (min-width: 768px) {
+    .card-original-price {
+        font-size: 1rem;
+        margin-bottom: 1rem;
+    }
 }
 
 .card-features {
     list-style: none;
     margin-bottom: 1.5rem;
     text-align: right;
+    padding: 0;
 }
 
 .card-features li {
     display: flex;
     align-items: flex-start;
-    gap: 0.75rem;
-    margin-bottom: 0.75rem;
+    gap: 0.625rem;
+    margin-bottom: 0.625rem;
     font-weight: bold;
-    font-size: 0.875rem;
+    font-size: 0.8125rem;
     color: var(--color-gray-300);
+    line-height: 1.5;
+}
+
+.card-features li:last-child {
+    margin-bottom: 0;
+}
+
+@media (min-width: 768px) {
+    .card-features li {
+        gap: 0.75rem;
+        margin-bottom: 0.75rem;
+        font-size: 0.875rem;
+    }
 }
 
 .check-icon {
-    width: 1.25rem;
-    height: 1.25rem;
+    width: 1.125rem;
+    height: 1.125rem;
     flex-shrink: 0;
     margin-top: 0.125rem;
     color: var(--color-secondary);
@@ -1615,9 +2106,7 @@ body {
         width: 1.5rem;
         height: 1.5rem;
     }
-}
-
-@media (min-width: 768px) {
+    
     .card-features li {
         font-size: 1rem;
     }
@@ -1637,11 +2126,11 @@ body {
 
 .card-button {
     width: 100%;
-    padding: 1.5rem;
+    padding: 1rem 1.5rem;
     border-radius: 0.75rem;
     border: none;
     font-weight: bold;
-    font-size: 1rem;
+    font-size: 0.875rem;
     text-transform: uppercase;
     letter-spacing: 0.025em;
     cursor: pointer;
@@ -1651,6 +2140,14 @@ body {
     box-shadow: 0 8px 30px rgba(223, 46, 136, 0.4);
     position: relative;
     overflow: hidden;
+    line-height: 1.4;
+}
+
+@media (min-width: 768px) {
+    .card-button {
+        padding: 1.5rem;
+        font-size: 1rem;
+    }
 }
 
 .card-button::before {
@@ -1706,8 +2203,9 @@ body {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    gap: 1.5rem;
-    margin-top: 1rem;
+    gap: 1rem;
+    margin-top: 2rem;
+    padding: 0 1rem;
     color: var(--color-gray-400);
     animation: fadeIn 0.6s ease-out 0.6s both;
 }
@@ -1731,6 +2229,8 @@ body {
 .proof-item {
     text-align: center;
     transition: transform 0.3s ease;
+    flex: 1 1 calc(50% - 0.5rem);
+    min-width: calc(50% - 0.5rem);
 }
 
 .proof-item:hover {
@@ -1741,10 +2241,15 @@ body {
     color: var(--color-secondary);
     margin-bottom: 0.25rem;
     font-weight: bold;
-    font-size: 1.25rem;
+    font-size: 1.125rem;
 }
 
 @media (min-width: 768px) {
+    .proof-item {
+        flex: none;
+        min-width: auto;
+    }
+    
     .proof-value {
         font-size: 1.5rem;
     }
@@ -1752,7 +2257,7 @@ body {
 
 .proof-label {
     font-weight: bold;
-    font-size: 0.875rem;
+    font-size: 0.8125rem;
 }
 
 @media (min-width: 768px) {
@@ -2018,6 +2523,9 @@ body {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     will-change: transform;
+    display: block;
+    visibility: visible;
+    opacity: 1;
 }
 
 .carousel-image-clickable {
@@ -3026,11 +3534,9 @@ html {
     flex: 1;
 }
 
-/* Educational Content Section (Inline) */
-.educational-content-section {
-    display: block !important; /* Always visible on all devices */
-    visibility: visible !important;
-    opacity: 1 !important;
+/* Educational Content Section (Mobile Only) */
+.educational-content-section.mobile-only {
+    display: none;
     padding: 2rem 1rem;
     background: linear-gradient(to bottom, rgba(0, 0, 0, 0.95), rgba(18, 9, 31, 0.98));
     position: relative;
@@ -3039,16 +3545,17 @@ html {
 }
 
 @media (max-width: 767px) {
-    .educational-content-section {
-        display: block !important;
-        visibility: visible !important;
-        opacity: 1 !important;
+    .educational-content-section.mobile-only {
+        display: block;
+        visibility: visible;
+        opacity: 1;
     }
 }
 
 @media (min-width: 768px) {
-    .educational-content-section {
-        padding: 3rem 1rem;
+    .educational-content-section.mobile-only {
+        display: none !important;
+        visibility: hidden !important;
     }
 }
 
@@ -3057,18 +3564,6 @@ html {
     margin: 0 auto;
     position: relative;
     z-index: 1;
-    display: block !important;
-    visibility: visible !important;
-}
-
-@media (max-width: 767px) {
-    .educational-content-wrapper,
-    .educational-content-header,
-    .educational-content-header h2,
-    .educational-content-header p {
-        display: block !important;
-        visibility: visible !important;
-    }
 }
 
 .educational-content-header {
@@ -3106,8 +3601,6 @@ html {
     position: relative;
     width: 100%;
     margin-bottom: 2rem;
-    display: block !important;
-    visibility: visible !important;
 }
 
 .educational-carousel .carousel-container {
@@ -3115,15 +3608,156 @@ html {
     background: rgba(0, 0, 0, 0.6);
     border: 2px solid rgba(105, 67, 147, 0.3);
     overflow: hidden;
-    display: block !important;
-    visibility: visible !important;
+    position: relative;
 }
 
 @media (max-width: 767px) {
-    .educational-carousel,
+    .educational-content-section.mobile-only {
+        padding: 2rem 1rem;
+        margin-top: 2rem;
+        background: linear-gradient(to bottom, rgba(0, 0, 0, 0.98), rgba(18, 9, 31, 0.98));
+    }
+    
+    .educational-content-section.mobile-only .educational-content-wrapper {
+        max-width: 100%;
+        padding: 0;
+    }
+    
+    .educational-content-section.mobile-only .educational-content-header {
+        margin-bottom: 1.5rem;
+        padding: 0 0.5rem;
+    }
+    
+    .educational-content-section.mobile-only .educational-content-header h2 {
+        font-size: 1.25rem;
+        line-height: 1.4;
+        margin-bottom: 0.5rem;
+    }
+    
+    .educational-content-section.mobile-only .educational-content-header p {
+        font-size: 0.875rem;
+        line-height: 1.5;
+    }
+    
+    .educational-carousel {
+        margin-bottom: 1.5rem;
+        width: 100%;
+    }
+    
     .educational-carousel .carousel-container {
+        height: 350px !important;
+        min-height: 350px !important;
+        border-radius: 0.75rem;
+        border-width: 2px;
+        border-color: rgba(105, 67, 147, 0.4);
+        box-shadow: 0 10px 30px rgba(105, 67, 147, 0.2);
+        position: relative !important;
+        overflow: hidden !important;
+        background: var(--color-black) !important;
+        display: block !important;
+    }
+    
+    .educational-carousel .carousel-slide {
+        position: absolute !important;
+        top: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        bottom: 0 !important;
+        width: 100% !important;
+        height: 100% !important;
+        opacity: 0;
+        transform: translateX(100%);
+        transition: opacity 0.5s ease, transform 0.5s ease;
+        z-index: 1;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+    }
+    
+    .educational-carousel .carousel-slide.active {
+        opacity: 1 !important;
+        transform: translateX(0) !important;
+        z-index: 2 !important;
+        visibility: visible !important;
+        display: flex !important;
+    }
+    
+    /* Ensure first slide is visible by default */
+    .educational-carousel .carousel-slide[data-slide="0"] {
+        opacity: 1 !important;
+        transform: translateX(0) !important;
+        z-index: 2 !important;
+        visibility: visible !important;
+        display: flex !important;
+    }
+    
+    .educational-carousel .carousel-slide[data-slide="0"] img {
+        opacity: 1 !important;
+        visibility: visible !important;
+        display: block !important;
+    }
+    
+    .educational-carousel .carousel-slide img {
+        width: 100% !important;
+        height: 100% !important;
+        max-width: 100% !important;
+        max-height: 100% !important;
+        object-fit: contain !important;
+        object-position: center !important;
         display: block !important;
         visibility: visible !important;
+        opacity: 1 !important;
+        background: transparent !important;
+        position: relative !important;
+        z-index: 1 !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        min-width: 0 !important;
+        min-height: 0 !important;
+    }
+    
+    .educational-carousel .carousel-slide.active img {
+        opacity: 1 !important;
+        visibility: visible !important;
+        display: block !important;
+    }
+    
+    .educational-carousel .carousel-nav {
+        width: 2.25rem;
+        height: 2.25rem;
+        font-size: 1.25rem;
+        z-index: 10;
+    }
+    
+    .educational-carousel .carousel-nav.prev {
+        right: 0.75rem;
+    }
+    
+    .educational-carousel .carousel-nav.next {
+        left: 0.75rem;
+    }
+    
+    .educational-carousel .slide-number {
+        top: 0.5rem;
+        right: 0.5rem;
+        padding: 0.375rem 1rem;
+        font-size: 0.875rem;
+        z-index: 10;
+    }
+    
+    .educational-carousel .carousel-dots {
+        bottom: 0.75rem;
+        gap: 0.5rem;
+        z-index: 10;
+    }
+    
+    .educational-carousel .dot {
+        width: 0.625rem;
+        height: 0.625rem;
+    }
+    
+    .educational-carousel .dot.active {
+        width: 1.5rem;
     }
 }
 

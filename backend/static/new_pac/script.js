@@ -73,6 +73,13 @@ function scrollToPricing() {
     }
 }
 
+function scrollToContact() {
+    const contactSection = document.getElementById('contact');
+    if (contactSection) {
+        contactSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+}
+
 // Payment state
 let selectedPlan = {
     type: null,
@@ -259,22 +266,142 @@ function closeMembershipModal() {
     }
 }
 
-function nextSlide() {
-    currentSlide = (currentSlide + 1) % totalSlides;
-    updateCarousel();
+// Carousel state management - separate for each carousel
+const carouselStates = new Map();
+
+function getCarouselState(container) {
+    if (!carouselStates.has(container)) {
+        const slides = container.querySelectorAll('.carousel-slide');
+        carouselStates.set(container, {
+            currentSlide: 0,
+            totalSlides: slides.length
+        });
+    }
+    return carouselStates.get(container);
 }
 
-function prevSlide() {
-    currentSlide = (currentSlide - 1 + totalSlides) % totalSlides;
-    updateCarousel();
+function nextSlide(event) {
+    let container = null;
+    
+    if (event && event.target) {
+        // Find the carousel container from the clicked button
+        const carousel = event.target.closest('.educational-carousel, .modal-carousel');
+        if (carousel) {
+            container = carousel.querySelector('.carousel-container');
+        } else {
+            // Try finding by going up to find carousel wrapper
+            const nav = event.target.closest('.carousel-nav');
+            if (nav) {
+                const parent = nav.parentElement;
+                container = parent.querySelector('.carousel-container');
+            }
+        }
+    }
+    
+    if (!container) {
+        // Fallback to global carousel
+        currentSlide = (currentSlide + 1) % totalSlides;
+        updateCarousel();
+        return;
+    }
+    
+    const state = getCarouselState(container);
+    state.currentSlide = (state.currentSlide + 1) % state.totalSlides;
+    updateCarouselForContainer(container);
 }
 
-function goToSlide(index) {
-    currentSlide = index;
-    updateCarousel();
+function prevSlide(event) {
+    let container = null;
+    
+    if (event && event.target) {
+        // Find the carousel container from the clicked button
+        const carousel = event.target.closest('.educational-carousel, .modal-carousel');
+        if (carousel) {
+            container = carousel.querySelector('.carousel-container');
+        } else {
+            // Try finding by going up to find carousel wrapper
+            const nav = event.target.closest('.carousel-nav');
+            if (nav) {
+                const parent = nav.parentElement;
+                container = parent.querySelector('.carousel-container');
+            }
+        }
+    }
+    
+    if (!container) {
+        // Fallback to global carousel
+        currentSlide = (currentSlide - 1 + totalSlides) % totalSlides;
+        updateCarousel();
+        return;
+    }
+    
+    const state = getCarouselState(container);
+    state.currentSlide = (state.currentSlide - 1 + state.totalSlides) % state.totalSlides;
+    updateCarouselForContainer(container);
+}
+
+function goToSlide(index, event) {
+    let container = null;
+    
+    if (event && event.target) {
+        // Find the carousel container from the clicked dot
+        const carousel = event.target.closest('.educational-carousel, .modal-carousel');
+        if (carousel) {
+            container = carousel.querySelector('.carousel-container');
+        } else {
+            // Try finding by going up to find carousel wrapper
+            const dot = event.target.closest('.dot');
+            if (dot) {
+                const carouselWrapper = dot.closest('.educational-carousel, .modal-carousel');
+                if (carouselWrapper) {
+                    container = carouselWrapper.querySelector('.carousel-container');
+                }
+            }
+        }
+    }
+    
+    if (!container) {
+        // Fallback to global carousel
+        currentSlide = index;
+        updateCarousel();
+        return;
+    }
+    
+    const state = getCarouselState(container);
+    state.currentSlide = index;
+    updateCarouselForContainer(container);
+}
+
+function updateCarouselForContainer(container) {
+    const state = getCarouselState(container);
+    const slides = container.querySelectorAll('.carousel-slide');
+    const carousel = container.closest('.educational-carousel, .modal-carousel');
+    const dots = carousel ? carousel.querySelectorAll('.dot') : [];
+    
+    slides.forEach((slide, index) => {
+        if (index === state.currentSlide) {
+            slide.classList.add('active');
+        } else {
+            slide.classList.remove('active');
+        }
+    });
+    
+    dots.forEach((dot, index) => {
+        if (index === state.currentSlide) {
+            dot.classList.add('active');
+        } else {
+            dot.classList.remove('active');
+        }
+    });
 }
 
 function updateCarousel() {
+    // Update all carousels
+    document.querySelectorAll('.carousel-container').forEach(container => {
+        updateCarouselForContainer(container);
+    });
+    
+    // Also update global carousel for backward compatibility
     const slides = document.querySelectorAll('.carousel-slide');
     const dots = document.querySelectorAll('.dot');
     
@@ -1111,5 +1238,16 @@ window.addEventListener('resize', () => {
         // Reinitialize
         initBackgroundEffects();
     }, 250);
+});
+
+// Initialize carousel on page load
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize all carousels
+    document.querySelectorAll('.carousel-container').forEach(container => {
+        updateCarouselForContainer(container);
+    });
+    
+    // Also initialize global carousel for backward compatibility
+    updateCarousel();
 });
 

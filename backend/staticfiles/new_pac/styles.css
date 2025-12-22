@@ -2009,6 +2009,26 @@ body {
     line-height: 1.4;
 }
 
+.price-warning {
+    text-align: center;
+    font-weight: bold;
+    font-size: 0.8125rem;
+    margin-bottom: 1rem;
+    color: var(--color-gold);
+    line-height: 1.4;
+    padding: 0.5rem;
+    background: rgba(255, 215, 0, 0.1);
+    border-radius: 0.5rem;
+    border: 1px solid rgba(255, 215, 0, 0.3);
+}
+
+@media (min-width: 768px) {
+    .price-warning {
+        font-size: 0.875rem;
+        margin-bottom: 1.25rem;
+    }
+}
+
 .card-description strong {
     font-size: 1.125rem !important;
     display: block;

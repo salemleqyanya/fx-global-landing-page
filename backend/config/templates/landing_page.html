@@ -293,6 +293,7 @@
                     <a href="#services" class="text-white/80 hover:text-[#E91E8C] transition-colors">الخدمات</a>
                     <a href="#testimonials" class="text-white/80 hover:text-[#E91E8C] transition-colors">قصص النجاح</a>
                     <a href="#register" class="text-white/80 hover:text-[#E91E8C] transition-colors">التسجيل</a>
+                    <a href="/pricing/" class="text-white/80 hover:text-[#E91E8C] transition-colors">الباقات</a>
                 </div>
                 <button onclick="scrollToSection('register')" class="hidden md:block bg-gradient-to-r from-[#E91E8C] to-[#6B46C1] hover:from-[#6B46C1] hover:to-[#E91E8C] text-white px-6 py-2 rounded-lg text-[20px]">سجّل الآن 🔥</button>
                 <button id="mobile-menu-btn" class="md:hidden text-white">☰</button>
@@ -303,6 +304,7 @@
                     <a href="#services" class="text-white/80 hover:text-[#E91E8C] text-right py-2">الخدمات</a>
                     <a href="#testimonials" class="text-white/80 hover:text-[#E91E8C] text-right py-2">قصص النجاح</a>
                     <a href="#register" class="text-white/80 hover:text-[#E91E8C] text-right py-2">التسجيل</a>
+                    <a href="/pricing/" class="text-white/80 hover:text-[#E91E8C] text-right py-2">الباقات</a>
                     <button onclick="scrollToSection('register')" class="bg-gradient-to-r from-[#E91E8C] to-[#6B46C1] text-white w-full py-2 rounded-lg">سجّل الآن 🔥</button>
                 </div>
             </div>
@@ -366,8 +368,9 @@
                         {% endif %}
                     </div>
                 </div>
-                <div class="mb-6 md:mb-8 px-4">
+                <div class="mb-6 md:mb-8 px-4 flex flex-col sm:flex-row gap-4 items-center justify-center">
                     <button onclick="showRegistrationDialog()" class="bg-gradient-to-r from-[#E91E8C] to-[#6B46C1] hover:from-[#6B46C1] hover:to-[#E91E8C] text-white px-6 py-4 md:px-12 md:py-6 lg:px-16 lg:py-10 text-base sm:text-lg md:text-xl lg:text-2xl xl:text-3xl font-bold shadow-2xl rounded-xl w-full md:w-auto">احجز استشارتك المجانية</button>
+                    <a href="/pricing/" class="bg-white/10 hover:bg-white/20 backdrop-blur-sm border border-white/20 text-white px-6 py-4 md:px-12 md:py-6 lg:px-16 lg:py-10 text-base sm:text-lg md:text-xl lg:text-2xl xl:text-3xl font-bold shadow-2xl rounded-xl w-full md:w-auto text-center transition-all">شاهد الباقات والأسعار 💰</a>
                 </div>
                 <div class="flex flex-col md:flex-row justify-center items-center gap-4 md:gap-6 lg:gap-8 text-white/90 px-4">
                     <div class="flex items-center gap-2 md:gap-3">
@@ -561,6 +564,14 @@
                         <p class="text-white/70 leading-relaxed text-right">أي مشكلة، أي وقت، فريقنا معك خطوة بخطوة</p>
                     </div>
                 </div>
+                <div class="text-center mt-12">
+                    <a href="/pricing/" class="inline-flex items-center gap-3 bg-gradient-to-r from-[#E91E8C] to-[#6B46C1] hover:from-[#6B46C1] hover:to-[#E91E8C] text-white px-8 py-4 md:px-12 md:py-6 text-lg md:text-xl font-bold shadow-2xl rounded-xl transition-all hover:shadow-[#E91E8C]/30">
+                        <span>شاهد جميع الباقات والأسعار</span>
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                        </svg>
+                    </a>
+                </div>
             </div>
         </div>
     </section>
@@ -624,6 +635,14 @@
                             <p class="text-white/90 text-lg">لأنك بتتعلم من ناس فلسطينية فاهمة واقع السوق العربي</p>
                         </div>
                     </div>
+                </div>
+                <div class="text-center mt-12">
+                    <a href="/pricing/" class="inline-flex items-center gap-3 bg-gradient-to-r from-[#E91E8C] to-[#6B46C1] hover:from-[#6B46C1] hover:to-[#E91E8C] text-white px-8 py-4 md:px-12 md:py-6 text-lg md:text-xl font-bold shadow-2xl rounded-xl transition-all hover:shadow-[#E91E8C]/30">
+                        <span>اكتشف الباقات والأسعار المناسبة لك</span>
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                        </svg>
+                    </a>
                 </div>
             </div>
         </div>
@@ -775,7 +794,13 @@
                         <span class="text-transparent bg-clip-text bg-gradient-to-r from-[#E91E8C] via-[#6B46C1] to-[#E91E8C]">ما تأجل!! ابدأ الآن وغيّر حياتك 🔥</span>
                     </h2>
                     <p class="text-white/90 text-xl md:text-2xl max-w-3xl mx-auto mb-4 font-semibold">احجز مقعدك الآن في التعليم وتعرّف كيف تبدأ التداول بثقة</p>
-                    <p class="text-[#E91E8C] text-lg md:text-xl font-bold">المقاعد محدودة — لا تضيع فرصتك! ⚡️</p>
+                    <p class="text-[#E91E8C] text-lg md:text-xl font-bold mb-6">المقاعد محدودة — لا تضيع فرصتك! ⚡️</p>
+                    <a href="/pricing/" class="inline-flex items-center gap-3 bg-white/10 hover:bg-white/20 backdrop-blur-sm border border-white/20 text-white px-8 py-4 text-lg md:text-xl font-bold rounded-xl transition-all hover:border-[#E91E8C]/50">
+                        <span>أو شاهد الباقات والأسعار أولاً</span>
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                        </svg>
+                    </a>
                 </div>
                 <div class="grid lg:grid-cols-5 gap-8">
                     <div class="lg:col-span-2 space-y-6">

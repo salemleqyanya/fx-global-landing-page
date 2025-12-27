@@ -1885,11 +1885,13 @@ body {
     }
     
     .pricing-card.membership .card-price {
-        display: none !important;
-    }
-    
-    .pricing-card.membership .card-original-price {
-        display: none !important;
+        display: block !important;
+        text-align: center;
+        font-weight: bold;
+        font-size: 1.75rem;
+        margin-bottom: 1rem;
+        color: var(--color-white);
+        line-height: 1.2;
     }
 }
 

@@ -21,7 +21,7 @@ db.sqlite3-journal
 /backend/media/
 /backend/*.pyc
 /backend/__pycache__/
-
+db.sqlite4
 # Environment variables
 # .env
 # .env.local

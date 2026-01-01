@@ -1,6 +1,24 @@
 // Countdown Timer
 function initCountdown() {
-    const targetDate = new Date("2026-01-01T00:00:00").getTime();
+    const STORAGE_KEY = 'new_year_timer_end_date';
+    const now = new Date().getTime();
+    
+    // Check if there's a stored target date
+    let targetDate = localStorage.getItem(STORAGE_KEY);
+    
+    if (targetDate) {
+        targetDate = parseInt(targetDate);
+        // If the stored date has passed, create a new one
+        if (targetDate <= now) {
+            targetDate = now + (24 * 60 * 60 * 1000);
+            localStorage.setItem(STORAGE_KEY, targetDate.toString());
+        }
+    } else {
+        // No stored date, create a new one (24 hours from now)
+        targetDate = now + (24 * 60 * 60 * 1000);
+        localStorage.setItem(STORAGE_KEY, targetDate.toString());
+    }
+    
     let prevValues = { days: -1, hours: -1, minutes: -1, seconds: -1 };
     
     function updateTimer() {
@@ -54,10 +72,13 @@ function initCountdown() {
             
             prevValues = { days, hours, minutes, seconds };
         } else {
+            // Timer has expired
             document.getElementById('days').textContent = '00';
             document.getElementById('hours').textContent = '00';
             document.getElementById('minutes').textContent = '00';
             document.getElementById('seconds').textContent = '00';
+            // Clear the stored date so a new timer can start
+            localStorage.removeItem(STORAGE_KEY);
         }
     }
     

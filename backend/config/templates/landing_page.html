@@ -103,6 +103,11 @@
             display: block;
         }
         
+        /* Ensure video fills card container completely */
+        .testimonial-video.absolute {
+            border-radius: inherit;
+        }
+        
         /* Ensure video controls are touch-friendly on mobile */
         @media (max-width: 768px) {
             video::-webkit-media-controls-panel {
@@ -310,7 +315,6 @@
                     <a href="#services" class="text-white/80 hover:text-[#E91E8C] transition-colors">الخدمات</a>
                     <a href="#testimonials" class="text-white/80 hover:text-[#E91E8C] transition-colors">قصص النجاح</a>
                     <a href="#register" class="text-white/80 hover:text-[#E91E8C] transition-colors">التسجيل</a>
-                    <a href="/pricing/" class="text-white/80 hover:text-[#E91E8C] transition-colors">الباقات</a>
                 </div>
                 <button onclick="scrollToSection('register')" class="hidden md:block bg-gradient-to-r from-[#E91E8C] to-[#6B46C1] hover:from-[#6B46C1] hover:to-[#E91E8C] text-white px-6 py-2 rounded-lg text-[20px]">سجّل الآن 🔥</button>
                 <button id="mobile-menu-btn" class="md:hidden text-white">☰</button>
@@ -321,7 +325,6 @@
                     <a href="#services" class="text-white/80 hover:text-[#E91E8C] text-right py-2">الخدمات</a>
                     <a href="#testimonials" class="text-white/80 hover:text-[#E91E8C] text-right py-2">قصص النجاح</a>
                     <a href="#register" class="text-white/80 hover:text-[#E91E8C] text-right py-2">التسجيل</a>
-                    <a href="/pricing/" class="text-white/80 hover:text-[#E91E8C] text-right py-2">الباقات</a>
                     <button onclick="scrollToSection('register')" class="bg-gradient-to-r from-[#E91E8C] to-[#6B46C1] text-white w-full py-2 rounded-lg">سجّل الآن 🔥</button>
                 </div>
             </div>
@@ -387,7 +390,6 @@
                 </div>
                 <div class="mb-6 md:mb-8 px-4 flex flex-col sm:flex-row gap-4 items-center justify-center">
                     <button onclick="showRegistrationDialog()" class="bg-gradient-to-r from-[#E91E8C] to-[#6B46C1] hover:from-[#6B46C1] hover:to-[#E91E8C] text-white px-6 py-4 md:px-12 md:py-6 lg:px-16 lg:py-10 text-base sm:text-lg md:text-xl lg:text-2xl xl:text-3xl font-bold shadow-2xl rounded-xl w-full md:w-auto">احجز استشارتك المجانية</button>
-                    <a href="/pricing/" class="bg-white/10 hover:bg-white/20 backdrop-blur-sm border border-white/20 text-white px-6 py-4 md:px-12 md:py-6 lg:px-16 lg:py-10 text-base sm:text-lg md:text-xl lg:text-2xl xl:text-3xl font-bold shadow-2xl rounded-xl w-full md:w-auto text-center transition-all">شاهد الباقات والأسعار 💰</a>
                 </div>
                 <div class="flex flex-col md:flex-row justify-center items-center gap-4 md:gap-6 lg:gap-8 text-white/90 px-4">
                     <div class="flex items-center gap-2 md:gap-3">
@@ -453,35 +455,37 @@
                         </div>
                         <div class="pt-2 sm:pt-4">
                             <button onclick="scrollToSection('register')" class="inline-flex w-full sm:w-auto items-center justify-center gap-3 bg-white text-black font-bold px-6 py-3 sm:px-8 sm:py-3 md:px-10 md:py-4 rounded-xl shadow-xl shadow-black/40 hover:bg-[#F4E3FF] transition">
-                                <span>احجز مكالمت للاستفسار الان</span>
+                                <span>احجز مكالمة للاستفسار الان</span>
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
                                 </svg>
                             </button>
                         </div>
                     </div>
-                    <div class="relative mt-6 lg:mt-0">
-                        <div class="absolute inset-0 bg-gradient-to-tr from-[#E91E8C]/10 via-transparent to-[#6B46C1]/20 pointer-events-none"></div>
-                        <div class="relative p-6 sm:p-8 lg:p-10 h-full">
-                            <div class="relative w-full aspect-[9/16] sm:aspect-video lg:h-full lg:aspect-auto rounded-[28px] border border-white/10 bg-black/70 shadow-[0_30px_80px_-40px_rgba(60,0,120,0.8)] overflow-hidden">
-                                <div class="absolute inset-0 opacity-60 bg-gradient-to-br from-[#E91E8C]/20 via-transparent to-[#6B46C1]/20 mix-blend-screen pointer-events-none"></div>
-                                <div class="absolute -top-10 -left-10 w-40 h-40 rounded-full bg-[#E91E8C]/30 blur-3xl pointer-events-none"></div>
-                                <div class="absolute -bottom-16 -right-12 w-48 h-48 rounded-full bg-[#6B46C1]/40 blur-3xl pointer-events-none"></div>
-                                <div class="relative w-full h-full pointer-events-auto">
-                                    {% if featured_testimonial_video.vimeo_id %}
-                                        <div class="vimeo-wrapper">
-                                            <iframe class="w-full h-full" src="https://player.vimeo.com/video/{{ featured_testimonial_video.vimeo_id }}?badge=0&autopause=0&controls=1&background=0&loop=1&responsive=1&title=0&byline=0&portrait=0&dnt=1" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen loading="lazy" title="{{ featured_testimonial_video.title|default:'Featured Testimonial' }}"></iframe>
-                                        </div>
-                                    {% elif featured_testimonial_video.video_url or featured_testimonial_video.video_file_url %}
-                                        <video class="testimonial-video h-full w-full object-cover" controls playsinline loop controlsList="nodownload" disablePictureInPicture>
-                                            <source src="{{ featured_testimonial_video.video_url|default:featured_testimonial_video.video_file_url }}" type="video/mp4">
-                                            <source src="{{ featured_testimonial_video.video_url|default:featured_testimonial_video.video_file_url }}" type="video/quicktime">
-                                            <source src="{{ featured_testimonial_video.video_url|default:featured_testimonial_video.video_file_url }}" type="video/webm">
-                                            Your browser does not support the video tag.
-                                        </video>
-                                    {% endif %}
+                    <div class="relative mt-6 lg:mt-0 lg:p-6 p-4 h-full flex items-center">
+                        <!-- Full Card Video Container - No padding inside -->
+                        <div class="relative w-full h-full min-h-[400px] lg:min-h-[500px] bg-black border-2 border-[#E91E8C]/50 rounded-2xl overflow-hidden shadow-2xl transition-all duration-300 hover:scale-[1.02]">
+                            {% if featured_testimonial_video.vimeo_id %}
+                                <div class="vimeo-wrapper">
+                                    <iframe src="https://player.vimeo.com/video/{{ featured_testimonial_video.vimeo_id }}?badge=0&autopause=0&controls=1&background=0&loop=1&responsive=1&title=0&byline=0&portrait=0&dnt=1" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen loading="lazy" title="{{ featured_testimonial_video.title|default:'Featured Testimonial' }}"></iframe>
                                 </div>
-                            </div>
+                            {% elif featured_testimonial_video.video_url or featured_testimonial_video.video_file_url %}
+                                <video class="testimonial-video absolute inset-0 w-full h-full" controls playsinline loop controlsList="nodownload" disablePictureInPicture style="object-fit: cover;">
+                                    <source src="{{ featured_testimonial_video.video_url|default:featured_testimonial_video.video_file_url }}" type="video/mp4">
+                                    <source src="{{ featured_testimonial_video.video_url|default:featured_testimonial_video.video_file_url }}" type="video/quicktime">
+                                    <source src="{{ featured_testimonial_video.video_url|default:featured_testimonial_video.video_file_url }}" type="video/webm">
+                                    Your browser does not support the video tag.
+                                </video>
+                            {% else %}
+                                <div class="absolute inset-0 w-full h-full flex items-center justify-center bg-black">
+                                    <div class="text-white/50 text-center">
+                                        <svg class="w-16 h-16 mx-auto mb-2 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/>
+                                        </svg>
+                                        <p class="text-xs font-medium">لا يوجد فيديو متاح</p>
+                                    </div>
+                                </div>
+                            {% endif %}
                         </div>
                     </div>
                 </div>
@@ -581,14 +585,6 @@
                         <p class="text-white/70 leading-relaxed text-right">أي مشكلة، أي وقت، فريقنا معك خطوة بخطوة</p>
                     </div>
                 </div>
-                <div class="text-center mt-12">
-                    <a href="/pricing/" class="inline-flex items-center gap-3 bg-gradient-to-r from-[#E91E8C] to-[#6B46C1] hover:from-[#6B46C1] hover:to-[#E91E8C] text-white px-8 py-4 md:px-12 md:py-6 text-lg md:text-xl font-bold shadow-2xl rounded-xl transition-all hover:shadow-[#E91E8C]/30">
-                        <span>شاهد جميع الباقات والأسعار</span>
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
-                        </svg>
-                    </a>
-                </div>
             </div>
         </div>
     </section>
@@ -653,14 +649,6 @@
                         </div>
                     </div>
                 </div>
-                <div class="text-center mt-12">
-                    <a href="/pricing/" class="inline-flex items-center gap-3 bg-gradient-to-r from-[#E91E8C] to-[#6B46C1] hover:from-[#6B46C1] hover:to-[#E91E8C] text-white px-8 py-4 md:px-12 md:py-6 text-lg md:text-xl font-bold shadow-2xl rounded-xl transition-all hover:shadow-[#E91E8C]/30">
-                        <span>اكتشف الباقات والأسعار المناسبة لك</span>
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
-                        </svg>
-                    </a>
-                </div>
             </div>
         </div>
     </section>
@@ -698,56 +686,39 @@
                 </div>
 
                 {% if testimonials_videos %}
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 lg:gap-8 max-w-6xl mx-auto">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 lg:gap-10 max-w-6xl mx-auto">
                     {% for video in testimonials_videos %}
-                    <div class="group relative {% if forloop.counter == 2 %}md:-mt-6 lg:-mt-8{% endif %}">
+                    <div class="group relative w-full">
                         <!-- Badge Label - Above Card -->
                         <div class="mb-4 md:mb-5 text-center">
-                            {% if forloop.counter == 2 %}
-                            <!-- Winner Badge - Star + Label -->
-                            <div class="flex flex-col items-center gap-2.5">
-                                <div class="relative">
-                                    <div class="w-14 h-14 md:w-16 md:h-16 bg-gradient-to-br from-yellow-400 via-yellow-500 to-yellow-600 rounded-full flex items-center justify-center shadow-xl shadow-yellow-500/60 animate-pulse">
-                                        <svg class="w-8 h-8 md:w-9 md:h-9 text-white drop-shadow-lg" fill="currentColor" viewBox="0 0 20 20">
-                                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
-                                        </svg>
-                                    </div>
-                                    <div class="absolute -top-1 -right-1 text-xl animate-bounce">🔥</div>
-                                </div>
-                                <div class="relative inline-block bg-gradient-to-r from-[#E91E8C] via-[#6B46C1] to-[#E91E8C] bg-[length:200%_auto] px-5 py-2.5 md:px-6 md:py-3 rounded-xl shadow-lg border border-white/20 backdrop-blur-sm">
-                                    <span class="text-white text-sm md:text-base font-bold tracking-wide">{{ video.badge_label|default:"قصة ملهمة" }}</span>
-                                </div>
-                            </div>
-                            {% elif forloop.counter == 1 %}
-                            <!-- Orange Badge -->
+                            {% if forloop.counter == 1 %}
+                            <!-- Purple-Pink Gradient Badge -->
                             <div class="relative inline-block">
-                                <div class="bg-gradient-to-br from-orange-500 via-orange-600 to-orange-700 px-5 py-2.5 md:px-6 md:py-3 rounded-xl shadow-lg border border-orange-300/30 backdrop-blur-sm">
-                                    <span class="text-white text-sm md:text-base font-bold tracking-wide">{{ video.badge_label|default:"طبيب ناجح" }}</span>
+                                <div class="bg-gradient-to-r from-[#E91E8C] via-[#6B46C1] to-[#E91E8C] bg-[length:200%_auto] px-6 py-3 md:px-8 md:py-3.5 rounded-xl shadow-lg border border-white/20 backdrop-blur-sm">
+                                    <span class="text-white text-base md:text-lg font-bold tracking-wide">{{ video.badge_label|default:"طبيب ناجح" }}</span>
                                 </div>
-                                <div class="absolute -top-1 -right-1 w-3 h-3 bg-orange-400 rounded-full animate-ping"></div>
                             </div>
                             {% else %}
-                            <!-- Blue Badge -->
+                            <!-- Orange Badge -->
                             <div class="relative inline-block">
-                                <div class="bg-gradient-to-br from-blue-500 via-blue-600 to-blue-700 px-5 py-2.5 md:px-6 md:py-3 rounded-xl shadow-lg border border-blue-300/30 backdrop-blur-sm">
-                                    <span class="text-white text-sm md:text-base font-bold tracking-wide">{{ video.badge_label|default:"طلبة طموحة" }}</span>
+                                <div class="bg-gradient-to-br from-orange-500 via-orange-600 to-orange-700 px-6 py-3 md:px-8 md:py-3.5 rounded-xl shadow-lg border border-orange-300/30 backdrop-blur-sm">
+                                    <span class="text-white text-base md:text-lg font-bold tracking-wide">{{ video.badge_label|default:"طلبة طموحة" }}</span>
                                 </div>
-                                <div class="absolute -top-1 -right-1 w-3 h-3 bg-blue-400 rounded-full animate-ping"></div>
                             </div>
                             {% endif %}
                         </div>
                         
-                        <!-- Card Container -->
-                        <div class="relative {% if forloop.counter == 2 %}bg-gradient-to-br from-[#E91E8C]/20 via-[#6B46C1]/20 to-[#E91E8C]/20 border-2 border-[#E91E8C]/50{% else %}bg-black/40 border border-white/10{% endif %} backdrop-blur-sm rounded-2xl overflow-hidden transition-all duration-300 hover:shadow-2xl {% if forloop.counter == 2 %}hover:shadow-[#E91E8C]/30 hover:border-[#E91E8C]/70{% else %}hover:border-white/20{% endif %}">
+                        <!-- Card Container - Full Width -->
+                        <div class="relative w-full bg-black/60 border-2 {% if forloop.counter == 1 %}border-[#E91E8C]/50{% else %}border-orange-500/50{% endif %} backdrop-blur-sm rounded-2xl overflow-hidden transition-all duration-300 hover:shadow-2xl hover:scale-[1.02]">
 
-                            <!-- Video Player Container -->
-                            <div class="relative w-full aspect-video bg-black rounded-t-2xl overflow-hidden">
+                            <!-- Video Player Container - Full Card -->
+                            <div class="relative w-full aspect-video bg-black rounded-2xl overflow-hidden">
                                 {% if video.vimeo_id %}
                                     <div class="vimeo-wrapper">
                                         <iframe src="https://player.vimeo.com/video/{{ video.vimeo_id }}?badge=0&autopause=0&controls=1&background=0&loop=1&responsive=1&title=0&byline=0&portrait=0&dnt=1" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen loading="lazy" title="{{ video.title }}"></iframe>
                                     </div>
                                 {% elif video.video_url or video.video_file_url %}
-                                    <video class="testimonial-video" controls playsinline loop controlsList="nodownload" disablePictureInPicture>
+                                    <video class="testimonial-video w-full h-full object-cover" controls playsinline loop controlsList="nodownload" disablePictureInPicture>
                                         <source src="{{ video.video_url|default:video.video_file_url }}" type="video/mp4">
                                         <source src="{{ video.video_url|default:video.video_file_url }}" type="video/quicktime">
                                         <source src="{{ video.video_url|default:video.video_file_url }}" type="video/webm">
@@ -765,18 +736,20 @@
                                 {% endif %}
                             </div>
 
-                            <!-- Video Name -->
-                            <div class="p-4 text-center">
+                            <!-- Video Name/Text Below Video -->
+                            {% if video.title or video.description %}
+                            <div class="p-4 md:p-5 text-center bg-black/40">
                                 {% if video.title %}
-                                    <p class="text-transparent bg-clip-text bg-gradient-to-r from-[#E91E8C] to-[#6B46C1] text-base md:text-lg font-bold">
+                                    <p class="text-white text-base md:text-lg font-semibold">
                                         {{ video.title }}
                                     </p>
                                 {% elif video.description %}
-                                    <p class="text-transparent bg-clip-text bg-gradient-to-r from-[#E91E8C] to-[#6B46C1] text-base md:text-lg font-bold line-clamp-1">
-                                        {{ video.description|truncatewords:5 }}
+                                    <p class="text-white/90 text-sm md:text-base">
+                                        {{ video.description|truncatewords:10 }}
                                     </p>
                                 {% endif %}
                             </div>
+                            {% endif %}
                         </div>
                     </div>
                     {% endfor %}
@@ -812,12 +785,6 @@
                     </h2>
                     <p class="text-white/90 text-xl md:text-2xl max-w-3xl mx-auto mb-4 font-semibold">احجز مقعدك الآن في التعليم وتعرّف كيف تبدأ التداول بثقة</p>
                     <p class="text-[#E91E8C] text-lg md:text-xl font-bold mb-6">المقاعد محدودة — لا تضيع فرصتك! ⚡️</p>
-                    <a href="/pricing/" class="inline-flex items-center gap-3 bg-white/10 hover:bg-white/20 backdrop-blur-sm border border-white/20 text-white px-8 py-4 text-lg md:text-xl font-bold rounded-xl transition-all hover:border-[#E91E8C]/50">
-                        <span>أو شاهد الباقات والأسعار أولاً</span>
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
-                        </svg>
-                    </a>
                 </div>
                 <div class="grid lg:grid-cols-5 gap-8">
                     <div class="lg:col-span-2 space-y-6">
@@ -899,7 +866,7 @@
                                     </svg>
                                     <span></span>
                                 </div>
-                                <button type="submit" class="w-full h-14 bg-gradient-to-r from-[#E91E8C] to-[#6B46C1] hover:from-[#6B46C1] hover:to-[#E91E8C] text-white font-semibold shadow-lg rounded-xl transition-all duration-300 hover:shadow-xl hover:shadow-[#E91E8C]/30 disabled:opacity-50 disabled:cursor-not-allowed">  احجز مكالمت للاستفسار الان 🚀</button>
+                                <button type="submit" class="w-full h-14 bg-gradient-to-r from-[#E91E8C] to-[#6B46C1] hover:from-[#6B46C1] hover:to-[#E91E8C] text-white font-semibold shadow-lg rounded-xl transition-all duration-300 hover:shadow-xl hover:shadow-[#E91E8C]/30 disabled:opacity-50 disabled:cursor-not-allowed">  احجز مكالمة للاستفسار الان 🚀</button>
                                 <p class="text-white/50 text-xs text-center">بياناتك آمنة 100% ومحمية. لن نشارك معلوماتك مع أي طرف ثالث.</p>
                             </form>
                         </div>

@@ -88,6 +88,29 @@
             border-radius: inherit;
         }
         
+        /* Vimeo Captions Styling */
+        .vimeo-wrapper iframe[src*="vimeo"] {
+            /* Enable captions styling */
+        }
+        
+        /* Style Vimeo captions when they appear */
+        .vimeo-wrapper ::cue {
+            background: rgba(0, 0, 0, 0.8);
+            color: #ffffff;
+            font-size: 16px;
+            font-weight: 500;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+            padding: 4px 8px;
+            border-radius: 4px;
+            line-height: 1.4;
+        }
+        
+        @media (max-width: 768px) {
+            .vimeo-wrapper ::cue {
+                font-size: 14px;
+            }
+        }
+        
         /* Testimonial video container - supports dynamic aspect ratio */
         .testimonial-video-container {
             transition: aspect-ratio 0.3s ease;
@@ -122,6 +145,180 @@
                 min-height: 44px;
                 min-width: 44px;
             }
+        }
+        
+        /* Video Carousel Styles - 3 Column Grid */
+        .videos-carousel-container {
+            position: relative;
+            width: 100%;
+        }
+        
+        .videos-carousel {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+            padding: 1rem 0;
+            width: 100%;
+            max-width: 100%;
+        }
+        
+        @media (min-width: 640px) {
+            .videos-carousel {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 1.5rem;
+            }
+        }
+        
+        @media (min-width: 1024px) {
+            .videos-carousel {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 2rem;
+                max-width: 1600px;
+                margin: 0 auto;
+            }
+        }
+        
+        @media (min-width: 1536px) {
+            .videos-carousel {
+                max-width: 1800px;
+                gap: 2.5rem;
+            }
+        }
+        
+        .video-card {
+            width: 100%;
+            display: flex;
+        }
+        
+        .video-card-wrapper {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            background: linear-gradient(135deg, rgba(0, 0, 0, 0.8) 0%, rgba(20, 20, 30, 0.9) 100%);
+            border-radius: 1.5rem;
+            overflow: hidden;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 2px solid transparent;
+            backdrop-filter: blur(10px);
+        }
+        
+        .video-card-wrapper:hover {
+            transform: translateY(-4px);
+            border-color: rgba(233, 30, 140, 0.5);
+            box-shadow: 0 20px 40px rgba(233, 30, 140, 0.3), 0 0 0 1px rgba(233, 30, 140, 0.2);
+        }
+        
+        .video-badge {
+            position: absolute;
+            top: 1rem;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10;
+            padding: 0.625rem 1.5rem;
+            border-radius: 9999px;
+            font-weight: 700;
+            font-size: 0.875rem;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+        
+        @media (min-width: 640px) {
+            .video-badge {
+                font-size: 1rem;
+                padding: 0.75rem 1.75rem;
+            }
+        }
+        
+        .video-card-wrapper:hover .video-badge {
+            transform: translateX(-50%) translateY(-4px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+        }
+        
+        .video-badge-purple {
+            background: linear-gradient(135deg, rgba(233, 30, 140, 0.9), rgba(107, 70, 193, 0.9));
+            border: 1px solid rgba(233, 30, 140, 0.4);
+            color: white;
+        }
+        
+        .video-badge-orange {
+            background: linear-gradient(135deg, rgba(249, 115, 22, 0.9), rgba(234, 88, 12, 0.9));
+            border: 1px solid rgba(249, 115, 22, 0.4);
+            color: white;
+        }
+        
+        .video-player-container {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 9 / 16;
+            background: #000;
+            border-radius: 1.5rem 1.5rem 0 0;
+            overflow: hidden;
+            max-width: 100%;
+        }
+        
+        @media (min-width: 768px) {
+            .video-player-container {
+                aspect-ratio: 9 / 16;
+            }
+        }
+        
+        .video-player-container .vimeo-wrapper {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border-radius: inherit;
+        }
+        
+        .video-player-container .vimeo-wrapper iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+            border-radius: inherit;
+        }
+        
+        .video-caption {
+            padding: 1rem 1.25rem;
+            background: linear-gradient(135deg, rgba(0, 0, 0, 0.6) 0%, rgba(20, 20, 30, 0.7) 100%);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            min-height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            flex-shrink: 0;
+        }
+        
+        .video-caption-text {
+            color: white;
+            font-size: 0.875rem;
+            font-weight: 500;
+            line-height: 1.5;
+            margin: 0;
+        }
+        
+        @media (min-width: 640px) {
+            .video-caption {
+                padding: 1.25rem 1.5rem;
+                min-height: 70px;
+            }
+            
+            .video-caption-text {
+                font-size: 1rem;
+            }
+        }
+        
+        .carousel-nav-button {
+            display: none;
         }
         
         /* Live Notifications Styles */
@@ -683,76 +880,437 @@
                 </div>
 
                 {% if testimonials_videos %}
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 lg:gap-10 max-w-6xl mx-auto">
-                    {% for video in testimonials_videos %}
-                    <div class="group relative w-full">
-                        <!-- Badge Label - Above Card -->
-                        <div class="mb-4 md:mb-5 text-center">
-                            {% if forloop.counter == 1 %}
-                            <!-- Purple-Pink Gradient Badge -->
-                            <div class="relative inline-block">
-                                <div class="bg-gradient-to-r from-[#E91E8C] via-[#6B46C1] to-[#E91E8C] bg-[length:200%_auto] px-6 py-3 md:px-8 md:py-3.5 rounded-xl shadow-lg border border-white/20 backdrop-blur-sm">
-                                    <span class="text-white text-base md:text-lg font-bold tracking-wide">{{ video.badge_label|default:"طبيب ناجح" }}</span>
+                <div class="videos-carousel-container">
+                    <div class="videos-carousel" id="testimonials-carousel">
+                        {% for video in testimonials_videos %}
+                        <div class="video-card">
+                            <div class="video-card-wrapper {% if forloop.counter == 1 %}border-[#E91E8C]/50{% else %}border-orange-500/50{% endif %}">
+                                <!-- Badge Label -->
+                                <div class="video-badge {% if forloop.counter == 1 %}video-badge-purple{% else %}video-badge-orange{% endif %}">
+                                    {{ video.badge_label|default:"طالب طموح" }}
                                 </div>
-                            </div>
-                            {% else %}
-                            <!-- Orange Badge -->
-                            <div class="relative inline-block">
-                                <div class="bg-gradient-to-br from-orange-500 via-orange-600 to-orange-700 px-6 py-3 md:px-8 md:py-3.5 rounded-xl shadow-lg border border-orange-300/30 backdrop-blur-sm">
-                                    <span class="text-white text-base md:text-lg font-bold tracking-wide">{{ video.badge_label|default:"طلبة طموحة" }}</span>
-                                </div>
-                            </div>
-                            {% endif %}
-                        </div>
-                        
-                        <!-- Card Container - Full Width -->
-                        <div class="relative w-full bg-black/60 border-2 {% if forloop.counter == 1 %}border-[#E91E8C]/50{% else %}border-orange-500/50{% endif %} backdrop-blur-sm rounded-2xl overflow-hidden transition-all duration-300 hover:shadow-2xl hover:scale-[1.02]">
-
-                            <!-- Video Player Container - Full Card -->
-                            <div class="relative w-full aspect-video bg-black rounded-2xl overflow-hidden">
-                                {% if video.vimeo_id %}
-                                    <div class="vimeo-wrapper">
-                                        <iframe src="https://player.vimeo.com/video/{{ video.vimeo_id }}?badge=0&autopause=0&controls=1&background=0&loop=1&responsive=1&title=0&byline=0&portrait=0&dnt=1" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen loading="lazy" title="{{ video.title }}"></iframe>
-                                    </div>
-                                {% elif video.video_url or video.video_file_url %}
-                                    <video class="testimonial-video w-full h-full object-cover" controls playsinline loop controlsList="nodownload" disablePictureInPicture>
-                                        <source src="{{ video.video_url|default:video.video_file_url }}" type="video/mp4">
-                                        <source src="{{ video.video_url|default:video.video_file_url }}" type="video/quicktime">
-                                        <source src="{{ video.video_url|default:video.video_file_url }}" type="video/webm">
-                                        Your browser does not support the video tag.
-                                    </video>
-                                {% else %}
-                                    <div class="w-full h-full flex items-center justify-center">
-                                        <div class="text-white/50 text-center">
-                                            <svg class="w-16 h-16 mx-auto mb-2 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/>
-                                            </svg>
-                                            <p class="text-xs font-medium">لا يوجد فيديو متاح</p>
+                                
+                                <!-- Video Player Container -->
+                                <div class="video-player-container">
+                                    {% if video.vimeo_id %}
+                                        <div class="vimeo-wrapper">
+                                            <iframe src="https://player.vimeo.com/video/{{ video.vimeo_id }}?badge=0&autopause=0&controls=1&background=0&loop=1&responsive=1&title=0&byline=0&portrait=0&dnt=1" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen loading="lazy" title="{{ video.title }}"></iframe>
                                         </div>
+                                    {% elif video.video_url or video.video_file_url %}
+                                        <video class="testimonial-video w-full h-full object-cover" controls playsinline loop controlsList="nodownload" disablePictureInPicture>
+                                            <source src="{{ video.video_url|default:video.video_file_url }}" type="video/mp4">
+                                            <source src="{{ video.video_url|default:video.video_file_url }}" type="video/quicktime">
+                                            <source src="{{ video.video_url|default:video.video_file_url }}" type="video/webm">
+                                            Your browser does not support the video tag.
+                                        </video>
+                                    {% else %}
+                                        <div class="w-full h-full flex items-center justify-center">
+                                            <div class="text-white/50 text-center">
+                                                <svg class="w-16 h-16 mx-auto mb-2 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/>
+                                                </svg>
+                                                <p class="text-xs font-medium">لا يوجد فيديو متاح</p>
+                                            </div>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                
+                                <!-- Video Caption -->
+                                <div class="video-caption">
+                                    <p class="video-caption-text">
+                                        {% if video.title %}
+                                            {{ video.title }}
+                                        {% elif video.description %}
+                                            {{ video.description|truncatewords:15 }}
+                                        {% else %}
+                                            شاهد تجربة طالب حقيقي مع FX Global
+                                        {% endif %}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    <!-- Navigation Buttons -->
+                    <button class="carousel-nav-button prev" onclick="scrollCarousel('testimonials-carousel', -1)" aria-label="Previous">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                        </svg>
+                    </button>
+                    <button class="carousel-nav-button next" onclick="scrollCarousel('testimonials-carousel', 1)" aria-label="Next">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                        </svg>
+                    </button>
+                </div>
+                {% endif %}
+                
+                <!-- Static Vimeo Videos Section -->
+                <div class="videos-carousel-container mt-8 md:mt-12">
+                    <div class="videos-carousel" id="static-videos-carousel">
+                        <!-- Video 1 -->
+                        <div class="video-card">
+                            <div class="video-card-wrapper border-[#E91E8C]/50">
+                                <div class="video-badge video-badge-purple">طالب طموح</div>
+                                <div class="video-player-container">
+                                    <div class="vimeo-wrapper">
+                                        <iframe src="https://player.vimeo.com/video/1154095547?badge=0&autopause=0&controls=1&background=0&loop=1&responsive=1&title=0&byline=0&portrait=0&dnt=1" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen loading="lazy" title="Testimonial Video"></iframe>
                                     </div>
-                                {% endif %}
+                                </div>
+                                <div class="video-caption">
+                                    <p class="video-caption-text">شاهد تجربة طالب حقيقي مع FX Global</p>
+                                </div>
                             </div>
-
-                            <!-- Video Name/Text Below Video -->
-                            {% if video.title or video.description %}
-                            <div class="p-4 md:p-5 text-center bg-black/40">
-                                {% if video.title %}
-                                    <p class="text-white text-base md:text-lg font-semibold">
-                                        {{ video.title }}
-                                    </p>
-                                {% elif video.description %}
-                                    <p class="text-white/90 text-sm md:text-base">
-                                        {{ video.description|truncatewords:10 }}
-                                    </p>
-                                {% endif %}
+                        </div>
+                        <!-- Video 2 -->
+                        <div class="video-card">
+                            <div class="video-card-wrapper border-orange-500/50">
+                                <div class="video-badge video-badge-orange">طالب طموح</div>
+                                <div class="video-player-container">
+                                    <div class="vimeo-wrapper">
+                                        <iframe src="https://player.vimeo.com/video/1154095107?badge=0&autopause=0&controls=1&background=0&loop=1&responsive=1&title=0&byline=0&portrait=0&dnt=1" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen loading="lazy" title="Testimonial Video"></iframe>
+                                    </div>
+                                </div>
+                                <div class="video-caption">
+                                    <p class="video-caption-text">شاهد تجربة طالب حقيقي مع FX Global</p>
+                                </div>
                             </div>
-                            {% endif %}
+                        </div>
+                        <!-- Video 3 -->
+                        <div class="video-card">
+                            <div class="video-card-wrapper border-[#E91E8C]/50">
+                                <div class="video-badge video-badge-purple">طالب طموح</div>
+                                <div class="video-player-container">
+                                    <div class="vimeo-wrapper">
+                                        <iframe src="https://player.vimeo.com/video/1154095129?badge=0&autopause=0&controls=1&background=0&loop=1&responsive=1&title=0&byline=0&portrait=0&dnt=1" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen loading="lazy" title="Testimonial Video"></iframe>
+                                    </div>
+                                </div>
+                                <div class="video-caption">
+                                    <p class="video-caption-text">شاهد تجربة طالب حقيقي مع FX Global</p>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Video 4 -->
+                        <div class="video-card">
+                            <div class="video-card-wrapper border-orange-500/50">
+                                <div class="video-badge video-badge-orange">طالب طموح</div>
+                                <div class="video-player-container">
+                                    <div class="vimeo-wrapper">
+                                        <iframe src="https://player.vimeo.com/video/1154095158?badge=0&autopause=0&controls=1&background=0&loop=1&responsive=1&title=0&byline=0&portrait=0&dnt=1" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen loading="lazy" title="Testimonial Video"></iframe>
+                                    </div>
+                                </div>
+                                <div class="video-caption">
+                                    <p class="video-caption-text">شاهد تجربة طالب حقيقي مع FX Global</p>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Video 5 -->
+                        <div class="video-card">
+                            <div class="video-card-wrapper border-[#E91E8C]/50">
+                                <div class="video-badge video-badge-purple">طالب طموح</div>
+                                <div class="video-player-container">
+                                    <div class="vimeo-wrapper">
+                                        <iframe src="https://player.vimeo.com/video/1154095176?badge=0&autopause=0&controls=1&background=0&loop=1&responsive=1&title=0&byline=0&portrait=0&dnt=1" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen loading="lazy" title="Testimonial Video"></iframe>
+                                    </div>
+                                </div>
+                                <div class="video-caption">
+                                    <p class="video-caption-text">شاهد تجربة طالب حقيقي مع FX Global</p>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Video 6 -->
+                        <div class="video-card">
+                            <div class="video-card-wrapper border-orange-500/50">
+                                <div class="video-badge video-badge-orange">طالب طموح</div>
+                                <div class="video-player-container">
+                                    <div class="vimeo-wrapper">
+                                        <iframe src="https://player.vimeo.com/video/1154095201?badge=0&autopause=0&controls=1&background=0&loop=1&responsive=1&title=0&byline=0&portrait=0&dnt=1" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen loading="lazy" title="Testimonial Video"></iframe>
+                                    </div>
+                                </div>
+                                <div class="video-caption">
+                                    <p class="video-caption-text">شاهد تجربة طالب حقيقي مع FX Global</p>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Video 7 -->
+                        <div class="video-card">
+                            <div class="video-card-wrapper border-[#E91E8C]/50">
+                                <div class="video-badge video-badge-purple">طالب طموح</div>
+                                <div class="video-player-container">
+                                    <div class="vimeo-wrapper">
+                                        <iframe src="https://player.vimeo.com/video/1154095225?badge=0&autopause=0&controls=1&background=0&loop=1&responsive=1&title=0&byline=0&portrait=0&dnt=1" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen loading="lazy" title="Testimonial Video"></iframe>
+                                    </div>
+                                </div>
+                                <div class="video-caption">
+                                    <p class="video-caption-text">شاهد تجربة طالب حقيقي مع FX Global</p>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Video 8 -->
+                        <div class="video-card">
+                            <div class="video-card-wrapper border-orange-500/50">
+                                <div class="video-badge video-badge-orange">طالب طموح</div>
+                                <div class="video-player-container">
+                                    <div class="vimeo-wrapper">
+                                        <iframe src="https://player.vimeo.com/video/1154095260?badge=0&autopause=0&controls=1&background=0&loop=1&responsive=1&title=0&byline=0&portrait=0&dnt=1" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen loading="lazy" title="Testimonial Video"></iframe>
+                                    </div>
+                                </div>
+                                <div class="video-caption">
+                                    <p class="video-caption-text">شاهد تجربة طالب حقيقي مع FX Global</p>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Video 9 -->
+                        <div class="video-card">
+                            <div class="video-card-wrapper border-[#E91E8C]/50">
+                                <div class="video-badge video-badge-purple">طالب طموح</div>
+                                <div class="video-player-container">
+                                    <div class="vimeo-wrapper">
+                                        <iframe src="https://player.vimeo.com/video/1154095275?badge=0&autopause=0&controls=1&background=0&loop=1&responsive=1&title=0&byline=0&portrait=0&dnt=1" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen loading="lazy" title="Testimonial Video"></iframe>
+                                    </div>
+                                </div>
+                                <div class="video-caption">
+                                    <p class="video-caption-text">شاهد تجربة طالب حقيقي مع FX Global</p>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Video 10 -->
+                        <div class="video-card">
+                            <div class="video-card-wrapper border-orange-500/50">
+                                <div class="video-badge video-badge-orange">طالب طموح</div>
+                                <div class="video-player-container">
+                                    <div class="vimeo-wrapper">
+                                        <iframe src="https://player.vimeo.com/video/1154095296?badge=0&autopause=0&controls=1&background=0&loop=1&responsive=1&title=0&byline=0&portrait=0&dnt=1" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen loading="lazy" title="Testimonial Video"></iframe>
+                                    </div>
+                                </div>
+                                <div class="video-caption">
+                                    <p class="video-caption-text">شاهد تجربة طالب حقيقي مع FX Global</p>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Video 11 -->
+                        <div class="video-card">
+                            <div class="video-card-wrapper border-[#E91E8C]/50">
+                                <div class="video-badge video-badge-purple">طالب طموح</div>
+                                <div class="video-player-container">
+                                    <div class="vimeo-wrapper">
+                                        <iframe src="https://player.vimeo.com/video/1154095322?badge=0&autopause=0&controls=1&background=0&loop=1&responsive=1&title=0&byline=0&portrait=0&dnt=1" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen loading="lazy" title="Testimonial Video"></iframe>
+                                    </div>
+                                </div>
+                                <div class="video-caption">
+                                    <p class="video-caption-text">شاهد تجربة طالب حقيقي مع FX Global</p>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Video 12 -->
+                        <div class="video-card">
+                            <div class="video-card-wrapper border-orange-500/50">
+                                <div class="video-badge video-badge-orange">طالب طموح</div>
+                                <div class="video-player-container">
+                                    <div class="vimeo-wrapper">
+                                        <iframe src="https://player.vimeo.com/video/1154095349?badge=0&autopause=0&controls=1&background=0&loop=1&responsive=1&title=0&byline=0&portrait=0&dnt=1" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen loading="lazy" title="Testimonial Video"></iframe>
+                                    </div>
+                                </div>
+                                <div class="video-caption">
+                                    <p class="video-caption-text">شاهد تجربة طالب حقيقي مع FX Global</p>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Video 13 -->
+                        <div class="video-card">
+                            <div class="video-card-wrapper border-[#E91E8C]/50">
+                                <div class="video-badge video-badge-purple">طالب طموح</div>
+                                <div class="video-player-container">
+                                    <div class="vimeo-wrapper">
+                                        <iframe src="https://player.vimeo.com/video/1154095372?badge=0&autopause=0&controls=1&background=0&loop=1&responsive=1&title=0&byline=0&portrait=0&dnt=1" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen loading="lazy" title="Testimonial Video"></iframe>
+                                    </div>
+                                </div>
+                                <div class="video-caption">
+                                    <p class="video-caption-text">شاهد تجربة طالب حقيقي مع FX Global</p>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Video 14 -->
+                        <div class="video-card">
+                            <div class="video-card-wrapper border-orange-500/50">
+                                <div class="video-badge video-badge-orange">طالب طموح</div>
+                                <div class="video-player-container">
+                                    <div class="vimeo-wrapper">
+                                        <iframe src="https://player.vimeo.com/video/1154095389?badge=0&autopause=0&controls=1&background=0&loop=1&responsive=1&title=0&byline=0&portrait=0&dnt=1" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen loading="lazy" title="Testimonial Video"></iframe>
+                                    </div>
+                                </div>
+                                <div class="video-caption">
+                                    <p class="video-caption-text">شاهد تجربة طالب حقيقي مع FX Global</p>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Video 15 -->
+                        <div class="video-card">
+                            <div class="video-card-wrapper border-[#E91E8C]/50">
+                                <div class="video-badge video-badge-purple">طالب طموح</div>
+                                <div class="video-player-container">
+                                    <div class="vimeo-wrapper">
+                                        <iframe src="https://player.vimeo.com/video/1154095407?badge=0&autopause=0&controls=1&background=0&loop=1&responsive=1&title=0&byline=0&portrait=0&dnt=1" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen loading="lazy" title="Testimonial Video"></iframe>
+                                    </div>
+                                </div>
+                                <div class="video-caption">
+                                    <p class="video-caption-text">شاهد تجربة طالب حقيقي مع FX Global</p>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Video 16 -->
+                        <div class="video-card">
+                            <div class="video-card-wrapper border-orange-500/50">
+                                <div class="video-badge video-badge-orange">طالب طموح</div>
+                                <div class="video-player-container">
+                                    <div class="vimeo-wrapper">
+                                        <iframe src="https://player.vimeo.com/video/1154095426?badge=0&autopause=0&controls=1&background=0&loop=1&responsive=1&title=0&byline=0&portrait=0&dnt=1" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen loading="lazy" title="Testimonial Video"></iframe>
+                                    </div>
+                                </div>
+                                <div class="video-caption">
+                                    <p class="video-caption-text">شاهد تجربة طالب حقيقي مع FX Global</p>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Video 17 -->
+                        <div class="video-card">
+                            <div class="video-card-wrapper border-[#E91E8C]/50">
+                                <div class="video-badge video-badge-purple">طالب طموح</div>
+                                <div class="video-player-container">
+                                    <div class="vimeo-wrapper">
+                                        <iframe src="https://player.vimeo.com/video/1154095454?badge=0&autopause=0&controls=1&background=0&loop=1&responsive=1&title=0&byline=0&portrait=0&dnt=1" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen loading="lazy" title="Testimonial Video"></iframe>
+                                    </div>
+                                </div>
+                                <div class="video-caption">
+                                    <p class="video-caption-text">شاهد تجربة طالب حقيقي مع FX Global</p>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Video 18 -->
+                        <div class="video-card">
+                            <div class="video-card-wrapper border-orange-500/50">
+                                <div class="video-badge video-badge-orange">طالب طموح</div>
+                                <div class="video-player-container">
+                                    <div class="vimeo-wrapper">
+                                        <iframe src="https://player.vimeo.com/video/1154095474?badge=0&autopause=0&controls=1&background=0&loop=1&responsive=1&title=0&byline=0&portrait=0&dnt=1" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen loading="lazy" title="Testimonial Video"></iframe>
+                                    </div>
+                                </div>
+                                <div class="video-caption">
+                                    <p class="video-caption-text">شاهد تجربة طالب حقيقي مع FX Global</p>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Video 19 -->
+                        <div class="video-card">
+                            <div class="video-card-wrapper border-[#E91E8C]/50">
+                                <div class="video-badge video-badge-purple">طالب طموح</div>
+                                <div class="video-player-container">
+                                    <div class="vimeo-wrapper">
+                                        <iframe src="https://player.vimeo.com/video/1154095499?badge=0&autopause=0&controls=1&background=0&loop=1&responsive=1&title=0&byline=0&portrait=0&dnt=1" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen loading="lazy" title="Testimonial Video"></iframe>
+                                    </div>
+                                </div>
+                                <div class="video-caption">
+                                    <p class="video-caption-text">شاهد تجربة طالب حقيقي مع FX Global</p>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Video 20 -->
+                        <div class="video-card">
+                            <div class="video-card-wrapper border-orange-500/50">
+                                <div class="video-badge video-badge-orange">طالب طموح</div>
+                                <div class="video-player-container">
+                                    <div class="vimeo-wrapper">
+                                        <iframe src="https://player.vimeo.com/video/1154095521?badge=0&autopause=0&controls=1&background=0&loop=1&responsive=1&title=0&byline=0&portrait=0&dnt=1" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen loading="lazy" title="Testimonial Video"></iframe>
+                                    </div>
+                                </div>
+                                <div class="video-caption">
+                                    <p class="video-caption-text">شاهد تجربة طالب حقيقي مع FX Global</p>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Video 21 -->
+                        <div class="video-card">
+                            <div class="video-card-wrapper border-[#E91E8C]/50">
+                                <div class="video-badge video-badge-purple">طالب طموح</div>
+                                <div class="video-player-container">
+                                    <div class="vimeo-wrapper">
+                                        <iframe src="https://player.vimeo.com/video/1154095576?badge=0&autopause=0&controls=1&background=0&loop=1&responsive=1&title=0&byline=0&portrait=0&dnt=1" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen loading="lazy" title="Testimonial Video"></iframe>
+                                    </div>
+                                </div>
+                                <div class="video-caption">
+                                    <p class="video-caption-text">شاهد تجربة طالب حقيقي مع FX Global</p>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Video 22 -->
+                        <div class="video-card">
+                            <div class="video-card-wrapper border-orange-500/50">
+                                <div class="video-badge video-badge-orange">طالب طموح</div>
+                                <div class="video-player-container">
+                                    <div class="vimeo-wrapper">
+                                        <iframe src="https://player.vimeo.com/video/1154095607?badge=0&autopause=0&controls=1&background=0&loop=1&responsive=1&title=0&byline=0&portrait=0&dnt=1" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen loading="lazy" title="Testimonial Video"></iframe>
+                                    </div>
+                                </div>
+                                <div class="video-caption">
+                                    <p class="video-caption-text">شاهد تجربة طالب حقيقي مع FX Global</p>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Video 23 -->
+                        <div class="video-card">
+                            <div class="video-card-wrapper border-[#E91E8C]/50">
+                                <div class="video-badge video-badge-purple">طالب طموح</div>
+                                <div class="video-player-container">
+                                    <div class="vimeo-wrapper">
+                                        <iframe src="https://player.vimeo.com/video/1154095635?badge=0&autopause=0&controls=1&background=0&loop=1&responsive=1&title=0&byline=0&portrait=0&dnt=1" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen loading="lazy" title="Testimonial Video"></iframe>
+                                    </div>
+                                </div>
+                                <div class="video-caption">
+                                    <p class="video-caption-text">شاهد تجربة طالب حقيقي مع FX Global</p>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Video 24 -->
+                        <div class="video-card">
+                            <div class="video-card-wrapper border-orange-500/50">
+                                <div class="video-badge video-badge-orange">طالب طموح</div>
+                                <div class="video-player-container">
+                                    <div class="vimeo-wrapper">
+                                        <iframe src="https://player.vimeo.com/video/1154095670?badge=0&autopause=0&controls=1&background=0&loop=1&responsive=1&title=0&byline=0&portrait=0&dnt=1" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen loading="lazy" title="Testimonial Video"></iframe>
+                                    </div>
+                                </div>
+                                <div class="video-caption">
+                                    <p class="video-caption-text">شاهد تجربة طالب حقيقي مع FX Global</p>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Video 25 -->
+                        <div class="video-card">
+                            <div class="video-card-wrapper border-[#E91E8C]/50">
+                                <div class="video-badge video-badge-purple">طالب طموح</div>
+                                <div class="video-player-container">
+                                    <div class="vimeo-wrapper">
+                                        <iframe src="https://player.vimeo.com/video/1154095684?badge=0&autopause=0&controls=1&background=0&loop=1&responsive=1&title=0&byline=0&portrait=0&dnt=1" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen loading="lazy" title="Testimonial Video"></iframe>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                    {% endfor %}
+                    <!-- Navigation Buttons -->
+                    <button class="carousel-nav-button prev" onclick="scrollCarousel('static-videos-carousel', -1)" aria-label="Previous">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                        </svg>
+                    </button>
+                    <button class="carousel-nav-button next" onclick="scrollCarousel('static-videos-carousel', 1)" aria-label="Next">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                        </svg>
+                    </button>
                 </div>
-                {% elif not featured_testimonial_video %}
-                <!-- Fallback if no videos -->
+                
+                {% if not testimonials_videos and not featured_testimonial_video %}
+                <!-- Fallback if no videos at all -->
                 <div class="text-center py-20">
                     <div class="inline-flex items-center justify-center w-24 h-24 bg-white/5 rounded-full mb-6">
                         <svg class="w-12 h-12 text-white/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -959,6 +1517,67 @@
                 document.getElementById('mobile-menu').classList.add('hidden');
             }
         }
+
+        // Carousel scrolling function
+        function scrollCarousel(carouselId, direction) {
+            const carousel = document.getElementById(carouselId);
+            if (!carousel) return;
+            
+            const scrollAmount = 400; // Scroll by 400px
+            const currentScroll = carousel.scrollLeft;
+            const newScroll = currentScroll + (scrollAmount * direction);
+            
+            carousel.scrollTo({
+                left: newScroll,
+                behavior: 'smooth'
+            });
+            
+            // Update navigation button visibility
+            updateCarouselButtons(carouselId);
+        }
+        
+        // Update carousel navigation button visibility
+        function updateCarouselButtons(carouselId) {
+            const carousel = document.getElementById(carouselId);
+            if (!carousel) return;
+            
+            const container = carousel.closest('.videos-carousel-container');
+            if (!container) return;
+            
+            const prevBtn = container.querySelector('.carousel-nav-button.prev');
+            const nextBtn = container.querySelector('.carousel-nav-button.next');
+            
+            if (prevBtn && nextBtn) {
+                const isAtStart = carousel.scrollLeft <= 10;
+                const isAtEnd = carousel.scrollLeft >= carousel.scrollWidth - carousel.clientWidth - 10;
+                
+                prevBtn.classList.toggle('hidden', isAtStart);
+                nextBtn.classList.toggle('hidden', isAtEnd);
+            }
+        }
+        
+        // Initialize carousel button visibility on load and scroll
+        document.addEventListener('DOMContentLoaded', function() {
+            const carousels = ['testimonials-carousel', 'static-videos-carousel'];
+            
+            carousels.forEach(carouselId => {
+                const carousel = document.getElementById(carouselId);
+                if (carousel) {
+                    // Initial check
+                    updateCarouselButtons(carouselId);
+                    
+                    // Update on scroll
+                    carousel.addEventListener('scroll', () => {
+                        updateCarouselButtons(carouselId);
+                    });
+                    
+                    // Update on resize
+                    window.addEventListener('resize', () => {
+                        updateCarouselButtons(carouselId);
+                    });
+                }
+            });
+        });
 
         function showRegistrationDialog() {
             document.getElementById('registration-dialog').classList.remove('hidden');
@@ -1574,6 +2193,39 @@
                     player.setVolume(1);
                     player.setLoop(true);
                     
+                    // Enable captions for hero video
+                    player.getTextTracks().then(function(tracks) {
+                        if (tracks && tracks.length > 0) {
+                            // Try to find Arabic captions first
+                            let captionTrack = tracks.find(track => 
+                                (track.language === 'ar' || track.language.startsWith('ar')) && 
+                                track.kind === 'captions'
+                            );
+                            
+                            // If no Arabic, try English
+                            if (!captionTrack) {
+                                captionTrack = tracks.find(track => 
+                                    (track.language === 'en' || track.language.startsWith('en')) && 
+                                    track.kind === 'captions'
+                                );
+                            }
+                            
+                            // If still no match, use first available captions track
+                            if (!captionTrack) {
+                                captionTrack = tracks.find(track => track.kind === 'captions');
+                            }
+                            
+                            // Enable the caption track
+                            if (captionTrack) {
+                                player.enableTextTrack(captionTrack.language, captionTrack.kind).catch(function(error) {
+                                    console.log('Could not enable captions for hero video:', error);
+                                });
+                            }
+                        }
+                    }).catch(function(error) {
+                        console.log('Could not get text tracks for hero video:', error);
+                    });
+                    
                     // Try to play unmuted
                     player.play().catch(function(error) {
                         console.log('Autoplay with sound was blocked:', error);
@@ -1619,7 +2271,7 @@
                 });
             });
             
-            // Vimeo testimonials videos - ensure loop
+            // Vimeo testimonials videos - ensure loop and enable captions
             const testimonialVimeoIframes = document.querySelectorAll('.vimeo-wrapper iframe');
             testimonialVimeoIframes.forEach(function(iframe) {
                 // Skip hero video iframe (already handled by initVimeoHeroVideo)
@@ -1630,6 +2282,23 @@
                     const player = new Vimeo.Player(iframe);
                     player.ready().then(function() {
                         player.setLoop(true);
+                        // Enable captions
+                        player.getTextTracks().then(function(tracks) {
+                            if (tracks && tracks.length > 0) {
+                                // Find Arabic captions first, otherwise use the first available
+                                let captionTrack = tracks.find(track => track.language === 'ar' || track.language.startsWith('ar'));
+                                if (!captionTrack) {
+                                    captionTrack = tracks[0];
+                                }
+                                if (captionTrack) {
+                                    player.enableTextTrack(captionTrack.language, captionTrack.kind).catch(function(error) {
+                                        console.log('Could not enable captions:', error);
+                                    });
+                                }
+                            }
+                        }).catch(function(error) {
+                            console.log('Could not get text tracks:', error);
+                        });
                         // Ensure video restarts when it ends
                         player.on('ended', function() {
                             player.play();
@@ -1637,6 +2306,68 @@
                     });
                 }
             });
+        }
+        
+        // Function to enable captions for all Vimeo players
+        function enableVimeoCaptions() {
+            if (!window.Vimeo) {
+                setTimeout(enableVimeoCaptions, 100);
+                return;
+            }
+            
+            const allVimeoIframes = document.querySelectorAll('.vimeo-wrapper iframe, #hero .vimeo-wrapper iframe');
+            allVimeoIframes.forEach(function(iframe) {
+                try {
+                    const player = new Vimeo.Player(iframe);
+                    player.ready().then(function() {
+                        // Get available text tracks
+                        player.getTextTracks().then(function(tracks) {
+                            if (tracks && tracks.length > 0) {
+                                // Try to find Arabic captions first
+                                let captionTrack = tracks.find(track => 
+                                    (track.language === 'ar' || track.language.startsWith('ar')) && 
+                                    track.kind === 'captions'
+                                );
+                                
+                                // If no Arabic, try English
+                                if (!captionTrack) {
+                                    captionTrack = tracks.find(track => 
+                                        (track.language === 'en' || track.language.startsWith('en')) && 
+                                        track.kind === 'captions'
+                                    );
+                                }
+                                
+                                // If still no match, use first available captions track
+                                if (!captionTrack) {
+                                    captionTrack = tracks.find(track => track.kind === 'captions');
+                                }
+                                
+                                // Enable the caption track
+                                if (captionTrack) {
+                                    player.enableTextTrack(captionTrack.language, captionTrack.kind).then(function() {
+                                        console.log('Captions enabled for video:', captionTrack.language);
+                                    }).catch(function(error) {
+                                        console.log('Could not enable captions:', error);
+                                    });
+                                }
+                            }
+                        }).catch(function(error) {
+                            console.log('Could not get text tracks:', error);
+                        });
+                    });
+                } catch (error) {
+                    console.log('Error initializing Vimeo player:', error);
+                }
+            });
+        }
+        
+        // Initialize captions when DOM is ready
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', function() {
+                setTimeout(enableVimeoCaptions, 1000);
+            });
+        } else {
+            setTimeout(enableVimeoCaptions, 1000);
         }
     </script>
 </body>

@@ -1,4 +1,4 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from videos.models import Video
 from videos.serializers import VideoPublicSerializer
 from pathlib import Path
@@ -615,6 +615,124 @@ def packages_page(request):
     return render(request, 'packages.html')
 
 
+def payment_page(request):
+    """Render Payment page."""
+    # Check for success/error messages from VIP Learning form submission
+    success_message = request.GET.get('success', None)
+    error_message = request.GET.get('error', None)
+    
+    context = {
+        'success_message': success_message,
+        'error_message': error_message,
+    }
+    return render(request, 'payment.html', context)
+
+
+def submit_vip_learning_request(request):
+    """Handle VIP Learning contact form submission."""
+    if request.method != 'POST':
+        return render(request, 'payment.html', {'error_message': 'Invalid request method'})
+    
+    try:
+        # Get form data
+        name = request.POST.get('name', '').strip()
+        phone_raw = request.POST.get('phone', '').strip()
+        experience = request.POST.get('experience', '').strip()
+        goal = request.POST.get('goal', '').strip()
+        available_time = request.POST.get('available_time', '').strip()
+        
+        # Validate required fields
+        errors = []
+        if not name or len(name) < 2:
+            errors.append('يرجى إدخال اسم صحيح')
+        
+        if not phone_raw:
+            errors.append('يرجى إدخال رقم هاتف')
+        
+        # Clean phone number - remove all non-digit characters
+        phone = ''.join(filter(str.isdigit, phone_raw)) if phone_raw else ''
+        if len(phone) < 8:
+            errors.append('يرجى إدخال رقم هاتف صحيح (8 أرقام على الأقل)')
+        
+        if not experience:
+            errors.append('يرجى اختيار مستوى الخبرة')
+        
+        if not goal or len(goal) < 10:
+            errors.append('يرجى إدخال هدف التدريب (10 أحرف على الأقل)')
+        
+        if errors:
+            error_msg = ' | '.join(errors)
+            return render(request, 'payment.html', {'error_message': error_msg})
+        
+        # Build message with all form data
+        experience_labels = {
+            'beginner': 'مبتدئ',
+            'intermediate': 'متوسط',
+            'advanced': 'متقدم',
+            'expert': 'خبير'
+        }
+        
+        experience_label = experience_labels.get(experience, experience)
+        
+        message = f"""طلب VIP Learning (1-on-1)
+
+الخبرة بالتداول: {experience_label}
+الهدف من التدريب: {goal}"""
+        
+        if available_time:
+            message += f"\nالوقت المتاح للمتابعة: {available_time}"
+        
+        # Build structured notes with all form fields for better data organization
+        notes_parts = [
+            f"نوع الطلب: VIP Learning (1-on-1)",
+            f"الخبرة بالتداول: {experience_label} ({experience})",
+            f"الهدف من التدريب: {goal}",
+        ]
+        if available_time:
+            notes_parts.append(f"الوقت المتاح للمتابعة: {available_time}")
+        
+        notes = "\n".join(notes_parts)
+        
+        # Prepare data for serializer
+        from contacts.serializers import CustomerContactCreateSerializer
+        
+        serializer_data = {
+            'name': name,
+            'phone': phone,
+            'whatsapp': phone,  # Use same cleaned phone as WhatsApp
+            'message': message,
+            'city': '',
+            'address': available_time if available_time else '',  # Store available time in address field
+            'notes': notes,  # Store structured data in notes field
+            # 'goal' field is not included - it requires specific choices that don't apply here
+        }
+        
+        serializer = CustomerContactCreateSerializer(data=serializer_data)
+        
+        if serializer.is_valid():
+            contact = serializer.save()
+            logger.info(f"VIP Learning request submitted successfully: {contact.id} - {name} - {phone}")
+            # Redirect with success message (URL-encoded)
+            success_msg = urllib.parse.quote('تم إرسال طلبك بنجاح! سنتواصل معك قريباً.')
+            return redirect(f'/payment/?success={success_msg}')
+        else:
+            # Handle serializer validation errors
+            error_messages = []
+            for field, field_errors in serializer.errors.items():
+                if isinstance(field_errors, list):
+                    error_messages.extend(field_errors)
+                else:
+                    error_messages.append(str(field_errors))
+            
+            error_msg = ' | '.join(error_messages) if error_messages else 'حدث خطأ أثناء الإرسال'
+            logger.error(f"VIP Learning form validation errors: {serializer.errors}")
+            return render(request, 'payment.html', {'error_message': error_msg})
+            
+    except Exception as e:
+        logger.exception(f"Error processing VIP Learning request: {str(e)}")
+        return render(request, 'payment.html', {'error_message': 'حدث خطأ أثناء الإرسال. يرجى المحاولة مرة أخرى.'})
+
+
 def serve_packages_file(request, filename):
     """Serve CSS or JS files from the packages directory."""
     # Get the packages directory path (one level up from backend)
@@ -760,15 +878,33 @@ def serve_new_pac_file(request, filename):
 def initialize_lahza_payment(request):
     """Initialize a Lahza payment transaction for Black Friday."""
     try:
-        data = request.data
-        email = data.get('email')
-        amount = float(data.get('amount', 0))
-        currency = data.get('currency', 'ILS')  # Default to ILS for backward compatibility
-        first_name = data.get('firstName', '')
-        last_name = data.get('lastName', '')
-        mobile = data.get('mobile', '')
+        # Handle both DRF request.data and Django request.POST/body
+        if hasattr(request, 'data'):
+            data = request.data
+        else:
+            import json
+            try:
+                body = request.body.decode('utf-8')
+                data = json.loads(body) if body else {}
+            except (json.JSONDecodeError, UnicodeDecodeError, AttributeError):
+                data = dict(request.POST) if request.method == 'POST' else {}
+                if hasattr(data, 'dict'):
+                    data = data.dict()
+        
+        # Log incoming data for debugging
+        logger.info(f"[Payment Init] Received data: {data}")
+        
+        email = data.get('email', '').strip()
+        try:
+            amount = float(data.get('amount', 0))
+        except (ValueError, TypeError):
+            amount = 0
+        currency = data.get('currency', 'ILS').strip().upper()  # Default to ILS for backward compatibility
+        first_name = data.get('firstName', '').strip()
+        last_name = data.get('lastName', '').strip()
+        mobile = data.get('mobile', '').strip()
         # Support legacy fullName field for backward compatibility
-        full_name = data.get('fullName', '')
+        full_name = data.get('fullName', '').strip()
         offer_type = data.get('offerType', 'bundle')
         # Determine source from URL path if not provided in data
         source = data.get('source', None)
@@ -780,14 +916,23 @@ def initialize_lahza_payment(request):
                 source = 'checkout'
             elif 'pricing' in request.path:
                 source = 'pricing'
+            elif 'payment' in request.path:
+                source = 'payment'
             else:
                 source = 'black_friday'  # Default fallback
-        offer_name = data.get('offerName', '')
+        offer_name = data.get('offerName', '').strip()
         
-        if not email or not amount:
+        # Validate required fields
+        if not email:
             return Response({
                 'success': False,
-                'error': 'Email and amount are required'
+                'error': 'البريد الإلكتروني مطلوب'
+            }, status=status.HTTP_400_BAD_REQUEST)
+        
+        if not amount or amount <= 0:
+            return Response({
+                'success': False,
+                'error': 'المبلغ مطلوب ويجب أن يكون أكبر من الصفر'
             }, status=status.HTTP_400_BAD_REQUEST)
         
         # If firstName/lastName not provided, try to split fullName (backward compatibility)
@@ -813,46 +958,57 @@ def initialize_lahza_payment(request):
             prefix = 'CK'
         elif source == 'pricing':
             prefix = 'PR'
+        elif source == 'payment':
+            prefix = 'PM'
         else:
             prefix = 'BF'
         reference = f"{prefix}-{uuid.uuid4().hex[:12].upper()}"
         
         # Create payment record FIRST (before initializing with Lahza)
         from contacts.models import Payment
-        customer_name = f"{first_name} {last_name}".strip() if (first_name or last_name) else 'Unknown'
+        
+        # Use full_name for customer_name if first_name and last_name are empty
+        if not customer_name or customer_name.strip() == '':
+            customer_name = f"{first_name} {last_name}".strip() if (first_name or last_name) else full_name
+        if not customer_name or customer_name.strip() == '':
+            customer_name = 'Unknown'
         
         # Get address from form data
         address = data.get('address', '').strip() if data.get('address') else None
         
         # Create payment record with pending status
-        payment = Payment.objects.create(
-            reference=reference,
-            customer_name=customer_name,
-            customer_email=email,
-            first_name=first_name if first_name else None,
-            last_name=last_name if last_name else None,
-            mobile=mobile if mobile else None,
-            address=address,
-            amount=amount,
-            currency=currency.upper(),
-            offer_type=offer_type,
-            offer_name=offer_name,
-            source=source,
-            status='pending',
-            metadata={
-                'offer_type': offer_type,
-                'source': source,
-                'offer_name': offer_name,
-                'recaptcha_token': recaptcha_token if recaptcha_token else None,
-                'form_data': {
-                    'firstName': first_name,
-                    'lastName': last_name,
-                    'mobile': mobile,
-                    'email': email,
-                    'address': address or '',
+        try:
+            payment = Payment.objects.create(
+                reference=reference,
+                customer_name=customer_name,
+                customer_email=email,
+                first_name=first_name if first_name else None,
+                last_name=last_name if last_name else None,
+                mobile=mobile if mobile else None,
+                address=address,
+                amount=amount,
+                currency=currency.upper(),
+                offer_type=offer_type,
+                offer_name=offer_name,
+                source=source,
+                status='pending',
+                metadata={
+                    'offer_type': offer_type,
+                    'source': source,
+                    'offer_name': offer_name,
+                    'recaptcha_token': recaptcha_token if recaptcha_token else None,
+                    'form_data': {
+                        'firstName': first_name,
+                        'lastName': last_name,
+                        'mobile': mobile,
+                        'email': email,
+                        'address': address or '',
+                    }
                 }
-            }
-        )
+            )
+        except Exception as payment_error:
+            logger.error(f"[Payment] Error creating payment record: {str(payment_error)}", exc_info=True)
+            raise
         
         logger.info(f"[Payment] Payment record created: {reference} for {email}, amount: {amount} {currency}")
         
@@ -863,6 +1019,8 @@ def initialize_lahza_payment(request):
             callback_url = request.build_absolute_uri(f'/packages/payment/verify/?reference={reference}')
         elif source == 'pricing':
             callback_url = request.build_absolute_uri(f'/pricing/payment/verify/?reference={reference}')
+        elif source == 'payment':
+            callback_url = request.build_absolute_uri(f'/payment/payment/verify/?reference={reference}')
         else:
             callback_url = request.build_absolute_uri(f'/black-friday/payment/callback/?reference={reference}')
         
@@ -916,10 +1074,14 @@ def initialize_lahza_payment(request):
             'error': user_error
         }, status=status.HTTP_400_BAD_REQUEST)
     except Exception as e:
-        logger.exception("[Lahza] Unexpected error during payment initialization")
+        error_message = str(e)
+        logger.exception(f"[Lahza] Unexpected error during payment initialization: {error_message}")
+        # Log the full traceback for debugging
+        import traceback
+        logger.error(f"[Lahza] Full traceback: {traceback.format_exc()}")
         return Response({
             'success': False,
-            'error': 'An error occurred while initializing payment'
+            'error': f'An error occurred while initializing payment: {error_message}'
         }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 

@@ -36,7 +36,7 @@ class CustomerContactCreateSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = CustomerContact
-        fields = ['name', 'phone', 'whatsapp', 'message', 'address', 'goal', 'city', 'landing_code']
+        fields = ['name', 'phone', 'whatsapp', 'message', 'address', 'goal', 'city', 'landing_code', 'notes']
     
     def validate_phone(self, value):
         """Validate phone number"""

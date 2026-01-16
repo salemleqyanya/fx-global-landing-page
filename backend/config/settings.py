@@ -144,8 +144,11 @@ STATICFILES_DIRS = [
 PROJECT_PATH = os.path.join(BASE_DIR, 'staticfiles')
 # WhiteNoise configuration for serving static files
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
-WHITENOISE_AUTOREFRESH = False  # Disable auto-refresh in production
-WHITENOISE_USE_FINDERS = False  # Don't use finders in production (files should be collected)
+# In production (DEBUG=False), WhiteNoise serves from STATIC_ROOT (staticfiles/)
+# In development (DEBUG=True), set to True to auto-refresh when files change
+WHITENOISE_AUTOREFRESH = DEBUG  # Auto-refresh in development, disabled in production
+WHITENOISE_USE_FINDERS = DEBUG  # Use finders in development, disabled in production
+WHITENOISE_ROOT = None  # Don't serve root files
 
 MEDIA_URL = 'media/'
 MEDIA_ROOT = BASE_DIR / 'media'

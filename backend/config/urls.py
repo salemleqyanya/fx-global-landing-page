@@ -4,7 +4,7 @@ URL configuration for config project.
 from django.contrib import admin
 from django.conf import settings
 from django.conf.urls.static import static
-from .views import landing_page, landing_page_no_contact, elite_program, black_friday, lahza_checkout, initialize_lahza_payment, verify_lahza_payment, lahza_webhook, test_email, privacy_policy, terms_of_service, return_exchange_policy, get_black_friday_end_date, get_pre_black_friday_date, download_instructions_pdf, packages_page, payment_success, pricing_page, pricing_contact, payment_page, submit_vip_learning_request
+from .views import landing_page, landing_page_no_contact, elite_program, black_friday, lahza_checkout, initialize_lahza_payment, verify_lahza_payment, lahza_webhook, test_email, privacy_policy, terms_of_service, return_exchange_policy, get_black_friday_end_date, get_pre_black_friday_date, download_instructions_pdf, packages_page, payment_success, pricing_page, pricing_contact, payment_page, submit_vip_learning_request, new_land_page
 from django.urls import path, include, re_path
 from django.views.static import serve
 import logging
@@ -21,6 +21,7 @@ urlpatterns = [
     path('nokhbeh/', elite_program, name='nokhbeh_elite'),
     # path('black-friday/', pricing_page, name='black_friday'),
     path('packages/', packages_page, name='packages_page'),
+    path('new-land/', new_land_page, name='new_land_page'),
     path('payment/', payment_page, name='payment_page'),
     path('payment/vip-learning/submit/', submit_vip_learning_request, name='submit_vip_learning_request'),
     path('payment/payment/initialize/', initialize_lahza_payment, name='initialize_payment_payment'),

@@ -1,0 +1,403 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FX Globals - مؤسسة التعليم والتدريب</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'new_land/styles.css' %}">
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="header-container">
+            <div class="header-content">
+                <div class="logo-section">
+                    <div class="logo-box">
+                        <span class="logo-text">FX</span>
+                    </div>
+                    <div class="logo-info">
+                        <h1>FX GLOBALS</h1>
+                        <p>مؤسسة التعليم والتدريب</p>
+                    </div>
+                </div>
+                <nav>
+                    <a href="#about">من نحن</a>
+                    <a href="#services">خدماتنا</a>
+                    <a href="#features">المميزات</a>
+                    <a href="#contact">تواصل معنا</a>
+                </nav>
+                <button class="menu-button" id="menuButton" aria-label="القائمة">
+                    <svg class="menu-icon" viewBox="0 0 24 24">
+                        <line x1="3" y1="6" x2="21" y2="6"></line>
+                        <line x1="3" y1="12" x2="21" y2="12"></line>
+                        <line x1="3" y1="18" x2="21" y2="18"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Mobile Menu -->
+    <div class="mobile-menu" id="mobileMenu">
+        <nav>
+            <a href="#about" onclick="closeMobileMenu()">من نحن</a>
+            <a href="#services" onclick="closeMobileMenu()">خدماتنا</a>
+            <a href="#features" onclick="closeMobileMenu()">المميزات</a>
+            <a href="#contact" onclick="closeMobileMenu()">تواصل معنا</a>
+        </nav>
+    </div>
+
+    <!-- Hero Section -->
+    <section class="hero" id="about">
+        <div class="hero-container">
+            <div class="hero-content">
+                <div class="hero-text">
+                    <div class="badge">
+                        <span>✓ مؤسسة تعليمية معتمدة</span>
+                    </div>
+                    <h1 class="hero-title">
+                        <div class="title-highlight">أكاديمية تعليم</div>
+                        <div class="title-glow">و تدريب معتمدة</div>
+                        <div style="font-size: 0.7em; margin-top: 24px;">
+                            <span style="color: #d1d5db; font-weight: normal;">في عالم </span>
+                            <span class="title-gradient">التداول و الاستثمار</span>
+                        </div>
+                    </h1>
+                    <p class="hero-description">
+                        نبني معك رحلة تعلّم طويلة المدى في فهم الأسواق المالية، إدارة المخاطر، وتطوير استراتيجيات تداول احترافية. لسنا هنا لنعدك بالثراء السريع، بل لنعلّمك كيف تفهم السوق بعمق.
+                    </p>
+                </div>
+                <div class="hero-video">
+                    <div class="video-container">
+                        <iframe
+                            src="https://player.vimeo.com/video/1156632204?autoplay=1&loop=1&title=0&byline=0&portrait=0"
+                            allow="autoplay; fullscreen; picture-in-picture"
+                            title="FX Globals Education"
+                        ></iframe>
+                        <div class="video-overlay"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section class="services" id="services">
+        <div class="services-container">
+            <div class="section-header">
+                <div class="section-badge">
+                    <span>ما نقدمه</span>
+                </div>
+                <h2 class="section-title">
+                    منظومة <span style="color: var(--deep-cerise);">تعليمية</span> متكاملة
+                </h2>
+                <p class="section-description">
+                    نركز على بناء <span style="color: var(--dark-lavender);">فهم عميق</span> للأسواق من خلال التعليم المنهجي والممارسة العملية
+                </p>
+            </div>
+            <div class="services-grid">
+                <div class="service-card">
+                    <div class="service-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                            <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="service-title">التعليم والتدريب</h3>
+                    <p class="service-description">برامج تعليمية شاملة من الأساسيات إلى الاحتراف في التحليل الفني والأساسي</p>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polygon points="23 7 16 12 23 17 23 7"></polygon>
+                            <rect x="1" y="5" width="15" height="14" rx="2" ry="2"></rect>
+                        </svg>
+                    </div>
+                    <h3 class="service-title">البث المباشر</h3>
+                    <p class="service-description">جلسات يومية لتحليل الأسواق ومتابعة الفرص مع خبراء متخصصين</p>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+                        </svg>
+                    </div>
+                    <h3 class="service-title">الاستشارات</h3>
+                    <p class="service-description">استشارات متخصصة في بناء استراتيجيات التداول وإدارة المحافظ</p>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="9" cy="7" r="4"></circle>
+                            <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                            <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                        </svg>
+                    </div>
+                    <h3 class="service-title">المجتمع</h3>
+                    <p class="service-description">بيئة تعليمية تفاعلية لتبادل الخبرات والتطوير المستمر</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features" id="features">
+        <div class="features-container">
+            <!-- Feature 1 -->
+            <div class="feature-item">
+                <div class="feature-image">
+                    <img src="https://images.unsplash.com/photo-1764162051244-1391c41122ac?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080" alt="Live Trading Analysis">
+                    <div class="feature-image-overlay"></div>
+                </div>
+                <div class="feature-content">
+                    <div class="feature-badge">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                        </svg>
+                        <span>بث مباشر احترافي</span>
+                    </div>
+                    <h2 class="feature-title">
+                        تحليل <span style="color: var(--deep-cerise);">الأسواق</span> بشكل يومي ومباشر
+                    </h2>
+                    <p class="feature-description">
+                        جلسات بث مباشر يومية مع محللين معتمدين. نركز على <span style="color: var(--dark-lavender);">فهم حركة السوق</span>، تحديد الفرص بموضوعية، وإدارة المخاطر بذكاء. لا وعود، فقط تحليل واقعي.
+                    </p>
+                    <ul class="feature-list">
+                        <li>
+                            <div class="feature-list-dot"></div>
+                            <span>تحليل فني وأساسي شامل للأسواق العالمية</span>
+                        </li>
+                        <li>
+                            <div class="feature-list-dot"></div>
+                            <span>جلسات تفاعلية للإجابة على الأسئلة والاستفسارات</span>
+                        </li>
+                        <li>
+                            <div class="feature-list-dot"></div>
+                            <span>تسجيلات متاحة للمراجعة والتعلم المستمر</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Feature 2 -->
+            <div class="feature-item">
+                <div class="feature-content">
+                    <div class="feature-badge">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+                        </svg>
+                        <span>تعليم منهجي</span>
+                    </div>
+                    <h2 class="feature-title">
+                        فهم <span style="color: var(--deep-cerise);">عميق</span> للأسواق المالية
+                    </h2>
+                    <p class="feature-description">
+                        نعلّمك كيف تقرأ <span style="color: var(--dark-lavender);">الرسوم البيانية</span>، تفهم المؤشرات الاقتصادية، وتبني استراتيجيات قائمة على التحليل لا المشاعر.
+                    </p>
+                    <ul class="feature-list">
+                        <li>
+                            <div class="feature-list-dot"></div>
+                            <span>مناهج تعليمية من الصفر إلى الاحتراف</span>
+                        </li>
+                        <li>
+                            <div class="feature-list-dot"></div>
+                            <span>ورش عمل عملية وتطبيق مباشر</span>
+                        </li>
+                        <li>
+                            <div class="feature-list-dot"></div>
+                            <span>متابعة مستمرة لتطور مستواك</span>
+                        </li>
+                    </ul>
+                </div>
+                <div class="feature-image">
+                    <img src="https://images.unsplash.com/photo-1744473119469-905016183836?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080" alt="Market Analysis">
+                    <div class="feature-image-overlay"></div>
+                </div>
+            </div>
+
+            <!-- Feature 3 -->
+            <div class="feature-item">
+                <div class="feature-image">
+                    <img src="https://images.unsplash.com/photo-1758270704763-22072a90d3b6?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080" alt="Learning Community">
+                    <div class="feature-image-overlay"></div>
+                </div>
+                <div class="feature-content">
+                    <div class="feature-badge">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="9" cy="7" r="4"></circle>
+                            <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                            <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                        </svg>
+                        <span>مجتمع متكامل</span>
+                    </div>
+                    <h2 class="feature-title">
+                        بيئة <span style="color: var(--deep-cerise);">تعليمية</span> داعمة ومستدامة
+                    </h2>
+                    <p class="feature-description">
+                        مجتمع من المتعلمين الجادّين الذين يشاركون نفس الهدف: <span style="color: var(--dark-lavender);">التعلم الحقيقي</span> وبناء مهارات طويلة المدى.
+                    </p>
+                    <ul class="feature-list">
+                        <li>
+                            <div class="feature-list-dot"></div>
+                            <span>منتدى تفاعلي لتبادل التحليلات والخبرات</span>
+                        </li>
+                        <li>
+                            <div class="feature-list-dot"></div>
+                            <span>جلسات جماعية للمراجعة والتطوير</span>
+                        </li>
+                        <li>
+                            <div class="feature-list-dot"></div>
+                            <span>دعم مستمر من فريق محترف</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Values Section -->
+    <section class="values" id="values">
+        <div class="values-container">
+            <div class="section-header">
+                <div class="section-badge">
+                    <span>قيمنا</span>
+                </div>
+                <h2 class="section-title">
+                    ما <span style="color: var(--deep-cerise);">نؤمن</span> به
+                </h2>
+                <p class="section-description">
+                    قيم راسخة تحكم كل ما نقدمه من <span style="color: var(--dark-lavender);">تعليم وتدريب</span>
+                </p>
+            </div>
+            <div class="values-grid">
+                <div class="value-card">
+                    <div class="value-icon-circle">
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="value-title">المسؤولية</h3>
+                    <p class="value-description">نعلّمك أن تتحمل مسؤولية قراراتك وتفهم المخاطر قبل المكافآت.</p>
+                </div>
+                <div class="value-card">
+                    <div class="value-icon-circle">
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="8" r="7"></circle>
+                            <polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"></polyline>
+                        </svg>
+                    </div>
+                    <h3 class="value-title">الاحترافية</h3>
+                    <p class="value-description">فريق من الخبراء المعتمدين بسنوات من الخبرة العملية في الأسواق المالية.</p>
+                </div>
+                <div class="value-card">
+                    <div class="value-icon-circle">
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <circle cx="12" cy="12" r="6"></circle>
+                            <circle cx="12" cy="12" r="2"></circle>
+                        </svg>
+                    </div>
+                    <h3 class="value-title">الشفافية</h3>
+                    <p class="value-description">نؤمن بالصدق المطلق. لا نعد بالمستحيل، بل نقدم المعرفة الحقيقية.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer id="contact">
+        <div class="footer-container">
+            <div class="footer-grid">
+                <div class="footer-section">
+                    <div class="footer-logo">
+                        <div>
+                            <h3 style="font-size: 20px; font-weight: bold; margin-bottom: 4px;">FX GLOBALS</h3>
+                            <p style="font-size: 14px; color: var(--dark-lavender);">مؤسسة التعليم والتدريب</p>
+                        </div>
+                        <div class="footer-logo-box">
+                            <span class="footer-logo-text">FX</span>
+                        </div>
+                    </div>
+                    <p>
+                        مؤسسة تعليمية متخصصة في التدريب والاستشارات في مجال <span style="color: var(--dark-lavender);">التداول والاستثمار</span>. نبني معك مهارات طويلة المدى.
+                    </p>
+                </div>
+                <div class="footer-section">
+                    <h4>روابط سريعة</h4>
+                    <ul class="footer-links">
+                        <li><a href="#about">من نحن</a></li>
+                        <li><a href="#services">خدماتنا</a></li>
+                        <li><a href="#features">المميزات</a></li>
+                        <li><a href="#">البرامج التعليمية</a></li>
+                        <li><a href="#">البث المباشر</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>البرامج</h4>
+                    <ul class="footer-links">
+                        <li><a href="#">برنامج المبتدئين</a></li>
+                        <li><a href="#">برنامج المتقدم</a></li>
+                        <li><a href="#">الاستشارات الخاصة</a></li>
+                        <li><a href="#">ورش العمل</a></li>
+                        <li><a href="#">المجتمع التعليمي</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>تواصل معنا</h4>
+                    <ul class="footer-contact">
+                        <li>
+                            <a href="mailto:support@fxglobals.co" style="word-break: break-all;">support@fxglobals.co</a>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                                <polyline points="22,6 12,13 2,6"></polyline>
+                            </svg>
+                        </li>
+                        <li>
+                            <a href="tel:+97280637059972" dir="ltr">+972593700806</a>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+                            </svg>
+                        </li>
+                        <li>
+                            <span>فلسطين، رام الله</span>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                                <circle cx="12" cy="10" r="3"></circle>
+                            </svg>
+                        </li>
+                        <li>
+                            <a href="https://info.fxglobals.co" target="_blank" rel="noopener noreferrer">info.fxglobals.co</a>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <line x1="2" y1="12" x2="22" y2="12"></line>
+                                <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+                            </svg>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>© 2025 FX Globals. جميع الحقوق محفوظة.</p>
+                <div class="footer-legal">
+                    <a href="/privacy-policy/">سياسة الخصوصية</a>
+                    <a href="/terms-of-service/">الشروط والأحكام</a>
+                    <a href="/return-exchange-policy/">سياسة الإرجاع والاستبدال</a>
+                </div>
+            </div>
+            <div class="footer-disclaimer">
+                <p>
+                    تنويه: التداول في الأسواق المالية ينطوي على <span style="color: var(--dark-lavender);">مخاطر عالية</span> وقد لا يكون مناسبًا لجميع المستثمرين. FX Globals هي مؤسسة تعليمية ولا تقدم خدمات وساطة مالية أو إدارة أموال. جميع القرارات الاستثمارية هي <span style="color: var(--dark-lavender);">مسؤولية المتداول</span> بشكل كامل.
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="{% static 'new_land/script.js' %}"></script>
+</body>
+</html>

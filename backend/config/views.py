@@ -615,6 +615,11 @@ def packages_page(request):
     return render(request, 'packages.html')
 
 
+def new_land_page(request):
+    """Render New Land (FX Globals - مؤسسة التعليم والتدريب) landing page."""
+    return render(request, 'new_land.html')
+
+
 def payment_page(request):
     """Render Payment page."""
     # Check for success/error messages from VIP Learning form submission

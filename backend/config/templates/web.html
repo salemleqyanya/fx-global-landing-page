@@ -1,0 +1,289 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FX Globals – أكاديمية تعليم و تدريب معتمدة</title>
+  <link rel="stylesheet" href="{% static 'web/styles.css' %}" />
+</head>
+<body>
+  <div class="site">
+    <!-- Header -->
+    <header class="header">
+      <div class="container">
+        <div class="header-inner">
+          <div class="logo">
+            <div class="logo-icon">FX</div>
+            <div>
+              <h1 class="logo-text">FX GLOBALS</h1>
+              <p class="logo-tagline">مؤسسة التعليم والتدريب</p>
+            </div>
+          </div>
+
+          <nav class="nav-desktop">
+            <a href="#about">من نحن</a>
+            <a href="#services">خدماتنا</a>
+            <a href="#features">المميزات</a>
+          </nav>
+
+          <button class="nav-toggle" aria-label="القائمة">
+            <svg class="icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="18" x2="20" y2="18"/></svg>
+          </button>
+        </div>
+      </div>
+      <nav class="nav-mobile" aria-hidden="true">
+        <a href="#about">من نحن</a>
+        <a href="#services">خدماتنا</a>
+        <a href="#features">المميزات</a>
+      </nav>
+    </header>
+
+    <!-- Hero -->
+    <section id="about" class="hero">
+      <div class="container">
+        <div class="hero-grid">
+          <div class="hero-content">
+            <span class="badge">✓ مؤسسة تعليمية معتمدة</span>
+            <h1 class="hero-title">
+              <span class="hero-title-accent">أكاديمية تعليم</span>
+              <span class="hero-title-main">و تدريب معتمدة</span>
+              <span class="hero-title-gradient">في عالم <span class="gradient-text">الأسواق المالية و الاستثمار</span></span>
+            </h1>
+            <p class="hero-desc">
+              نبني معك رحلة تعلّم طويلة المدى في فهم الأسواق المالية، إدارة المخاطر، وتطوير استراتيجيات تداول احترافية. لسنا هنا لنعدك بالثراء السريع، بل لنعلّمك كيف تفهم السوق بعمق.
+            </p>
+          </div>
+          <div class="hero-media">
+            <div class="hero-video-wrap">
+              <iframe src="https://player.vimeo.com/video/1156632204?autoplay=1&loop=1&title=0&byline=0&portrait=0" allow="autoplay; fullscreen; picture-in-picture" title="FX Globals Education"></iframe>
+              <div class="hero-video-overlay"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Certifications -->
+    <section class="section certifications">
+      <div class="container">
+        <div class="section-head">
+          <span class="badge with-icon">
+            <svg class="icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            مؤسسة مُعتمدة ومُرخصة
+          </span>
+          <h2 class="section-title">التراخيص والاعتمادات الرسمية</h2>
+          <p class="section-desc">حاصلون على التراخيص الرسمية من <span class="text-primary">وزارة التربية والتعليم العالي</span>، مما يضمن لك تعليماً معتمداً وموثوقاً</p>
+        </div>
+
+        <div class="certs-grid">
+          <div class="cert-card">
+            <img src="{% static 'web/assets/9669de32aa4949f2da35c3923057c7ec992d1468.png' %}" alt="رخصة مركز ثقافي - وزارة التربية والتعليم" />
+            <div class="cert-overlay">
+              <div class="cert-overlay-content">
+                <h3><svg class="icon cert-check" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg> رخصة مركز ثقافي</h3>
+                <p>صادرة عن وزارة التربية والتعليم العالي - دولة فلسطين</p>
+              </div>
+            </div>
+          </div>
+          <div class="cert-card">
+            <img src="{% static 'web/assets/5a0f57c7c51aecc237e21bf218543ff71d30107c.png' %}" alt="موافقة تجديد رخصة - وزارة التربية والتعليم" />
+            <div class="cert-overlay">
+              <div class="cert-overlay-content">
+                <h3><svg class="icon cert-check" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg> موافقة تجديد الرخصة</h3>
+                <p>صادرة عن وزارة التربية والتعليم العالي - دولة فلسطين</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="trust-grid">
+          <div class="trust-item">
+            <div class="trust-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+            <h3>مرخص رسمياً</h3>
+            <p>من وزارة التربية والتعليم</p>
+          </div>
+          <div class="trust-item">
+            <div class="trust-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/></svg></div>
+            <h3>معتمد ومُوثق</h3>
+            <p>جميع البرامج معتمدة رسمياً</p>
+          </div>
+          <div class="trust-item">
+            <div class="trust-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div>
+            <h3>شفاف وموثوق</h3>
+            <p>التزام كامل بالمعايير القانونية</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Risk Management -->
+    <section class="section risk">
+      <div class="risk-bg"></div>
+      <div class="container relative">
+        <div class="section-head">
+          <span class="badge risk-badge">⚡ الأساس الذي نبني عليه كل شيء</span>
+          <h2 class="section-title large">
+            <span class="gradient-text">إدارة المخاطر</span> هي البوصلة
+          </h2>
+          <p class="section-desc">التداول الناجح لا يبدأ بالبحث عن الأرباح، بل بحماية رأس المال. <strong class="text-accent">إدارة المخاطر</strong> ليست خياراً، بل هي الفرق بين المتداول المحترف والمقامر.</p>
+          <div class="quote-box">"في FX Globals، لا نعلّم استراتيجيات التداول قبل أن نعلّم كيف تحمي أموالك"</div>
+        </div>
+
+        <div class="risk-grid">
+          <div class="risk-row">
+            <div class="risk-card">
+              <div class="risk-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+              <h3>حماية رأس المال</h3>
+              <p>الأولوية الأولى دائماً هي الحفاظ على رأس المال. نعلّمك كيف تحمي أموالك قبل التفكير في الأرباح.</p>
+            </div>
+            <div class="risk-card">
+              <div class="risk-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg></div>
+              <h3>تحديد نسب المخاطرة</h3>
+              <p>منهجيات علمية لتحديد حجم الصفقات ونسبة المخاطرة المناسبة لكل فرصة تداول.</p>
+            </div>
+          </div>
+          <div class="risk-row three">
+            <div class="risk-card">
+              <div class="risk-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg></div>
+              <h3>إدارة الخسائر</h3>
+              <p>الخسارة جزء طبيعي من التداول. نعلّمك كيف تديرها بذكاء وتمنعها من التحول لكارثة.</p>
+            </div>
+            <div class="risk-card">
+              <div class="risk-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div>
+              <h3>تجنب الإفراط</h3>
+              <p>نركز على الانضباط وتجنب التداول العاطفي والمبالغة في حجم المراكز.</p>
+            </div>
+            <div class="risk-card">
+              <div class="risk-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></div>
+              <h3>تنويع المحفظة</h3>
+              <p>استراتيجيات التنويع الذكي لتوزيع المخاطر وعدم الاعتماد على فرصة واحدة.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Services -->
+    <section id="services" class="section services">
+      <div class="container">
+        <div class="section-head">
+          <span class="badge">ما نقدمه</span>
+          <h2 class="section-title">منظومة <span class="text-accent">تعليمية</span> متكاملة</h2>
+          <p class="section-desc">نركز على بناء <span class="text-primary">فهم عميق</span> للأسواق من خلال التعليم المنهجي والممارسة العملية</p>
+        </div>
+
+        <div class="services-grid">
+          <div class="service-card">
+            <div class="service-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg></div>
+            <h3>التعليم والتدريب</h3>
+            <p>برامج تعليمية شاملة من الأساسيات إلى الاحتراف في التحليل الفني والأساسي</p>
+          </div>
+          <div class="service-card">
+            <div class="service-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg></div>
+            <h3>البث المباشر</h3>
+            <p>جلسات يومية لتحليل الأسواق ومتابعة الفرص مع خبراء متخصصين</p>
+          </div>
+          <div class="service-card">
+            <div class="service-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg></div>
+            <h3>الاستشارات</h3>
+            <p>استشارات متخصصة في بناء استراتيجيات التداول وإدارة المحافظ</p>
+          </div>
+          <div class="service-card">
+            <div class="service-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
+            <h3>المجتمع</h3>
+            <p>بيئة تعليمية تفاعلية لتبادل الخبرات والتطوير المستمر</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Features -->
+    <section id="features" class="section features">
+      <div class="container">
+        <div class="feature-block">
+          <div class="feature-img">
+            <img src="{% static 'web/assets/cd74dcb8bc46fa77c81e4bf2fca4294f4688ad0e.png' %}" alt="FX Globals" />
+            <div class="img-overlay"></div>
+          </div>
+          <div class="feature-content">
+            <span class="badge with-icon"><svg class="icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg> بث مباشر احترافي</span>
+            <h2>تحليل <span class="text-accent">الأسواق</span> بشكل يومي ومباشر</h2>
+            <p>جلسات بث مباشر يومية مع محللين معتمدين. نركز على <span class="text-primary">فهم حركة السوق</span>، تحديد الفرص بموضوعية، وإدارة المخاطر بذكاء. لا وعود، فقط تحليل واقعي.</p>
+            <ul class="feature-list">
+              <li>تحليل فني وأساسي شامل للأسواق العالمية</li>
+              <li>جلسات تفاعلية للإجابة على الأسئلة والاستفسارات</li>
+              <li>تسجيلات متاحة للمراجعة والتعلم المستمر</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="feature-block reverse">
+          <div class="feature-content">
+            <span class="badge with-icon"><svg class="icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg> تعليم منهجي</span>
+            <h2>فهم <span class="text-accent">عميق</span> للأسواق المالية</h2>
+            <p>نعلّمك كيف تقرأ <span class="text-primary">الرسوم البيانية</span>، تفهم المؤشرات الاقتصادية، وتبني استراتيجيات قائمة على التحليل لا المشاعر.</p>
+            <ul class="feature-list">
+              <li>مناهج تعليمية من الصفر إلى الاحتراف</li>
+              <li>ورش عمل عملية وتطبيق مباشر</li>
+              <li>متابعة مستمرة لتطور مستواك</li>
+            </ul>
+          </div>
+          <div class="feature-img">
+            <img src="{% static 'web/assets/c3b584b2b330a19855dee6c5aa5ca020ddbd3726.png' %}" alt="Market Analysis" />
+            <div class="img-overlay"></div>
+          </div>
+        </div>
+
+        <div class="feature-block">
+          <div class="feature-img">
+            <img src="{% static 'web/assets/53ca0a149a9eb1f83a4c9b9c4eb661a58d1fcc17.png' %}" alt="Learning Community" />
+            <div class="img-overlay"></div>
+          </div>
+          <div class="feature-content">
+            <span class="badge with-icon"><svg class="icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg> مجتمع متكامل</span>
+            <h2>بيئة <span class="text-accent">تعليمية</span> داعمة ومستدامة</h2>
+            <p>مجتمع من المتعلمين الجادّين الذين يشاركون نفس الهدف: <span class="text-primary">التعلم الحقيقي</span> وبناء مهارات طويلة المدى.</p>
+            <ul class="feature-list">
+              <li>منتدى تفاعلي لتبادل التحليلات والخبرات</li>
+              <li>جلسات جماعية للمراجعة والتطوير</li>
+              <li>دعم مستمر من فريق محترف</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Values -->
+    <section class="section values">
+      <div class="container">
+        <div class="section-head">
+          <span class="badge">قيمنا</span>
+          <h2 class="section-title">ما <span class="text-accent">نؤمن</span> به</h2>
+          <p class="section-desc">قيم راسخة تحكم كل ما نقدمه من <span class="text-primary">تعليم وتدريب</span></p>
+        </div>
+
+        <div class="values-grid">
+          <div class="value-card">
+            <div class="value-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg></div>
+            <h3>الشفافية</h3>
+            <p>نؤمن بالصدق المطلق. لا نعد بالمستحيل، بل نقدم المعرفة الحقيقية.</p>
+          </div>
+          <div class="value-card">
+            <div class="value-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/></svg></div>
+            <h3>الاحترافية</h3>
+            <p>فريق من الخبراء المعتمدين بسنوات من الخبرة العملية في الأسواق المالية.</p>
+          </div>
+          <div class="value-card">
+            <div class="value-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></div>
+            <h3>المسؤولية</h3>
+            <p>نعلّمك أن تتحمل مسؤولية قراراتك وتفهم المخاطر قبل المكافآت.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script src="{% static 'web/script.js' %}"></script>
+</body>
+</html>

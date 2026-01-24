@@ -183,6 +183,42 @@
             width: 100%;
             max-width: 100%;
         }
+
+        .video-card.hidden-video {
+            display: none;
+        }
+
+        .show-more-container {
+            display: flex;
+            justify-content: center;
+            margin-top: 3rem;
+            width: 100%;
+            position: relative;
+            z-index: 20;
+        }
+
+        .show-more-btn {
+            background: linear-gradient(to-r, #E91E8C, #6B46C1);
+            color: white;
+            padding: 0.75rem 2.5rem;
+            border-radius: 9999px;
+            font-weight: 700;
+            font-size: 1.125rem;
+            transition: all 0.3s ease;
+            border: 2px solid rgba(233, 30, 140, 0.3);
+            cursor: pointer;
+            box-shadow: 0 10px 20px rgba(233, 30, 140, 0.2);
+        }
+
+        .show-more-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 30px rgba(233, 30, 140, 0.4);
+            border-color: rgba(233, 30, 140, 0.6);
+        }
+
+        .show-more-btn.hidden {
+            display: none;
+        }
         
         @media (min-width: 640px) {
             .videos-carousel {
@@ -962,7 +998,7 @@
                 <div class="videos-carousel-container">
                     <div class="videos-carousel" id="testimonials-carousel">
                         {% for video in testimonials_videos %}
-                        <div class="video-card">
+                        <div class="video-card {% if forloop.counter > 6 %}hidden-video{% endif %}">
                             <div class="video-card-wrapper {% if forloop.counter == 1 %}border-[#E91E8C]/50{% else %}border-orange-500/50{% endif %}">
                                 <!-- Badge Label -->
                                 <div class="video-badge {% if forloop.counter == 1 %}video-badge-purple{% else %}video-badge-orange{% endif %}">
@@ -1010,17 +1046,6 @@
                         </div>
                         {% endfor %}
                     </div>
-                    <!-- Navigation Buttons -->
-                    <button class="carousel-nav-button prev" onclick="scrollCarousel('testimonials-carousel', -1)" aria-label="Previous">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
-                        </svg>
-                    </button>
-                    <button class="carousel-nav-button next" onclick="scrollCarousel('testimonials-carousel', 1)" aria-label="Next">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
-                        </svg>
-                    </button>
                 </div>
                 {% endif %}
                 
@@ -1112,7 +1137,7 @@
                             </div>
                         </div>
                         <!-- Video 8 -->
-                        <div class="video-card">
+                        <div class="video-card hidden-video">
                             <div class="video-card-wrapper border-orange-500/50">
                                 <div class="video-badge video-badge-orange">طالب طموح</div>
                                 <div class="video-player-container">
@@ -1126,7 +1151,7 @@
                             </div>
                         </div>
                         <!-- Video 9 -->
-                        <div class="video-card">
+                        <div class="video-card hidden-video">
                             <div class="video-card-wrapper border-[#E91E8C]/50">
                                 <div class="video-badge video-badge-purple">طالب طموح</div>
                                 <div class="video-player-container">
@@ -1140,7 +1165,7 @@
                             </div>
                         </div>
                         <!-- Video 10 -->
-                        <div class="video-card">
+                        <div class="video-card hidden-video">
                             <div class="video-card-wrapper border-orange-500/50">
                                 <div class="video-badge video-badge-orange">طالب طموح</div>
                                 <div class="video-player-container">
@@ -1154,7 +1179,7 @@
                             </div>
                         </div>
                         <!-- Video 11 -->
-                        <div class="video-card">
+                        <div class="video-card hidden-video">
                             <div class="video-card-wrapper border-[#E91E8C]/50">
                                 <div class="video-badge video-badge-purple">طالب طموح</div>
                                 <div class="video-player-container">
@@ -1168,7 +1193,7 @@
                             </div>
                         </div>
                         <!-- Video 12 -->
-                        <div class="video-card">
+                        <div class="video-card hidden-video">
                             <div class="video-card-wrapper border-orange-500/50">
                                 <div class="video-badge video-badge-orange">طالب طموح</div>
                                 <div class="video-player-container">
@@ -1182,7 +1207,7 @@
                             </div>
                         </div>
                         <!-- Video 13 -->
-                        <div class="video-card">
+                        <div class="video-card hidden-video">
                             <div class="video-card-wrapper border-[#E91E8C]/50">
                                 <div class="video-badge video-badge-purple">طالب طموح</div>
                                 <div class="video-player-container">
@@ -1196,7 +1221,7 @@
                             </div>
                         </div>
                         <!-- Video 14 -->
-                        <div class="video-card">
+                        <div class="video-card hidden-video">
                             <div class="video-card-wrapper border-orange-500/50">
                                 <div class="video-badge video-badge-orange">طالب طموح</div>
                                 <div class="video-player-container">
@@ -1210,7 +1235,7 @@
                             </div>
                         </div>
                         <!-- Video 15 -->
-                        <div class="video-card">
+                        <div class="video-card hidden-video">
                             <div class="video-card-wrapper border-[#E91E8C]/50">
                                 <div class="video-badge video-badge-purple">طالب طموح</div>
                                 <div class="video-player-container">
@@ -1224,7 +1249,7 @@
                             </div>
                         </div>
                         <!-- Video 17 -->
-                        <div class="video-card">
+                        <div class="video-card hidden-video">
                             <div class="video-card-wrapper border-[#E91E8C]/50">
                                 <div class="video-badge video-badge-purple">طالب طموح</div>
                                 <div class="video-player-container">
@@ -1238,7 +1263,7 @@
                             </div>
                         </div>
                         <!-- Video 18 -->
-                        <div class="video-card">
+                        <div class="video-card hidden-video">
                             <div class="video-card-wrapper border-orange-500/50">
                                 <div class="video-badge video-badge-orange">طالب طموح</div>
                                 <div class="video-player-container">
@@ -1252,7 +1277,7 @@
                             </div>
                         </div>
                         <!-- Video 19 -->
-                        <div class="video-card">
+                        <div class="video-card hidden-video">
                             <div class="video-card-wrapper border-[#E91E8C]/50">
                                 <div class="video-badge video-badge-purple">طالب طموح</div>
                                 <div class="video-player-container">
@@ -1266,7 +1291,7 @@
                             </div>
                         </div>
                         <!-- Video 20 -->
-                        <div class="video-card">
+                        <div class="video-card hidden-video">
                             <div class="video-card-wrapper border-orange-500/50">
                                 <div class="video-badge video-badge-orange">طالب طموح</div>
                                 <div class="video-player-container">
@@ -1280,7 +1305,7 @@
                             </div>
                         </div>
                         <!-- Video 21 -->
-                        <div class="video-card">
+                        <div class="video-card hidden-video">
                             <div class="video-card-wrapper border-[#E91E8C]/50">
                                 <div class="video-badge video-badge-purple">طالب طموح</div>
                                 <div class="video-player-container">
@@ -1294,7 +1319,7 @@
                             </div>
                         </div>
                         <!-- Video 22 -->
-                        <div class="video-card">
+                        <div class="video-card hidden-video">
                             <div class="video-card-wrapper border-orange-500/50">
                                 <div class="video-badge video-badge-orange">طالب طموح</div>
                                 <div class="video-player-container">
@@ -1308,7 +1333,7 @@
                             </div>
                         </div>
                         <!-- Video 23 -->
-                        <div class="video-card">
+                        <div class="video-card hidden-video">
                             <div class="video-card-wrapper border-[#E91E8C]/50">
                                 <div class="video-badge video-badge-purple">طالب طموح</div>
                                 <div class="video-player-container">
@@ -1322,7 +1347,7 @@
                             </div>
                         </div>
                         <!-- Video 24 -->
-                        <div class="video-card">
+                        <div class="video-card hidden-video">
                             <div class="video-card-wrapper border-orange-500/50">
                                 <div class="video-badge video-badge-orange">طالب طموح</div>
                                 <div class="video-player-container">
@@ -1336,7 +1361,7 @@
                             </div>
                         </div>
                         <!-- Video 25 -->
-                        <div class="video-card">
+                        <div class="video-card hidden-video">
                             <div class="video-card-wrapper border-[#E91E8C]/50">
                                 <div class="video-badge video-badge-purple">طالب طموح</div>
                                 <div class="video-player-container">
@@ -1347,17 +1372,6 @@
                             </div>
                         </div>
                     </div>
-                    <!-- Navigation Buttons -->
-                    <button class="carousel-nav-button prev" onclick="scrollCarousel('static-videos-carousel', -1)" aria-label="Previous">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
-                        </svg>
-                    </button>
-                    <button class="carousel-nav-button next" onclick="scrollCarousel('static-videos-carousel', 1)" aria-label="Next">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
-                        </svg>
-                    </button>
                 </div>
                 
                 {% if not testimonials_videos and not featured_testimonial_video %}
@@ -1372,6 +1386,11 @@
                     <p class="text-white/40 text-sm mt-2">سيتم إضافة المقاطع قريباً</p>
                 </div>
                 {% endif %}
+
+                <!-- Show More Button -->
+                <div class="show-more-container" id="show-more-container">
+                    <button class="show-more-btn" onclick="toggleVideos()">مشاهدة المزيد من النتائج</button>
+                </div>
             </div>
         </div>
         <!-- Payment Button Section -->
@@ -1642,6 +1661,32 @@
         function showRegistrationDialog() {
             document.getElementById('registration-dialog').classList.remove('hidden');
         }
+
+        function toggleVideos() {
+            const hiddenVideos = document.querySelectorAll('.video-card.hidden-video');
+            const showMoreBtns = document.querySelectorAll('.show-more-btn');
+            
+            hiddenVideos.forEach(video => {
+                video.classList.remove('hidden-video');
+            });
+            
+            // Hide all show more buttons after showing all videos
+            showMoreBtns.forEach(btn => {
+                btn.classList.add('hidden');
+            });
+        }
+
+        // Check if we need the show more button on load
+        document.addEventListener('DOMContentLoaded', function() {
+            const hiddenVideos = document.querySelectorAll('.video-card.hidden-video');
+            const showMoreBtns = document.querySelectorAll('.show-more-btn');
+            
+            if (hiddenVideos.length === 0) {
+                showMoreBtns.forEach(btn => {
+                    btn.classList.add('hidden');
+                });
+            }
+        });
 
         function hideRegistrationDialog() {
             document.getElementById('registration-dialog').classList.add('hidden');

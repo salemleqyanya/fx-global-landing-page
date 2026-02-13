@@ -5,7 +5,7 @@ from pathlib import Path
 from django.conf import settings
 import urllib.parse
 from contacts.models import LandingPage, Payment, BlackFridaySettings
-from rest_framework.decorators import api_view, permission_classes
+from rest_framework.decorators import api_view, permission_classes, authentication_classes
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework import status
@@ -904,6 +904,7 @@ def serve_new_pac_file(request, filename):
 
 @csrf_exempt
 @api_view(['POST'])
+@authentication_classes([])  # Disable authentication to avoid CSRF enforcement
 @permission_classes([AllowAny])
 def initialize_lahza_payment(request):
     """Initialize a Lahza payment transaction for Black Friday."""
@@ -1290,6 +1291,7 @@ def lahza_webhook(request):
 
 @csrf_exempt
 @api_view(['GET', 'POST'])
+@authentication_classes([])  # Disable authentication to avoid CSRF enforcement
 @permission_classes([AllowAny])
 def verify_lahza_payment(request):
     """Verify a Lahza payment transaction."""

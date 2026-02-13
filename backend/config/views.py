@@ -470,6 +470,16 @@ def black_friday(request):
     return render(request, 'black_friday.html', context)
 
 
+def ramadan_phase1(request):
+    """Render Ramadan Phase 1 landing page (teasing)."""
+    return render(request, 'ramadan_phase1.html')
+
+
+def ramadan_phase2(request):
+    """Render Ramadan Phase 2 landing page (main campaign)."""
+    return render(request, 'ramadan_phase2.html')
+
+
 @api_view(['GET'])
 @permission_classes([AllowAny])
 def get_black_friday_end_date(request):

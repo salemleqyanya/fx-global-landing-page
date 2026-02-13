@@ -89,6 +89,44 @@ class CustomerContact(models.Model):
         return f"{self.name} - {self.whatsapp}"
 
 
+class RamadanContact(models.Model):
+    """Model for Ramadan campaign contact form submissions"""
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False, verbose_name="UUID")
+    
+    name = models.CharField(max_length=200, verbose_name="الاسم الكامل")
+    email = models.EmailField(verbose_name="البريد الإلكتروني")
+    phone = models.CharField(max_length=20, verbose_name="رقم الواتساب")
+    
+    # Phase tracking
+    phase = models.CharField(
+        max_length=10,
+        choices=[('phase1', 'Phase 1'), ('phase2', 'Phase 2')],
+        default='phase1',
+        verbose_name="المرحلة"
+    )
+    
+    # Contact status
+    is_contacted = models.BooleanField(default=False, verbose_name="تم التواصل")
+    notes = models.TextField(blank=True, null=True, verbose_name="ملاحظات")
+    
+    # Timestamps
+    created_at = models.DateTimeField(default=timezone.now, verbose_name="تاريخ التسجيل")
+    
+    class Meta:
+        verbose_name = "تسجيل رمضان"
+        verbose_name_plural = "تسجيلات رمضان"
+        ordering = ['-created_at']
+        indexes = [
+            models.Index(fields=['email']),
+            models.Index(fields=['phone']),
+            models.Index(fields=['created_at']),
+            models.Index(fields=['phase']),
+        ]
+    
+    def __str__(self):
+        return f"{self.name} - {self.email} ({self.phase})"
+
+
 class Payment(models.Model):
     """Model for tracking Lahza payment transactions"""
     

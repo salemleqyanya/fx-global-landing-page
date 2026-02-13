@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import CustomerContact, LandingPage, BlackFridayContact
+from .models import CustomerContact, LandingPage, BlackFridayContact, RamadanContact
 
 
 class CustomerContactSerializer(serializers.ModelSerializer):
@@ -103,4 +103,39 @@ class BlackFridayContactSerializer(serializers.ModelSerializer):
         if value:
             return ''.join(filter(str.isdigit, value))
         return value
+
+
+class RamadanContactSerializer(serializers.ModelSerializer):
+    """Serializer for Ramadan contact form submissions"""
+    
+    class Meta:
+        model = RamadanContact
+        fields = ['id', 'name', 'email', 'phone', 'phase', 'created_at', 'is_contacted']
+        read_only_fields = ['id', 'created_at', 'is_contacted']
+        extra_kwargs = {
+            'phase': {'required': False}
+        }
+    
+    def validate_phone(self, value):
+        """Clean phone number"""
+        if not value:
+            raise serializers.ValidationError("رقم الواتساب مطلوب")
+        # Remove any non-digit characters but keep + at the start
+        cleaned = value.strip()
+        if cleaned.startswith('+'):
+            prefix = '+'
+            digits = ''.join(filter(str.isdigit, cleaned[1:]))
+            cleaned = prefix + digits
+        else:
+            cleaned = ''.join(filter(str.isdigit, cleaned))
+        
+        if len(cleaned.replace('+', '')) < 8:
+            raise serializers.ValidationError("رقم الواتساب غير صحيح")
+        return cleaned
+    
+    def validate_email(self, value):
+        """Validate email"""
+        if not value:
+            raise serializers.ValidationError("البريد الإلكتروني مطلوب")
+        return value.lower().strip()
 

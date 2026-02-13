@@ -3,8 +3,8 @@ from rest_framework.decorators import api_view, permission_classes, authenticati
 from rest_framework.permissions import AllowAny, IsAdminUser
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
-from .models import CustomerContact, BlackFridayContact
-from .serializers import CustomerContactSerializer, CustomerContactCreateSerializer, BlackFridayContactSerializer
+from .models import CustomerContact, BlackFridayContact, RamadanContact
+from .serializers import CustomerContactSerializer, CustomerContactCreateSerializer, BlackFridayContactSerializer, RamadanContactSerializer
 from django.views.decorators.csrf import csrf_exempt
 
 
@@ -55,4 +55,29 @@ def register_black_friday_contact(request):
             'message': 'تم التسجيل بنجاح!' if request.data.get('lang') == 'ar' else 'Registration successful!',
             'id': contact.id
         }, status=status.HTTP_201_CREATED)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@csrf_exempt
+@api_view(['POST'])
+@authentication_classes([])
+@permission_classes([AllowAny])
+def register_ramadan_contact(request):
+    """Public endpoint for Ramadan contact form submissions"""
+    import logging
+    logger = logging.getLogger(__name__)
+    
+    logger.info(f"Received Ramadan contact request: {request.data}")
+    
+    serializer = RamadanContactSerializer(data=request.data)
+    if serializer.is_valid():
+        contact = serializer.save()
+        logger.info(f"Ramadan contact saved successfully: {contact.id} - {contact.name}")
+        return Response({
+            'success': True,
+            'message': 'تم التسجيل بنجاح!',
+            'id': str(contact.id)  # Convert UUID to string
+        }, status=status.HTTP_201_CREATED)
+    
+    logger.warning(f"Ramadan contact validation failed: {serializer.errors}")
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

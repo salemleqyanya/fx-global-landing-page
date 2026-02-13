@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FX GLOBAL - Phase 1: Teasing</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Navigation Link to Phase 2 -->
+    <div class="phase-toggle">
+        <a href="phase2.html" class="phase-toggle-btn">
+            <span class="phase-toggle-icon">►</span>
+            <span class="phase-toggle-text">Phase 2: Main Campaign</span>
+            <span class="phase-toggle-text-mobile">P2</span>
+        </a>
+    </div>
+
+    <!-- Phase 1 Container -->
+    <div class="phase-container active">
+        <!-- Night Sky Background -->
+        <div class="night-sky-bg"></div>
+        
+        <!-- Stars -->
+        <div class="stars-container" id="starsContainer1"></div>
+
+        <!-- Top Hanging Decoration -->
+        <div class="top-decoration">
+            <svg viewBox="0 0 1200 120" class="w-full h-full" preserveAspectRatio="xMidYMin slice">
+                <defs>
+                    <linearGradient id="decorGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                        <stop offset="0%" style="stop-color: #fbbf24; stop-opacity: 0.8" />
+                        <stop offset="100%" style="stop-color: #f59e0b; stop-opacity: 0.4" />
+                    </linearGradient>
+                    <filter id="glow">
+                        <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+                        <feMerge>
+                            <feMergeNode in="coloredBlur"/>
+                            <feMergeNode in="SourceGraphic"/>
+                        </feMerge>
+                    </filter>
+                </defs>
+                <g>
+                    <line x1="200" y1="0" x2="200" y2="40" stroke="#fbbf24" stroke-width="1" opacity="0.6"/>
+                    <circle cx="200" cy="45" r="8" fill="url(#decorGrad)" filter="url(#glow)"/>
+                    <circle cx="200" cy="45" r="5" fill="#fef3c7" opacity="0.8"/>
+                    <line x1="200" y1="53" x2="200" y2="65" stroke="#fbbf24" stroke-width="0.5" opacity="0.5"/>
+                    <circle cx="200" cy="68" r="3" fill="#fbbf24" opacity="0.7"/>
+                </g>
+                <g>
+                    <line x1="400" y1="0" x2="400" y2="40" stroke="#fbbf24" stroke-width="1" opacity="0.6"/>
+                    <circle cx="400" cy="45" r="8" fill="url(#decorGrad)" filter="url(#glow)"/>
+                    <circle cx="400" cy="45" r="5" fill="#fef3c7" opacity="0.8"/>
+                    <line x1="400" y1="53" x2="400" y2="65" stroke="#fbbf24" stroke-width="0.5" opacity="0.5"/>
+                    <circle cx="400" cy="68" r="3" fill="#fbbf24" opacity="0.7"/>
+                </g>
+                <g>
+                    <line x1="600" y1="0" x2="600" y2="40" stroke="#fbbf24" stroke-width="1" opacity="0.6"/>
+                    <circle cx="600" cy="45" r="8" fill="url(#decorGrad)" filter="url(#glow)"/>
+                    <circle cx="600" cy="45" r="5" fill="#fef3c7" opacity="0.8"/>
+                    <line x1="600" y1="53" x2="600" y2="65" stroke="#fbbf24" stroke-width="0.5" opacity="0.5"/>
+                    <circle cx="600" cy="68" r="3" fill="#fbbf24" opacity="0.7"/>
+                </g>
+                <g>
+                    <line x1="800" y1="0" x2="800" y2="40" stroke="#fbbf24" stroke-width="1" opacity="0.6"/>
+                    <circle cx="800" cy="45" r="8" fill="url(#decorGrad)" filter="url(#glow)"/>
+                    <circle cx="800" cy="45" r="5" fill="#fef3c7" opacity="0.8"/>
+                    <line x1="800" y1="53" x2="800" y2="65" stroke="#fbbf24" stroke-width="0.5" opacity="0.5"/>
+                    <circle cx="800" cy="68" r="3" fill="#fbbf24" opacity="0.7"/>
+                </g>
+                <g>
+                    <line x1="1000" y1="0" x2="1000" y2="40" stroke="#fbbf24" stroke-width="1" opacity="0.6"/>
+                    <circle cx="1000" cy="45" r="8" fill="url(#decorGrad)" filter="url(#glow)"/>
+                    <circle cx="1000" cy="45" r="5" fill="#fef3c7" opacity="0.8"/>
+                    <line x1="1000" y1="53" x2="1000" y2="65" stroke="#fbbf24" stroke-width="0.5" opacity="0.5"/>
+                    <circle cx="1000" cy="68" r="3" fill="#fbbf24" opacity="0.7"/>
+                </g>
+            </svg>
+        </div>
+
+        <!-- Lanterns -->
+        <div class="lanterns-container">
+            <div class="lantern lantern-right lantern-swing">
+                <svg viewBox="0 0 60 100" class="w-full h-full">
+                    <defs>
+                        <linearGradient id="lanternBody1" x1="0%" y1="0%" x2="0%" y2="100%">
+                            <stop offset="0%" style="stop-color: #fbbf24; stop-opacity: 1" />
+                            <stop offset="50%" style="stop-color: #f59e0b; stop-opacity: 1" />
+                            <stop offset="100%" style="stop-color: #d97706; stop-opacity: 1" />
+                        </linearGradient>
+                        <radialGradient id="lanternGlow1">
+                            <stop offset="0%" style="stop-color: #fef3c7; stop-opacity: 1" />
+                            <stop offset="70%" style="stop-color: #fbbf24; stop-opacity: 0.5" />
+                            <stop offset="100%" style="stop-color: #fbbf24; stop-opacity: 0" />
+                        </radialGradient>
+                    </defs>
+                    <line x1="30" y1="0" x2="30" y2="10" stroke="#d97706" stroke-width="1.5"/>
+                    <path d="M 20 10 L 15 15 L 45 15 L 40 10 Z" fill="#d97706"/>
+                    <ellipse cx="30" cy="10" rx="10" ry="3" fill="#b45309"/>
+                    <path d="M 18 15 L 15 25 L 15 50 L 18 60 L 42 60 L 45 50 L 45 25 L 42 15 Z" fill="url(#lanternBody1)" opacity="0.95"/>
+                    <rect x="20" y="20" width="20" height="8" fill="#d97706" opacity="0.3"/>
+                    <rect x="20" y="35" width="20" height="8" fill="#d97706" opacity="0.3"/>
+                    <path d="M 22 20 L 24 20 L 24 55 L 22 55 Z" fill="#fef3c7" opacity="0.4"/>
+                    <ellipse cx="30" cy="40" rx="12" ry="15" fill="url(#lanternGlow1)" opacity="0.8"/>
+                    <path d="M 18 60 L 15 65 L 45 65 L 42 60 Z" fill="#d97706"/>
+                    <line x1="30" y1="65" x2="30" y2="75" stroke="#d97706" stroke-width="1"/>
+                    <circle cx="30" cy="77" r="3" fill="#fbbf24"/>
+                    <path d="M 27 77 L 30 85 L 33 77" stroke="#f59e0b" stroke-width="1" fill="none"/>
+                </svg>
+                <div class="lantern-glow"></div>
+            </div>
+            <div class="lantern lantern-left lantern-swing" style="animation-delay: 1.2s">
+                <svg viewBox="0 0 60 100" class="w-full h-full">
+                    <defs>
+                        <linearGradient id="lanternBody2" x1="0%" y1="0%" x2="0%" y2="100%">
+                            <stop offset="0%" style="stop-color: #fbbf24; stop-opacity: 1" />
+                            <stop offset="50%" style="stop-color: #f59e0b; stop-opacity: 1" />
+                            <stop offset="100%" style="stop-color: #d97706; stop-opacity: 1" />
+                        </linearGradient>
+                        <radialGradient id="lanternGlow2">
+                            <stop offset="0%" style="stop-color: #fef3c7; stop-opacity: 1" />
+                            <stop offset="70%" style="stop-color: #fbbf24; stop-opacity: 0.5" />
+                            <stop offset="100%" style="stop-color: #fbbf24; stop-opacity: 0" />
+                        </radialGradient>
+                    </defs>
+                    <line x1="30" y1="0" x2="30" y2="10" stroke="#d97706" stroke-width="1.5"/>
+                    <path d="M 20 10 L 15 15 L 45 15 L 40 10 Z" fill="#d97706"/>
+                    <ellipse cx="30" cy="10" rx="10" ry="3" fill="#b45309"/>
+                    <path d="M 18 15 L 15 25 L 15 50 L 18 60 L 42 60 L 45 50 L 45 25 L 42 15 Z" fill="url(#lanternBody2)" opacity="0.95"/>
+                    <rect x="20" y="20" width="20" height="8" fill="#d97706" opacity="0.3"/>
+                    <rect x="20" y="35" width="20" height="8" fill="#d97706" opacity="0.3"/>
+                    <path d="M 22 20 L 24 20 L 24 55 L 22 55 Z" fill="#fef3c7" opacity="0.4"/>
+                    <ellipse cx="30" cy="40" rx="12" ry="15" fill="url(#lanternGlow2)" opacity="0.8"/>
+                    <path d="M 18 60 L 15 65 L 45 65 L 42 60 Z" fill="#d97706"/>
+                    <line x1="30" y1="65" x2="30" y2="75" stroke="#d97706" stroke-width="1"/>
+                    <circle cx="30" cy="77" r="3" fill="#fbbf24"/>
+                    <path d="M 27 77 L 30 85 L 33 77" stroke="#f59e0b" stroke-width="1" fill="none"/>
+                </svg>
+                <div class="lantern-glow"></div>
+            </div>
+        </div>
+
+        <!-- Crescent Moon -->
+        <div class="crescent-moon">
+            <svg viewBox="0 0 100 100" class="w-full h-full">
+                <defs>
+                    <linearGradient id="moonGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" style="stop-color: #fde68a; stop-opacity: 1" />
+                        <stop offset="50%" style="stop-color: #fbbf24; stop-opacity: 1" />
+                        <stop offset="100%" style="stop-color: #f59e0b; stop-opacity: 0.9" />
+                    </linearGradient>
+                    <filter id="moonGlow">
+                        <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+                        <feMerge>
+                            <feMergeNode in="coloredBlur"/>
+                            <feMergeNode in="SourceGraphic"/>
+                        </feMerge>
+                    </filter>
+                </defs>
+                <path d="M 50 15 A 25 25 0 1 1 50 85 A 20 20 0 1 0 50 15 Z" fill="url(#moonGradient)" filter="url(#moonGlow)" opacity="0.9"/>
+                <path d="M 70 35 L 73 43 L 81 43 L 75 48 L 77 56 L 70 51 L 63 56 L 65 48 L 59 43 L 67 43 Z" fill="#fbbf24" filter="url(#moonGlow)" opacity="0.85"/>
+            </svg>
+            <div class="moon-glow"></div>
+        </div>
+
+        <!-- Islamic Pattern Overlay -->
+        <div class="islamic-pattern"></div>
+
+        <!-- Mosque Silhouette -->
+        <div class="mosque-silhouette">
+            <svg viewBox="0 0 1200 200" class="w-full h-full" preserveAspectRatio="xMidYMax slice">
+                <defs>
+                    <linearGradient id="mosqueGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                        <stop offset="0%" style="stop-color: #8b5cf6; stop-opacity: 0.4" />
+                        <stop offset="100%" style="stop-color: #000000; stop-opacity: 0.8" />
+                    </linearGradient>
+                </defs>
+                <ellipse cx="600" cy="110" rx="90" ry="70" fill="url(#mosqueGrad)"/>
+                <path d="M 600 40 L 590 55 L 610 55 Z" fill="#fbbf24" opacity="0.6"/>
+                <rect x="390" y="70" width="40" height="130" rx="5" fill="url(#mosqueGrad)"/>
+                <ellipse cx="410" cy="65" rx="22" ry="18" fill="url(#mosqueGrad)"/>
+                <path d="M 410 47 L 400 60 L 420 60 Z" fill="#fbbf24" opacity="0.6"/>
+                <rect x="770" y="70" width="40" height="130" rx="5" fill="url(#mosqueGrad)"/>
+                <ellipse cx="790" cy="65" rx="22" ry="18" fill="url(#mosqueGrad)"/>
+                <path d="M 790 47 L 780 60 L 800 60 Z" fill="#fbbf24" opacity="0.6"/>
+                <rect x="440" y="135" width="320" height="65" fill="url(#mosqueGrad)"/>
+                <ellipse cx="520" cy="160" rx="25" ry="30" fill="#000" opacity="0.3"/>
+                <ellipse cx="600" cy="160" rx="25" ry="30" fill="#000" opacity="0.3"/>
+                <ellipse cx="680" cy="160" rx="25" ry="30" fill="#000" opacity="0.3"/>
+            </svg>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Logo -->
+            <div class="logo-section">
+                <div class="logo-container">
+                    <div class="logo-star logo-star-left">✦</div>
+                    <div class="logo-star logo-star-right">✦</div>
+                    <div class="logo-chain"></div>
+                    <div class="logo-ornament">
+                        <div class="ornament-glow"></div>
+                        <div class="ornament-circle"></div>
+                    </div>
+                    <div class="logo-text-container">
+                        <div class="logo-text">FX GLOBAL</div>
+                        <div class="logo-line">
+                            <div class="logo-dots">
+                                <div class="dot"></div>
+                                <div class="dot dot-large"></div>
+                                <div class="dot"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Hero Section -->
+            <div class="hero-section">
+                <div class="hero-content">
+                    <!-- Badge -->
+                    <div class="badge">
+                        <div class="badge-glow"></div>
+                        <div class="badge-content">
+                            <span class="badge-emoji">🌙</span>
+                            <span class="badge-text">رمضان قرّب</span>
+                            <span class="badge-pulse"></span>
+                        </div>
+                    </div>
+
+                    <!-- Main Title -->
+                    <div class="title-section">
+                        <h1 class="main-title">
+                            <div class="title-line1">
+                                <span class="title-underline">فرصة ما بتتكرر…</span>
+                            </div>
+                            <div class="title-line2">
+                                <div class="title-glow"></div>
+                                <span class="title-gradient">خليك قريب</span>
+                            </div>
+                        </h1>
+                        <p class="subtitle">
+                            <span class="subtitle-highlight">كون انت من اول الناس الي راح تعرف</span>
+                        </p>
+                    </div>
+
+                    <!-- Countdown -->
+                    <div class="countdown-section">
+                        <div class="countdown-corners">
+                            <div class="corner corner-tl"></div>
+                            <div class="corner corner-tr"></div>
+                            <div class="corner corner-bl"></div>
+                            <div class="corner corner-br"></div>
+                        </div>
+                        <div class="countdown-box">
+                            <div class="countdown-header">
+                                <span class="countdown-dot"></span>
+                                <span class="countdown-text">راح ينكشف في اول يوم رمضان</span>
+                                <span class="countdown-dot"></span>
+                            </div>
+                            <div id="countdown1" class="countdown-timer"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Form Section -->
+            <div class="form-section">
+                <div class="form-container">
+                    <div class="form-header">
+                        <div class="form-emoji">🏮</div>
+                        <h2 class="form-title">سجّل الآن واحصل على التفاصيل قبل الجميع</h2>
+                    </div>
+
+                    <div class="form-card">
+                        <div class="form-card-corners">
+                            <div class="form-corner form-corner-tr"></div>
+                            <div class="form-corner form-corner-br"></div>
+                            <div class="form-corner form-corner-tl"></div>
+                            <div class="form-corner form-corner-bl"></div>
+                        </div>
+                        <div class="form-card-inner">
+                        <div id="formSuccess" class="form-success hidden">
+                            <div class="success-icon">✨</div>
+                            <h3 class="success-title">تم التسجيل بنجاح!</h3>
+                            <p class="success-text">رح نتواصل معك قريب جداً</p>
+                        </div>
+                        <form id="registrationForm" class="registration-form">
+                            <div class="form-group">
+                                <label class="form-label">
+                                    <span class="label-dot"></span>
+                                    الاسم الكامل
+                                </label>
+                                <input type="text" id="name" name="name" required class="form-input" placeholder="أدخل اسمك الكامل">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">
+                                    <span class="label-dot"></span>
+                                    البريد الإلكتروني
+                                </label>
+                                <input type="email" id="email" name="email" required class="form-input" placeholder="example@email.com" dir="ltr">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">
+                                    <span class="label-dot"></span>
+                                    رقم الواتساب
+                                </label>
+                                <input type="tel" id="phone" name="phone" required class="form-input" placeholder="+970 XXX XXX XXX" dir="ltr">
+                            </div>
+                            <button type="submit" id="submitBtn" class="submit-btn">
+                                <span id="submitText" class="submit-text">
+                                    <span class="submit-icon">✨</span>
+                                    سجّل الآن
+                                </span>
+                                <span id="submitLoading" class="submit-loading hidden">
+                                    <span class="spinner"></span>
+                                    جاري التسجيل...
+                                </span>
+                            </button>
+                        </form>
+                        </div>
+                    </div>
+
+                    <!-- Trust Badge -->
+                    <div class="trust-badge">
+                        <span class="trust-dot"></span>
+                        <span class="trust-text">بياناتك آمنة ومحمية 100%</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer -->
+            <div class="footer">
+                <div class="footer-emojis">
+                    <span>🏮</span>
+                    <span>✨</span>
+                    <span>🏮</span>
+                </div>
+                <div class="footer-content">
+                    <p class="footer-text">الإعلان الكامل مع أول يوم رمضان</p>
+                    <div class="footer-line"></div>
+                    <p class="footer-copyright">© 2026 FX GLOBAL</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="phase1.js"></script>
+</body>
+</html>

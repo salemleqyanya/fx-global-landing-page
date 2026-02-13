@@ -7,7 +7,7 @@ import csv
 import json
 import requests
 
-from .models import CustomerContact, Payment, BlackFridaySettings, BlackFridayContact, LandingPage
+from .models import CustomerContact, Payment, BlackFridaySettings, BlackFridayContact, LandingPage, RamadanContact
 
 # Set admin site name to fxglobal
 admin.site.site_header = "FX Global Administration"
@@ -599,3 +599,31 @@ class BlackFridayContactAdmin(admin.ModelAdmin):
         )
     
     send_to_accounting_modules.short_description = "إرسال إلى accounting_modules (Sales/Customer)"
+
+
+@admin.register(RamadanContact)
+class RamadanContactAdmin(admin.ModelAdmin):
+    list_display = ['name', 'email', 'phone', 'phase', 'is_contacted', 'created_at']
+    list_filter = ['is_contacted', 'phase', 'created_at']
+    search_fields = ['name', 'email', 'phone']
+    readonly_fields = ['id', 'created_at']
+    list_editable = ['is_contacted']
+    date_hierarchy = 'created_at'
+    
+    fieldsets = (
+        ('Contact Information', {
+            'fields': ('name', 'email', 'phone', 'phase')
+        }),
+        ('Status', {
+            'fields': ('is_contacted', 'notes')
+        }),
+        ('Metadata', {
+            'fields': ('id', 'created_at'),
+            'classes': ('collapse',)
+        }),
+    )
+    
+    def get_readonly_fields(self, request, obj=None):
+        if obj:  # editing an existing object
+            return self.readonly_fields + ['id']
+        return self.readonly_fields

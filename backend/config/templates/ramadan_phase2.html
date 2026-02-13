@@ -1,0 +1,466 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FX GLOBAL - Phase 2: Main Campaign</title>
+    <link rel="stylesheet" href="{% static 'ramadan/styles.css' %}">
+</head>
+<body>
+    <!-- Navigation Link to Phase 1 -->
+    <div class="phase-toggle">
+        <a href="{% url 'ramadan_phase1' %}" class="phase-toggle-btn">
+            <span class="phase-toggle-icon">◄</span>
+            <span class="phase-toggle-text">Phase 1: Teasing</span>
+            <span class="phase-toggle-text-mobile">P1</span>
+        </a>
+    </div>
+
+    <!-- Phase 2 Container -->
+    <div class="phase-container active">
+
+        <!-- Night Sky Background -->
+        <div class="night-sky-bg"></div>
+        
+        <!-- Stars -->
+        <div class="stars-container" id="starsContainer2"></div>
+
+        <!-- Gold Dust Particles -->
+        <div class="dust-container" id="dustContainer"></div>
+
+        <!-- Mist Effect -->
+        <div class="mist-effect"></div>
+
+        <!-- Islamic Pattern Overlay -->
+        <div class="islamic-pattern"></div>
+
+        <!-- Mosque Silhouette -->
+        <div class="mosque-silhouette phase2-mosque">
+            <svg viewBox="0 0 1200 200" class="w-full h-full" preserveAspectRatio="xMidYMax slice">
+                <defs>
+                    <linearGradient id="mosqueGrad2" x1="0%" y1="0%" x2="0%" y2="100%">
+                        <stop offset="0%" style="stop-color: #8b5cf6; stop-opacity: 0.4" />
+                        <stop offset="100%" style="stop-color: #000000; stop-opacity: 0.9" />
+                    </linearGradient>
+                </defs>
+                <ellipse cx="600" cy="120" rx="90" ry="70" fill="url(#mosqueGrad2)" />
+                <rect x="380" y="70" width="35" height="130" fill="url(#mosqueGrad2)" />
+                <circle cx="397.5" cy="65" r="18" fill="url(#mosqueGrad2)" />
+                <polygon points="397.5,47 385,65 410,65" fill="#fbbf24" opacity="0.7" />
+                <rect x="785" y="70" width="35" height="130" fill="url(#mosqueGrad2)" />
+                <circle cx="802.5" cy="65" r="18" fill="url(#mosqueGrad2)" />
+                <polygon points="802.5,47 790,65 815,65" fill="#fbbf24" opacity="0.7" />
+                <rect x="430" y="135" width="340" height="65" fill="url(#mosqueGrad2)" />
+            </svg>
+        </div>
+
+        <!-- Light Rays -->
+        <div class="light-rays"></div>
+
+        <!-- SVG Lanterns -->
+        <div class="phase2-lanterns">
+            <svg class="lantern-svg lantern-1" viewBox="0 0 40 60">
+                <defs>
+                    <linearGradient id="lanternGradP2_1" x1="0%" y1="0%" x2="0%" y2="100%">
+                        <stop offset="0%" style="stop-color: #fbbf24; stop-opacity: 1" />
+                        <stop offset="100%" style="stop-color: #f59e0b; stop-opacity: 0.8" />
+                    </linearGradient>
+                </defs>
+                <rect x="10" y="5" width="20" height="3" fill="#fbbf24" opacity="0.8"/>
+                <path d="M 12 8 L 12 35 Q 12 40 20 40 Q 28 40 28 35 L 28 8 Z" fill="url(#lanternGradP2_1)" opacity="0.9"/>
+                <rect x="10" y="8" width="20" height="2" fill="#fbbf24"/>
+                <rect x="10" y="15" width="20" height="1" fill="#fbbf24" opacity="0.6"/>
+                <rect x="10" y="25" width="20" height="1" fill="#fbbf24" opacity="0.6"/>
+                <path d="M 20 40 L 20 45" stroke="#fbbf24" stroke-width="1"/>
+                <circle cx="20" cy="46" r="2" fill="#fbbf24" opacity="0.8"/>
+            </svg>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Logo -->
+            <div class="logo-section">
+                <div class="logo-container">
+                    <div class="logo-star logo-star-left">✦</div>
+                    <div class="logo-star logo-star-right">✦</div>
+                    <div class="logo-chain"></div>
+                    <div class="logo-ornament">
+                        <div class="ornament-glow"></div>
+                        <div class="ornament-circle"></div>
+                    </div>
+                    <div class="logo-text-container">
+                        <div class="logo-text">FX GLOBAL</div>
+                        <div class="logo-line">
+                            <div class="logo-dots">
+                                <div class="dot"></div>
+                                <div class="dot dot-large"></div>
+                                <div class="dot"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Hero Section -->
+            <div class="hero-section phase2-hero">
+                <div class="hero-content">
+                    <h1 class="main-title phase2-title">
+                        <!-- iPhone Trio Background -->
+                        <div class="iphone-trio-background">
+                            <img src="{% static 'ramadan/assets/0c2198fea04a0d52fac7d237ab622dd837934bc3.png' %}" alt="" class="iphone-phone iphone-silver">
+                            <img src="{% static 'ramadan/assets/2979f0525ee4f7e997f62f749ac64fa32693b1eb.png' %}" alt="" class="iphone-phone iphone-orange">
+                            <img src="{% static 'ramadan/assets/49fa4b2d49744a14642d22ae9e203746d475c603.png' %}" alt="" class="iphone-phone iphone-deepblue">
+                        </div>
+                        <div class="title-line1">
+                            اشترك مع <span class="title-gradient">FX GLOBAL</span>
+                        </div>
+                        <div class="title-line1">
+                            وادخل السحب على جوائز رمضان
+                        </div>
+                    </h1>
+
+                    <!-- Dual Prizes -->
+                    <div class="prizes-grid">
+                        <!-- Funded Account Prize (Left/Green) -->
+                        <div class="prize-card prize-funded">
+                            <div class="prize-glow prize-glow-emerald"></div>
+                            <div class="prize-content">
+                                <div class="prize-icon">⚡</div>
+                                <span class="prize-title">$100K Funded Account</span>
+                                <div class="prize-line"></div>
+                                <p class="prize-winners">
+                                    <span class="prize-winners-highlight-emerald">2 فائزين</span>
+                                </p>
+                                <div class="prize-note prize-note-emerald">
+                                    <span>📱</span>
+                                    <p>للمشتركين في قناة VIP Telegram</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- iPhone Prize (Right/Purple) -->
+                        <div class="prize-card prize-iphone">
+                            <div class="prize-glow prize-glow-purple"></div>
+                            <div class="prize-content">
+                                <div class="prize-icon">🏆</div>
+                                <span class="prize-title">iPhone 17 Pro Max</span>
+                                <div class="prize-line"></div>
+                                <p class="prize-winners">
+                                    <span class="prize-winners-highlight">3 فائزين</span>
+                                </p>
+                                <div class="prize-note">
+                                    <p>للمشتركين في العضوية او الباقة</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Summary Text -->
+                    <div class="summary-text">
+                        <div class="summary-line"></div>
+                        <p class="summary-text-purple">رمضان هذا العام… له مكافأة.</p>
+                        <p class="summary-text-amber">5 فائزين × جوائز قيمة</p>
+                    </div>
+
+                    <!-- Countdown -->
+                    <div class="countdown-section">
+                        <div class="countdown-corners">
+                            <div class="corner corner-tl"></div>
+                            <div class="corner corner-tr"></div>
+                            <div class="corner corner-bl"></div>
+                            <div class="corner corner-br"></div>
+                        </div>
+                        <div class="countdown-box countdown-box-amber">
+                            <div class="countdown-header">
+                                <span class="countdown-icon">⚡</span>
+                                <span class="countdown-text">السحب بعد العيد</span>
+                                <span class="countdown-icon">⚡</span>
+                            </div>
+                            <div id="countdown2" class="countdown-timer"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- How It Works -->
+            <div class="how-it-works">
+                <div class="how-it-works-container">
+                    <div class="section-header">
+                        <h2 class="section-title">
+                            <span class="section-title-gradient">كيف تدخل السحب؟</span>
+                        </h2>
+                        <div class="section-line"></div>
+                    </div>
+
+                    <div class="steps-grid">
+                        <div class="step-card">
+                            <div class="step-number">1</div>
+                            <div class="step-icon">○</div>
+                            <p class="step-text">اشترك في FX GLOBAL</p>
+                        </div>
+                        <div class="step-card">
+                            <div class="step-number">2</div>
+                            <div class="step-icon">🎯</div>
+                            <p class="step-text">ادخل السحب الآن</p>
+                        </div>
+                        <div class="step-card">
+                            <div class="step-number">3</div>
+                            <div class="step-icon">👥</div>
+                            <p class="step-text">تابع البث المباشر على السوشال ميديا وقت السحب</p>
+                        </div>
+                        <div class="step-card">
+                            <div class="step-number">4</div>
+                            <div class="step-icon">🏆</div>
+                            <p class="step-text">ممكن تكون واحد من 5 فائزين</p>
+                        </div>
+                    </div>
+
+                    <!-- Important Note -->
+                    <div class="important-note">
+                        <div class="note-emoji">📱</div>
+                        <div class="note-content">
+                            <p class="note-title">السحب مباشر على السوشال ميديا</p>
+                            <p class="note-text">تابع البث المباشر للسحب على حسابات FX GLOBAL الرسمية لمشاهدة إعلان الفائزين بشفافية كاملة</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Plans -->
+            <div class="plans-section">
+                <div class="plans-container">
+                    <div class="section-header">
+                        <h2 class="section-title">
+                            <span class="section-title-white">اختار </span>
+                            <span class="section-title-gradient">طريقك</span>
+                        </h2>
+                        <div class="section-line"></div>
+                        <p class="section-subtitle">والفرصة بتيجي معها.</p>
+                    </div>
+
+                    <div class="plans-grid">
+                        <!-- Membership -->
+                        <div class="plan-card plan-membership" data-plan="membership">
+                            <div class="plan-header">
+                                <div class="plan-label">
+                                    <span class="plan-label-dot"></span>
+                                    OPTION 1
+                                </div>
+                                <h3 class="plan-title">Membership</h3>
+                                <p class="plan-subtitle">مجتمع المتداولين</p>
+                            </div>
+
+                            <div class="plan-features">
+                                <div class="plan-feature">
+                                    <span class="feature-icon">✓</span>
+                                    <span>دخول مجتمع FX GLOBAL</span>
+                                </div>
+                                <div class="plan-feature">
+                                    <span class="feature-icon">✓</span>
+                                    <span>بث مباشر يومي مع المدربين</span>
+                                </div>
+                                <div class="plan-feature">
+                                    <span class="feature-icon">✓</span>
+                                    <span>تعليم منظم + متابعة</span>
+                                </div>
+                                <div class="plan-feature">
+                                    <span class="feature-icon">✓</span>
+                                    <span>دعم مستمر</span>
+                                </div>
+                            </div>
+
+                            <div class="plan-note plan-note-purple">
+                                <p>تعليم حقيقي، وفرصة ربح iPhone.</p>
+                            </div>
+
+                            <button class="plan-button plan-button-purple">
+                                اشترك بالـ Membership
+                            </button>
+                        </div>
+
+                        <!-- Bundle -->
+                        <div class="plan-card plan-bundle" data-plan="bundle">
+                            <div class="plan-badge">⭐ الأفضل</div>
+                            <div class="plan-header">
+                                <div class="plan-label plan-label-amber">
+                                    <span class="plan-label-dot"></span>
+                                    OPTION 2
+                                </div>
+                                <h3 class="plan-title">The Bundle</h3>
+                                <p class="plan-subtitle">التجربة الكاملة</p>
+                            </div>
+
+                            <div class="plan-features">
+                                <div class="plan-feature">
+                                    <span class="feature-icon feature-icon-amber">⚡</span>
+                                    <span>Membership كامل</span>
+                                </div>
+                                <div class="plan-feature">
+                                    <span class="feature-icon feature-icon-amber">⚡</span>
+                                    <span>Live Trading Sessions</span>
+                                </div>
+                                <div class="plan-feature">
+                                    <span class="feature-icon feature-icon-amber">⚡</span>
+                                    <span>VIP Signals</span>
+                                </div>
+                                <div class="plan-feature">
+                                    <span class="feature-icon feature-icon-amber">⚡</span>
+                                    <span>متابعة أعمق + أدوات أكثر</span>
+                                </div>
+                            </div>
+
+                            <div class="plan-note plan-note-amber">
+                                <p>أقوى باقة. وأقوى فرصة.</p>
+                            </div>
+
+                            <button class="plan-button plan-button-amber">
+                                اشترِ الـ Bundle الآن
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- VIP Telegram Section -->
+            <div class="vip-section">
+                <div class="vip-container">
+                    <div class="vip-header">
+                        <div class="vip-badge">
+                            <span>📱</span>
+                            <span>كبر فرصك في الفوز</span>
+                        </div>
+                        <h2 class="vip-title">
+                            <span class="vip-title-gradient">قناة VIP Telegram</span>
+                        </h2>
+                        <div class="vip-line"></div>
+                    </div>
+
+                    <div class="vip-content">
+                        <div class="vip-right">
+                            <div class="vip-image-container">
+                                <img src="{% static 'ramadan/assets/90e10170a836780cc6ab498dd71e1cac5994a7ef.png' %}" alt="FTMO $100,000 Challenge" class="vip-image" onerror="this.style.display='none'">
+                            </div>
+                            <div class="vip-line-small"></div>
+                            <div class="vip-winners">
+                                <p>2 فائزين</p>
+                            </div>
+                            <p class="vip-description">فرصة حقيقية لتداول برأس مال كبير</p>
+                        </div>
+
+                        <div class="vip-left">
+                            <h3 class="vip-left-title">ماذا تحصل؟</h3>
+                            <div class="vip-features">
+                                <div class="vip-feature">
+                                    <span class="vip-feature-icon">✓</span>
+                                    <span>إشارات تداول VIP يومية</span>
+                                </div>
+                                <div class="vip-feature">
+                                    <span class="vip-feature-icon">✓</span>
+                                    <span>تحليلات حصرية للسوق</span>
+                                </div>
+                                <div class="vip-feature">
+                                    <span class="vip-feature-icon">✓</span>
+                                    <span>فرص استثمارية مميزة</span>
+                                </div>
+                                <div class="vip-feature">
+                                    <span class="vip-feature-icon">✓</span>
+                                    <span>دعم مباشر من الخبراء</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="vip-cta">
+                        <p class="vip-cta-text">اشترك في القناة، وادخل السحب تلقائيًا!</p>
+                        <button class="vip-button">
+                            <span>📱</span>
+                            <span>انضم لقناة VIP الآن</span>
+                        </button>
+                        <p class="vip-cta-note">* الاشتراك في القناة يضاعف فرصتك في السحب على Funded Account</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Trust Section -->
+            <div class="trust-section">
+                <div class="trust-container">
+                    <div class="trust-icon">👥</div>
+                    <h2 class="trust-title">
+                        <span class="trust-title-gradient">ليش السحب على السوشال ميديا؟</span>
+                    </h2>
+                    <p class="trust-text">
+                        لأن الثقة أهم من أي إعلان.<br>
+                        السحب رح يكون مباشر على حساباتنا الرسمية،<br>
+                        وإعلان الفائزين بشفافية كاملة من FX GLOBAL.
+                    </p>
+
+                    <div class="trust-details">
+                        <div class="trust-detail">
+                            <div class="trust-detail-icon">📍</div>
+                            <div class="trust-detail-content">
+                                <h4>طريقة السحب</h4>
+                                <p>بث مباشر على السوشال ميديا</p>
+                            </div>
+                        </div>
+                        <div class="trust-detail">
+                            <div class="trust-detail-icon">📅</div>
+                            <div class="trust-detail-content">
+                                <h4>موعد السحب</h4>
+                                <p>25 مارس 2025</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Final CTA -->
+            <div class="final-cta">
+                <h2 class="final-cta-title">
+                    <div class="final-cta-line1">رمضان فرصة…</div>
+                    <div class="final-cta-line2">
+                        <span class="final-cta-gradient">والفرص ما بتتكرر.</span>
+                    </div>
+                </h2>
+
+                <div class="final-cta-buttons">
+                    <button class="final-cta-button final-cta-button-emerald">
+                        <div>
+                            <div>📱 انضم لقناة VIP</div>
+                            <div class="final-cta-button-subtitle">💰 فرصة $100K Account</div>
+                        </div>
+                    </button>
+                    <button class="final-cta-button final-cta-button-amber">
+                        <div>
+                            <div>اشترِ الـ Bundle الآن</div>
+                            <div class="final-cta-button-subtitle">⭐ فرصة iPhone 17 Pro Max</div>
+                        </div>
+                    </button>
+                    <button class="final-cta-button final-cta-button-purple">
+                        <div>
+                            <div>اشترك بالـ Membership</div>
+                            <div class="final-cta-button-subtitle">🏆 فرصة iPhone 17 Pro Max</div>
+                        </div>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Footer -->
+            <div class="footer">
+                <div class="footer-emojis">
+                    <span>🏮</span>
+                    <span>✨</span>
+                    <span>🏮</span>
+                </div>
+                <div class="footer-content">
+                    <div class="footer-line"></div>
+                    <p class="footer-copyright">© 2024 FX GLOBAL. جميع الحقوق محفوظة.</p>
+                </div>
+            </div>
+        </div>
+    
+    </div>
+
+    <script src="{% static 'ramadan/phase2.js' %}"></script>
+</body>
+</html>

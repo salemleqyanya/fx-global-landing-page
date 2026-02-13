@@ -1,0 +1,308 @@
+  <!DOCTYPE html>
+<html lang="ar" dir="rtl">
+    <head>
+      <meta charset="UTF-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FX GLOBAL - عرض محدود</title>
+  <link rel="stylesheet" href="styles.css" />
+    </head>
+<body>
+  <!-- Fixed Header -->
+  <header class="fixed-header">
+    <div class="container">
+      <div class="header-content">
+        <div class="logo">FX GLOBAL</div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="hero-section">
+    <!-- Background -->
+    <div class="hero-background">
+      <div class="gradient-bg"></div>
+      <div class="fx-typography">FX</div>
+      <div class="pattern-overlay"></div>
+    </div>
+
+    <div class="container hero-container">
+      <div class="hero-content">
+        <!-- Top Badge -->
+        <div class="top-badge">
+          <div class="badge-content">
+            <svg class="icon icon-zap" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+            </svg>
+            <span>عرض محدود — وفر 375 ₪</span>
+            <svg class="icon icon-zap" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+            </svg>
+          </div>
+        </div>
+
+        <!-- Hero Copy -->
+        <div class="hero-copy">
+          <h1>
+            متى آخر مرة دخلت صفقة…
+            <br />
+            <span class="gradient-text">وأنت متأكد 100% من قرارك؟</span>
+          </h1>
+        </div>
+
+        <!-- Video Section -->
+        <div class="video-section">
+          <div class="video-wrapper">
+            <div class="video-container">
+              <video id="heroVideo" class="video-element" autoplay muted loop playsinline>
+                <source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4" type="video/mp4" />
+              </video>
+              
+              <!-- Play Button Overlay -->
+              <button class="play-button" id="playButton" aria-label="تشغيل الفيديو">
+                <div class="play-button-circle">
+                  <svg class="play-icon" viewBox="0 0 24 24" fill="white">
+                    <path d="M8 5v14l11-7z"/>
+                  </svg>
+                </div>
+              </button>
+
+              <!-- Captions Badge -->
+              <div class="captions-badge">CC متاح</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Primary CTA -->
+        <div class="primary-cta">
+          <button class="cta-button" id="scrollToCheckout">
+            <span>ادفع أقل — وخذ الباندل كامل</span>
+            <span>550₪ بدل 925₪</span>
+          </button>
+          
+          <div class="trust-badges">
+            <span class="trust-item">
+              <svg class="icon-small" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+              </svg>
+              دفع آمن
+            </span>
+          </div>
+        </div>
+
+        <!-- Hero Description and Value Points -->
+        <div class="hero-description">
+          <p class="description-text">
+            كل اللي تحتاجه للتطبيق: لايف يوميًا وتوصيات VIP—بخطة واضحة.
+          </p>
+
+          <!-- 3 Value Points -->
+          <div class="value-points">
+            <div class="value-point">
+              <svg class="value-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline>
+                <polyline points="17 6 23 6 23 12"></polyline>
+              </svg>
+              <p class="value-title">Live Trading يوميًا</p>
+              <p class="value-subtitle">(تشوف التنفيذ قدّامك)</p>
+            </div>
+            
+            <div class="value-point">
+              <svg class="value-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"></path>
+              </svg>
+              <p class="value-title">VIP توصيات</p>
+              <p class="value-subtitle">بنية على تحليل واضح</p>
+            </div>
+            
+            <div class="value-point">
+              <svg class="value-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+              </svg>
+              <p class="value-title">إدارة المخاطر</p>
+              <p class="value-subtitle">قبل أي دخول</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Bundle Includes Section -->
+  <section class="bundle-section">
+    <div class="container">
+      <div class="bundle-content">
+        <h2>
+          شو بتاخد <span class="gradient-text">بالضبط؟</span>
+        </h2>
+        <p class="bundle-subtitle">هذا الباندل يعطيك:</p>
+
+        <div class="bundle-items">
+          <!-- Item 1 -->
+          <div class="bundle-item">
+            <div class="bundle-item-content">
+              <div class="bundle-icon-wrapper">
+                <svg class="bundle-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M8 5v14l11-7z"/>
+                </svg>
+              </div>
+              <div class="bundle-text">
+                <h3>Live Trading Sessions</h3>
+                <p>جلسات مباشرة تشوف فيها التحليل + الدخول + إدارة الصفقة.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Item 2 -->
+          <div class="bundle-item">
+            <div class="bundle-item-content">
+              <div class="bundle-icon-wrapper">
+                <svg class="bundle-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"></path>
+                </svg>
+              </div>
+              <div class="bundle-text">
+                <h3>VIP توصيات</h3>
+                <p>توصيات مبنية على نفس المنهج اللي بنشتغل فيه، مع وضوح مستوى المخاطرة.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Item 3 -->
+          <div class="bundle-item">
+            <div class="bundle-item-content">
+              <div class="bundle-icon-wrapper">
+                <svg class="bundle-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                </svg>
+              </div>
+              <div class="bundle-text">
+                <h3>متابعة وتجربة عملية</h3>
+                <p>لأن التعلم بدون تطبيق = صفر.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Pricing & Checkout Section -->
+  <section id="checkout" class="checkout-section">
+    <div class="container">
+      <div class="checkout-content">
+        <!-- Section Header -->
+        <div class="checkout-header">
+          <div class="checkout-badge">
+            <svg class="icon icon-zap" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+            </svg>
+            <span>السعر ينتهي قريبًا</span>
+          </div>
+          <h2>
+            جاهز <span class="gradient-text">تبدأ؟</span>
+          </h2>
+          <p class="checkout-subtitle">خذ الباندل بسعر محدود وابدأ فورًا</p>
+        </div>
+
+        <!-- Pricing Card -->
+        <div class="pricing-card">
+          <div class="pricing-card-overlay"></div>
+          
+          <div class="pricing-content">
+            <p class="pricing-label">اشتراك الباندل (Live + VIP)</p>
+            
+            <!-- Price -->
+            <div class="price-display">
+              <div class="price-main">
+                <span class="price-amount">550</span>
+                <span class="price-currency">₪</span>
+              </div>
+              <div class="price-old">
+                <span class="old-price">925 ₪</span>
+                <span class="savings-badge">وفر 375 ₪</span>
+              </div>
+            </div>
+
+            <!-- CTA Button -->
+            <button class="checkout-button">اشترك الآن</button>
+
+            <!-- Microcopy -->
+            <div class="pricing-features">
+              <div class="feature-item">
+                <svg class="icon-small" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+                </svg>
+                <span>وصول فوري بعد الدفع</span>
+              </div>
+              <div class="feature-item">
+                <svg class="icon-small" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                  <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                </svg>
+                <span>دفع آمن</span>
+              </div>
+              <div class="feature-item feature-warning">
+                <svg class="icon-small" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                </svg>
+                <span class="warning-text">التداول يحمل مخاطر وقد يسبب خسارة رأس المال اذا تمت ممارسته بشكل خاطا</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Additional Trust Elements -->
+        <div class="trust-elements">
+          <div class="trust-element">
+            <svg class="icon-small" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+              <polyline points="22 4 12 14.01 9 11.01"></polyline>
+            </svg>
+            <span>ضمان الجودة</span>
+          </div>
+          <div class="trust-element">
+            <svg class="icon-small" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+            </svg>
+            <span>حماية البيانات</span>
+          </div>
+          <div class="trust-element">
+            <svg class="icon-small" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"></path>
+            </svg>
+            <span>محتوى حصري</span>
+          </div>
+        </div>
+
+        <!-- Feedback Videos Button -->
+        <div class="feedback-button-wrapper">
+          <a href="feedback-videos.html" class="feedback-button">
+            <svg class="icon-medium" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polygon points="23 7 16 12 23 17 23 7"></polygon>
+              <rect x="1" y="5" width="15" height="14" rx="2" ry="2"></rect>
+            </svg>
+            <span>شاهد نتائج سابقة</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-content">
+        <p>© 2025 FX GLOBAL. جميع الحقوق محفوظة.</p>
+        <p class="footer-warning">
+          تنبيه المخاطر: التداول في الأسواق المالية ينطوي على مخاطر عالية وقد يؤدي إلى خسارة رأس المال.
+        </p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+    </body>
+  </html>
+  

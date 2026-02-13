@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FX GLOBAL - نتائج سابقة</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <!-- Fixed Header -->
+  <header class="fixed-header">
+    <div class="container">
+      <div class="header-content header-content-with-back">
+        <a href="index.html" class="back-button">
+          <svg class="icon-medium" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+            <polyline points="12 5 19 12 12 19"></polyline>
+          </svg>
+          <span>العودة للصفحة الرئيسية</span>
+        </a>
+        
+        <div class="logo">FX GLOBAL</div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="feedback-hero-section">
+    <!-- Background -->
+    <div class="feedback-hero-background"></div>
+
+    <div class="container feedback-hero-container">
+      <div class="feedback-hero-content">
+        <h1>
+          نتائج <span class="gradient-text">سابقة</span>
+        </h1>
+        <p class="feedback-subtitle">آراء حقيقية من متداولين استفادوا من الباندل</p>
+      </div>
+
+      <!-- Videos Grid -->
+      <div class="videos-grid" id="videosGrid">
+        <!-- Videos will be inserted by JavaScript -->
+      </div>
+    </div>
+  </section>
+
+  <!-- Video Modal -->
+  <div class="video-modal" id="videoModal">
+    <div class="modal-backdrop" id="modalBackdrop"></div>
+    <div class="modal-content">
+      <button class="modal-close" id="modalClose">✕ إغلاق</button>
+      
+      <div class="modal-video-wrapper">
+        <iframe id="modalVideo" class="modal-video" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
+      </div>
+
+      <div class="modal-info" id="modalInfo">
+        <h3 id="modalName"></h3>
+        <p id="modalTitle" class="modal-title"></p>
+        <div class="modal-quote">
+          <svg class="quote-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M3 21c3 0 7-1 7-8V5c0-1.25-.756-2.017-2-2H4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2 1 0 1 0 1 1v1c0 1-1 2-2 2s-1 .008-1 1.031V20c0 1 0 1 1 1z"></path>
+            <path d="M15 21c3 0 7-1 7-8V5c0-1.25-.757-2.017-2-2h-4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2h.75c0 2.25.25 4-2.75 4v3c0 1 0 1 1 1z"></path>
+          </svg>
+          <p id="modalQuote" class="quote-text"></p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CTA Section -->
+  <section class="feedback-cta-section">
+    <div class="container">
+      <div class="feedback-cta-content">
+        <h2>
+          جاهز لتكون واحد <span class="gradient-text">منهم؟</span>
+        </h2>
+        <p class="feedback-cta-subtitle">احصل على الباندل الآن بسعر محدود</p>
+        <a href="index.html#checkout" class="feedback-cta-button">
+          اشترك الآن — 550₪ بدل 925₪
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-content">
+        <p>© 2025 FX GLOBAL. جميع الحقوق محفوظة.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>

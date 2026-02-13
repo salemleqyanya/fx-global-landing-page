@@ -4,7 +4,7 @@ URL configuration for config project.
 from django.contrib import admin
 from django.conf import settings
 from django.conf.urls.static import static
-from .views import landing_page, landing_page_no_contact, elite_program, black_friday, lahza_checkout, initialize_lahza_payment, verify_lahza_payment, lahza_webhook, test_email, privacy_policy, terms_of_service, return_exchange_policy, get_black_friday_end_date, get_pre_black_friday_date, download_instructions_pdf, packages_page, payment_success, pricing_page, pricing_contact, payment_page, submit_vip_learning_request, new_land_page, web_page
+from .views import landing_page, landing_page_no_contact, elite_program, black_friday, lahza_checkout, initialize_lahza_payment, verify_lahza_payment, lahza_webhook, test_email, privacy_policy, terms_of_service, return_exchange_policy, get_black_friday_end_date, get_pre_black_friday_date, download_instructions_pdf, packages_page, payment_success, pricing_page, pricing_contact, payment_page, submit_vip_learning_request, new_land_page, web_page, feedback_landing_page, feedback_videos_page
 from django.urls import path, include, re_path
 from django.views.static import serve
 import logging
@@ -23,6 +23,8 @@ urlpatterns = [
     path('packages/', packages_page, name='packages_page'),
     path('new-land/', web_page, name='new_land_page'),
     path('web/', web_page, name='web_page'),
+    path('feedback/', feedback_landing_page, name='feedback_landing_page'),
+    path('feedback/videos/', feedback_videos_page, name='feedback_videos_page'),
     path('payment/', payment_page, name='payment_page'),
     path('payment/vip-learning/submit/', submit_vip_learning_request, name='submit_vip_learning_request'),
     path('payment/payment/initialize/', initialize_lahza_payment, name='initialize_payment_payment'),
@@ -69,12 +71,10 @@ urlpatterns += [
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
-# Static files are handled by WhiteNoise middleware in production (DEBUG=False)
-# For development (DEBUG=True), Django's static file serving is used
+# Static files: always serve from STATIC_ROOT (collectstatic output)
+# WhiteNoise also serves from STATIC_ROOT when DEBUG=False
+urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 if settings.DEBUG:
-    # In development, serve static files from STATICFILES_DIRS (static/)
-    # This allows live editing without running collectstatic
-    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
-    # Also serve from STATICFILES_DIRS for development
+    # In development, also serve from STATICFILES_DIRS for live editing
     from django.contrib.staticfiles.urls import staticfiles_urlpatterns
     urlpatterns += staticfiles_urlpatterns()

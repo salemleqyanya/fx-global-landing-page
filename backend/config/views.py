@@ -625,6 +625,16 @@ def web_page(request):
     return render(request, 'web.html')
 
 
+def feedback_landing_page(request):
+    """Render Feedback (FX GLOBAL - عرض محدود) landing page."""
+    return render(request, 'newfeedback/index.html')
+
+
+def feedback_videos_page(request):
+    """Render Feedback videos (نتائج سابقة) page."""
+    return render(request, 'newfeedback/feedback_videos.html')
+
+
 def payment_page(request):
     """Render Payment page."""
     # Check for success/error messages from VIP Learning form submission

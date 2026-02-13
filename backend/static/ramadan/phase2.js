@@ -113,6 +113,11 @@ class CountdownTimer {
 
 // Initialize function
 function initPhase2() {
+    // Ensure hero section is visible on load
+    window.scrollTo(0, 0);
+    if (document.documentElement) document.documentElement.scrollTop = 0;
+    if (document.body) document.body.scrollTop = 0;
+
     // Initialize Phase 2 elements
     const starsContainer2 = document.getElementById('starsContainer2');
     if (starsContainer2) {

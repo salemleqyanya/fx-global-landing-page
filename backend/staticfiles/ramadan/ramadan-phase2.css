@@ -1,0 +1,148 @@
+/**
+ * Phase 2 Ramadan Theme Enhancements
+ * Subtle Islamic patterns, crescent moons, lanterns, warm golden accents, soft lighting.
+ * Layout, structure, typography, spacing, and components remain unchanged.
+ */
+
+/* Islamic Pattern - subtle geometric arabesque */
+.phase2-page .islamic-pattern {
+    opacity: 0.06;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120' viewBox='0 0 120 120'%3E%3Cdefs%3E%3Cpattern id='p2' width='60' height='60' patternUnits='userSpaceOnUse'%3E%3Cpath d='M30 0L35 10L30 20L25 10Z' fill='none' stroke='%23fcd34d' stroke-width='0.4' opacity='0.5'/%3E%3Cpath d='M0 30L10 35L20 30L10 25Z' fill='none' stroke='%23fcd34d' stroke-width='0.4' opacity='0.5'/%3E%3Cpath d='M30 60L35 50L30 40L25 50Z' fill='none' stroke='%23fcd34d' stroke-width='0.4' opacity='0.5'/%3E%3Cpath d='M60 30L50 35L40 30L50 25Z' fill='none' stroke='%23fcd34d' stroke-width='0.4' opacity='0.5'/%3E%3Cpath d='M15 15L20 20M45 15L40 20M15 45L20 40M45 45L40 40' stroke='%23fbbf24' stroke-width='0.2' opacity='0.3'/%3E%3C/pattern%3E%3C/defs%3E%3Crect width='100%25' height='100%25' fill='url(%23p2)'/%3E%3C/svg%3E");
+}
+
+/* Crescent Moon */
+.phase2-page .phase2-crescent {
+    position: fixed;
+    top: 5rem;
+    right: 2rem;
+    width: 4rem;
+    height: 4rem;
+    pointer-events: none;
+    z-index: 3;
+}
+
+@media (min-width: 640px) {
+    .phase2-page .phase2-crescent {
+        top: 4rem;
+        right: 4rem;
+        width: 5.5rem;
+        height: 5.5rem;
+    }
+}
+
+.phase2-page .phase2-crescent svg {
+    width: 100%;
+    height: 100%;
+    filter: drop-shadow(0 0 12px rgba(251, 191, 36, 0.4));
+}
+
+.phase2-page .phase2-crescent-glow {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 150%;
+    height: 150%;
+    background: radial-gradient(circle, rgba(251, 191, 36, 0.15) 0%, transparent 70%);
+    border-radius: 50%;
+    pointer-events: none;
+}
+
+/* Second Lantern (Left) */
+.phase2-page .phase2-lanterns .lantern-2 {
+    top: 7rem;
+    left: 1rem;
+    right: auto;
+    width: 3rem;
+    height: 3.75rem;
+    animation-delay: 0.8s;
+}
+
+@media (min-width: 640px) {
+    .phase2-page .phase2-lanterns .lantern-2 {
+        top: 6rem;
+        left: 3rem;
+        width: 4rem;
+        height: 5rem;
+    }
+}
+
+/* Warmer lantern opacity */
+.phase2-page .phase2-lanterns {
+    opacity: 0.45;
+}
+
+@media (min-width: 640px) {
+    .phase2-page .phase2-lanterns {
+        opacity: 0.5;
+    }
+}
+
+/* Soft Golden Ambient Light - top center */
+.phase2-page .phase2-ambient-glow {
+    position: fixed;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    max-width: 60rem;
+    height: 30rem;
+    background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(251, 191, 36, 0.08) 0%, rgba(251, 191, 36, 0.02) 40%, transparent 70%);
+    pointer-events: none;
+    z-index: 2;
+}
+
+/* Soft vignette - warm edges (subtle, avoid obscuring content) */
+.phase2-page .phase2-vignette {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 2;
+    background: radial-gradient(ellipse 120% 120% at 50% 50%, transparent 50%, rgba(0, 0, 0, 0.08) 100%);
+}
+
+/* Warmer light rays with golden tint */
+.phase2-page .light-rays {
+    background: linear-gradient(to bottom, rgba(251, 191, 36, 0.06) 0%, rgba(147, 51, 234, 0.1) 30%, rgba(168, 85, 247, 0.04) 60%, transparent 100%);
+}
+
+/* Warmer mist with subtle golden tone */
+.phase2-page .mist-effect {
+    background: linear-gradient(to top, rgba(88, 28, 135, 0.12), rgba(251, 191, 36, 0.03), transparent);
+}
+
+/* Dust particles - slightly warmer golden hue */
+.phase2-page .dust-particle {
+    background: #fcd34d;
+    opacity: 0.35;
+}
+
+/* Section dividers - warm golden glow on cards */
+.phase2-page .step-card,
+.phase2-page .plan-card,
+.phase2-page .prize-content {
+    box-shadow: 0 0 0 1px rgba(251, 191, 36, 0.05);
+}
+
+.phase2-page .prize-iphone .prize-content,
+.phase2-page .prize-funded .prize-content {
+    box-shadow: 0 0 30px -10px rgba(251, 191, 36, 0.15), 0 0 0 1px rgba(251, 191, 36, 0.08);
+}
+
+/* Footer emojis - lantern accent */
+.phase2-page .footer-emojis {
+    filter: drop-shadow(0 0 8px rgba(251, 191, 36, 0.2));
+}
+
+/* Countdown box - subtle warm border glow */
+.phase2-page .countdown-box-amber {
+    box-shadow: 0 0 20px -5px rgba(251, 191, 36, 0.2), inset 0 1px 0 rgba(251, 191, 36, 0.1);
+}
+
+/* Section lines - slightly enhanced golden gradient */
+.phase2-page .section-line,
+.phase2-page .summary-line,
+.phase2-page .vip-line {
+    background: linear-gradient(to right, transparent, rgba(251, 191, 36, 0.7), transparent);
+    height: 2px;
+}

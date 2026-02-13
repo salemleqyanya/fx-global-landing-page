@@ -6,8 +6,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FX GLOBAL - Phase 2: Main Campaign</title>
     <link rel="stylesheet" href="{% static 'ramadan/styles.css' %}">
+    <link rel="stylesheet" href="{% static 'ramadan/ramadan-phase2.css' %}">
 </head>
-<body>
+<body class="phase2-page">
     <!-- Navigation Link to Phase 1 -->
     <div class="phase-toggle">
         <a href="{% url 'ramadan_phase1' %}" class="phase-toggle-btn">
@@ -34,6 +35,25 @@
 
         <!-- Islamic Pattern Overlay -->
         <div class="islamic-pattern"></div>
+
+        <!-- Crescent Moon -->
+        <div class="phase2-crescent">
+            <div class="phase2-crescent-glow"></div>
+            <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                    <linearGradient id="crescentGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" style="stop-color: #fef3c7; stop-opacity: 1" />
+                        <stop offset="100%" style="stop-color: #fbbf24; stop-opacity: 0.9" />
+                    </linearGradient>
+                </defs>
+                <circle cx="50" cy="50" r="45" fill="url(#crescentGrad)" opacity="0.95" />
+                <circle cx="65" cy="42" r="38" fill="#1e1b4b" />
+            </svg>
+        </div>
+
+        <!-- Soft Ambient Glow -->
+        <div class="phase2-ambient-glow"></div>
+        <div class="phase2-vignette"></div>
 
         <!-- Mosque Silhouette -->
         <div class="mosque-silhouette phase2-mosque">
@@ -74,6 +94,21 @@
                 <rect x="10" y="25" width="20" height="1" fill="#fbbf24" opacity="0.6"/>
                 <path d="M 20 40 L 20 45" stroke="#fbbf24" stroke-width="1"/>
                 <circle cx="20" cy="46" r="2" fill="#fbbf24" opacity="0.8"/>
+            </svg>
+            <svg class="lantern-svg lantern-2" viewBox="0 0 40 60">
+                <defs>
+                    <linearGradient id="lanternGradP2_2" x1="0%" y1="0%" x2="0%" y2="100%">
+                        <stop offset="0%" style="stop-color: #fcd34d; stop-opacity: 1" />
+                        <stop offset="100%" style="stop-color: #fbbf24; stop-opacity: 0.8" />
+                    </linearGradient>
+                </defs>
+                <rect x="10" y="5" width="20" height="3" fill="#fcd34d" opacity="0.8"/>
+                <path d="M 12 8 L 12 35 Q 12 40 20 40 Q 28 40 28 35 L 28 8 Z" fill="url(#lanternGradP2_2)" opacity="0.9"/>
+                <rect x="10" y="8" width="20" height="2" fill="#fcd34d"/>
+                <rect x="10" y="15" width="20" height="1" fill="#fcd34d" opacity="0.6"/>
+                <rect x="10" y="25" width="20" height="1" fill="#fcd34d" opacity="0.6"/>
+                <path d="M 20 40 L 20 45" stroke="#fcd34d" stroke-width="1"/>
+                <circle cx="20" cy="46" r="2" fill="#fcd34d" opacity="0.8"/>
             </svg>
         </div>
 

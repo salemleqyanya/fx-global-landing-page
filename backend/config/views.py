@@ -933,6 +933,15 @@ def initialize_lahza_payment(request):
         first_name = data.get('firstName', '').strip()
         last_name = data.get('lastName', '').strip()
         mobile = data.get('mobile', '').strip()
+        # Format mobile number - ensure it starts with + if it doesn't already
+        if mobile and not mobile.startswith('+'):
+            # If it starts with 0, replace with country code (assume Palestine/Israel +970 or +972)
+            if mobile.startswith('0'):
+                mobile = '+970' + mobile[1:]
+            else:
+                # If no country code, assume Palestine
+                mobile = '+970' + mobile
+        
         # Support legacy fullName field for backward compatibility
         full_name = data.get('fullName', '').strip()
         offer_type = data.get('offerType', 'bundle')
@@ -940,7 +949,9 @@ def initialize_lahza_payment(request):
         source = data.get('source', None)
         if not source:
             # Try to determine from request path
-            if 'packages' in request.path:
+            if 'ramadan' in request.path:
+                source = 'ramadan'
+            elif 'packages' in request.path:
                 source = 'packages'
             elif 'checkout' in request.path:
                 source = 'checkout'
@@ -990,6 +1001,8 @@ def initialize_lahza_payment(request):
             prefix = 'PR'
         elif source == 'payment':
             prefix = 'PM'
+        elif source == 'ramadan':
+            prefix = 'RM'
         else:
             prefix = 'BF'
         reference = f"{prefix}-{uuid.uuid4().hex[:12].upper()}"
@@ -1051,6 +1064,8 @@ def initialize_lahza_payment(request):
             callback_url = request.build_absolute_uri(f'/pricing/payment/verify/?reference={reference}')
         elif source == 'payment':
             callback_url = request.build_absolute_uri(f'/payment/payment/verify/?reference={reference}')
+        elif source == 'ramadan':
+            callback_url = request.build_absolute_uri(f'/ramadan/payment/verify/?reference={reference}')
         else:
             callback_url = request.build_absolute_uri(f'/black-friday/payment/callback/?reference={reference}')
         
@@ -1088,20 +1103,21 @@ def initialize_lahza_payment(request):
         error_message = str(e)
         logger.error(f"[Lahza] Payment initialization error: {error_message}")
         
-        # Provide user-friendly error messages
+        # Provide user-friendly error messages in Arabic
         if "Network is unreachable" in error_message or "Failed to establish" in error_message:
-            user_error = "Unable to connect to payment service. Please check your internet connection and try again."
+            user_error = "تعذر الاتصال بخدمة الدفع. يرجى التحقق من اتصالك بالإنترنت والمحاولة مرة أخرى."
         elif "timeout" in error_message.lower():
-            user_error = "Payment service request timed out. Please try again."
+            user_error = "انتهت مهلة طلب خدمة الدفع. يرجى المحاولة مرة أخرى."
         elif "Connection" in error_message or "connection" in error_message.lower():
-            user_error = "Unable to connect to payment service. Please try again later."
+            user_error = "تعذر الاتصال بخدمة الدفع. يرجى المحاولة لاحقاً."
         else:
             # For other errors, show a generic message (don't expose technical details)
-            user_error = "Unable to initialize payment. Please try again or contact support if the problem persists."
+            user_error = "تعذر تهيئة الدفع. يرجى المحاولة مرة أخرى أو التواصل مع الدعم إذا استمرت المشكلة."
         
         return Response({
             'success': False,
-            'error': user_error
+            'error': user_error,
+            'message': user_error
         }, status=status.HTTP_400_BAD_REQUEST)
     except Exception as e:
         error_message = str(e)
@@ -1109,9 +1125,15 @@ def initialize_lahza_payment(request):
         # Log the full traceback for debugging
         import traceback
         logger.error(f"[Lahza] Full traceback: {traceback.format_exc()}")
+        # Provide user-friendly error message in Arabic
+        user_error = "حدث خطأ أثناء معالجة الدفع. يرجى المحاولة مرة أخرى."
+        if settings.DEBUG:
+            user_error = f"حدث خطأ: {error_message}"
+        
         return Response({
             'success': False,
-            'error': f'An error occurred while initializing payment: {error_message}'
+            'error': user_error,
+            'message': user_error
         }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 

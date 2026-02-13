@@ -148,6 +148,188 @@ function initPhase2() {
             card.classList.add('selected');
         });
     });
+
+    // Payment buttons
+    initPaymentButtons();
+}
+
+// Payment functionality
+function initPaymentButtons() {
+    const paymentButtons = document.querySelectorAll('[data-payment-type]');
+    const paymentModal = document.getElementById('paymentModal');
+    const closeModal = document.getElementById('closePaymentModal');
+    const paymentForm = document.getElementById('paymentForm');
+    const paymentOfferName = document.getElementById('paymentOfferName');
+    const paymentAmount = document.getElementById('paymentAmount');
+    const paymentSubmitBtn = document.getElementById('paymentSubmitBtn');
+    const paymentSubmitText = document.getElementById('paymentSubmitText');
+    const paymentSubmitLoading = document.getElementById('paymentSubmitLoading');
+
+    let selectedPayment = null;
+
+    // Open payment modal when button is clicked
+    paymentButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            selectedPayment = {
+                type: button.dataset.paymentType,
+                amount: parseFloat(button.dataset.amount),
+                offerName: button.dataset.offerName
+            };
+            
+            paymentOfferName.textContent = selectedPayment.offerName;
+            paymentAmount.textContent = selectedPayment.amount;
+            
+            paymentModal.classList.remove('hidden');
+        });
+    });
+
+    // Close modal
+    if (closeModal) {
+        closeModal.addEventListener('click', () => {
+            paymentModal.classList.add('hidden');
+            paymentForm.reset();
+            selectedPayment = null;
+        });
+    }
+
+    if (paymentModal) {
+        paymentModal.addEventListener('click', (e) => {
+            if (e.target === paymentModal || e.target.classList.contains('payment-modal-overlay')) {
+                paymentModal.classList.add('hidden');
+                paymentForm.reset();
+                selectedPayment = null;
+            }
+        });
+    }
+
+    // Handle form submission
+    if (paymentForm) {
+        paymentForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            if (!selectedPayment) {
+                alert('يرجى اختيار خدمة للدفع');
+                return;
+            }
+
+            const name = document.getElementById('paymentName').value.trim();
+            const email = document.getElementById('paymentEmail').value.trim();
+            const phone = document.getElementById('paymentPhone').value.trim();
+
+            if (!name || !email || !phone) {
+                alert('يرجى ملء جميع الحقول');
+                return;
+            }
+
+            // Show loading state
+            paymentSubmitText.classList.add('hidden');
+            paymentSubmitLoading.classList.remove('hidden');
+            paymentSubmitBtn.disabled = true;
+
+            try {
+                // Initialize payment
+                const response = await fetch('/ramadan/payment/initialize/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        email: email,
+                        amount: selectedPayment.amount,
+                        currency: 'ILS',
+                        firstName: name.split(' ')[0] || name,
+                        lastName: name.split(' ').slice(1).join(' ') || '',
+                        mobile: phone.startsWith('+') ? phone : (phone.startsWith('0') ? '+970' + phone.substring(1) : '+970' + phone),
+                        offerType: selectedPayment.type,
+                        offerName: selectedPayment.offerName,
+                        source: 'ramadan'
+                    })
+                });
+
+                console.log('Payment response status:', response.status);
+
+                // Check if response is ok
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    console.error('Payment error response:', errorText);
+                    let errorMessage = 'فشل في تهيئة الدفع';
+                    try {
+                        const errorData = JSON.parse(errorText);
+                        errorMessage = errorData.error || errorData.message || errorMessage;
+                    } catch (e) {
+                        errorMessage = errorText || errorMessage;
+                    }
+                    throw new Error(errorMessage);
+                }
+
+                const data = await response.json();
+                console.log('Payment response data:', data);
+
+                if (data.success && data.authorization_url) {
+                    // Store payment reference
+                    localStorage.setItem('pending_ramadan_payment', JSON.stringify({
+                        reference: data.reference,
+                        email: email,
+                        offerType: selectedPayment.type,
+                        offerName: selectedPayment.offerName
+                    }));
+
+                    // Redirect to Lahza payment page
+                    window.location.href = data.authorization_url;
+                } else {
+                    const errorMsg = data.error || data.message || 'فشل في تهيئة الدفع';
+                    console.error('Payment initialization failed:', data);
+                    throw new Error(errorMsg);
+                }
+            } catch (error) {
+                console.error('Payment initialization error:', error);
+                const errorMessage = error.message || 'حدث خطأ أثناء معالجة الدفع. يرجى المحاولة مرة أخرى.';
+                alert(errorMessage);
+                
+                // Reset loading state
+                paymentSubmitText.classList.remove('hidden');
+                paymentSubmitLoading.classList.add('hidden');
+                paymentSubmitBtn.disabled = false;
+            }
+        });
+    }
+
+    // Check for payment callback
+    checkPaymentCallback();
+}
+
+// Check payment callback on page load
+function checkPaymentCallback() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const reference = urlParams.get('reference');
+    
+    if (reference) {
+        // Verify payment
+        fetch(`/ramadan/payment/verify/?reference=${reference}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Payment successful
+                const pendingPayment = JSON.parse(localStorage.getItem('pending_ramadan_payment') || '{}');
+                if (pendingPayment.reference === reference) {
+                    localStorage.removeItem('pending_ramadan_payment');
+                    alert('تم الدفع بنجاح! شكراً لك.');
+                    // Clean URL
+                    window.history.replaceState({}, document.title, window.location.pathname);
+                }
+            } else {
+                alert('فشل التحقق من الدفع. يرجى التواصل مع الدعم.');
+            }
+        })
+        .catch(error => {
+            console.error('Payment verification error:', error);
+        });
+    }
 }
 
 // Wait for DOM to be ready

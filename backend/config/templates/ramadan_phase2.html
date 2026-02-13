@@ -424,22 +424,22 @@
                 </h2>
 
                 <div class="final-cta-buttons">
-                    <button class="final-cta-button final-cta-button-emerald">
+                    <button class="final-cta-button final-cta-button-emerald" data-payment-type="recommendations" data-amount="370" data-offer-name="قناة التوصيات">
                         <div>
                             <div>📱 انضم لقناة VIP</div>
-                            <div class="final-cta-button-subtitle">💰 فرصة $100K Account</div>
+                            <div class="final-cta-button-subtitle">💰 فرصة $100K Account | 370 شيكل</div>
                         </div>
                     </button>
-                    <button class="final-cta-button final-cta-button-amber">
+                    <button class="final-cta-button final-cta-button-amber" data-payment-type="bundle" data-amount="550" data-offer-name="Bundle">
                         <div>
                             <div>اشترِ الـ Bundle الآن</div>
-                            <div class="final-cta-button-subtitle">⭐ فرصة iPhone 17 Pro Max</div>
+                            <div class="final-cta-button-subtitle">⭐ فرصة iPhone 17 Pro Max | 550 شيكل</div>
                         </div>
                     </button>
-                    <button class="final-cta-button final-cta-button-purple">
+                    <button class="final-cta-button final-cta-button-purple" data-payment-type="membership" data-amount="1850" data-offer-name="Membership">
                         <div>
                             <div>اشترك بالـ Membership</div>
-                            <div class="final-cta-button-subtitle">🏆 فرصة iPhone 17 Pro Max</div>
+                            <div class="final-cta-button-subtitle">🏆 فرصة iPhone 17 Pro Max | 1850 شيكل</div>
                         </div>
                     </button>
                 </div>
@@ -459,6 +459,43 @@
             </div>
         </div>
     
+    </div>
+
+    <!-- Payment Modal -->
+    <div id="paymentModal" class="payment-modal hidden">
+        <div class="payment-modal-overlay"></div>
+        <div class="payment-modal-content">
+            <button class="payment-modal-close" id="closePaymentModal">&times;</button>
+            <h2 class="payment-modal-title">إتمام الدفع</h2>
+            <form id="paymentForm" class="payment-form">
+                <div class="payment-form-group">
+                    <label class="payment-form-label">الاسم الكامل</label>
+                    <input type="text" id="paymentName" name="name" required class="payment-form-input" placeholder="أدخل اسمك الكامل">
+                </div>
+                <div class="payment-form-group">
+                    <label class="payment-form-label">البريد الإلكتروني</label>
+                    <input type="email" id="paymentEmail" name="email" required class="payment-form-input" placeholder="example@email.com" dir="ltr">
+                </div>
+                <div class="payment-form-group">
+                    <label class="payment-form-label">رقم الجوال</label>
+                    <input type="tel" id="paymentPhone" name="phone" required class="payment-form-input" placeholder="+970 XXX XXX XXX" dir="ltr">
+                </div>
+                <div class="payment-form-summary">
+                    <div class="payment-summary-item">
+                        <span>الخدمة:</span>
+                        <span id="paymentOfferName">-</span>
+                    </div>
+                    <div class="payment-summary-item">
+                        <span>المبلغ:</span>
+                        <span id="paymentAmount">-</span> <span>شيكل</span>
+                    </div>
+                </div>
+                <button type="submit" id="paymentSubmitBtn" class="payment-submit-btn">
+                    <span id="paymentSubmitText">دفع الآن</span>
+                    <span id="paymentSubmitLoading" class="hidden">جاري المعالجة...</span>
+                </button>
+            </form>
+        </div>
     </div>
 
     <script src="{% static 'ramadan/phase2.js' %}"></script>

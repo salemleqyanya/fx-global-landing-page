@@ -8,15 +8,6 @@
     <link rel="stylesheet" href="{% static 'ramadan/styles.css' %}">
 </head>
 <body>
-    <!-- Navigation Link to Phase 2 -->
-    <div class="phase-toggle">
-        <a href="{% url 'ramadan_phase2' %}" class="phase-toggle-btn">
-            <span class="phase-toggle-icon">►</span>
-            <span class="phase-toggle-text">Phase 2: Main Campaign</span>
-            <span class="phase-toggle-text-mobile">P2</span>
-        </a>
-    </div>
-
     <!-- Phase 1 Container -->
     <div class="phase-container active">
         <!-- Night Sky Background -->
@@ -346,6 +337,6 @@
         </div>
     </div>
 
-    <script src="{% static 'ramadan/phase1.js' %}"></script>
+    <script src="{% static 'ramadan/phase1.js' %}?v=3"></script>
 </body>
 </html>

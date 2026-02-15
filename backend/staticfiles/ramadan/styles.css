@@ -916,6 +916,14 @@ body {
     color: #9ca3af;
 }
 
+.countdown-expired {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #fcd34d;
+    text-align: center;
+    padding: 1rem;
+}
+
 @media (min-width: 640px) {
     .countdown-label {
         margin-top: 0.5rem;

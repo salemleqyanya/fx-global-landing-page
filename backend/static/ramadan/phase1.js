@@ -20,12 +20,6 @@ function generateStars(container, count) {
     }
 }
 
-// Initialize Stars for Phase 1
-const starsContainer1 = document.getElementById('starsContainer1');
-if (starsContainer1) {
-    generateStars(starsContainer1, 50);
-}
-
 // Countdown Timer
 class CountdownTimer {
     constructor(targetDate, containerId, size = 'large') {
@@ -42,6 +36,7 @@ class CountdownTimer {
     }
 
     update() {
+        if (!this.container) return;
         const now = new Date();
         const difference = this.targetDate.getTime() - now.getTime();
 
@@ -61,6 +56,8 @@ class CountdownTimer {
                 clearInterval(this.interval);
             }
             this.container.innerHTML = '<div class="countdown-expired">انتهى الوقت</div>';
+            // Redirect to Phase 2 when timer ends
+            window.location.href = '/ramadan/phase2/';
         }
     }
 
@@ -112,15 +109,23 @@ class CountdownTimer {
     }
 }
 
-// Initialize Countdown for Phase 1
-const ramadanStartDate = '2026-03-01T00:00:00';
-let countdown1 = null;
-const countdown1Container = document.getElementById('countdown1');
-if (countdown1Container) {
-    countdown1 = new CountdownTimer(ramadanStartDate, 'countdown1', 'large');
-}
+// Initialize Phase 1 - wait for DOM to be ready
+document.addEventListener('DOMContentLoaded', function() {
+    // Stars
+    const starsContainer1 = document.getElementById('starsContainer1');
+    if (starsContainer1) {
+        generateStars(starsContainer1, 50);
+    }
 
-// Form Submission - Wait for DOM to be ready
+    // Countdown - ends 19 Feb 2026, then redirects to Phase 2
+    const ramadanStartDate = '2026-02-19T00:00:00';
+    const countdown1Container = document.getElementById('countdown1');
+    if (countdown1Container) {
+        new CountdownTimer(ramadanStartDate, 'countdown1', 'large');
+    }
+});
+
+// Form Submission
 document.addEventListener('DOMContentLoaded', function() {
     const registrationForm = document.getElementById('registrationForm');
     const formSuccess = document.getElementById('formSuccess');
